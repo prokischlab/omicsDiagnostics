@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-04" />
+
+<title>Enrichment of rare variants in outliers</title>
+
+<script src="libR/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+<script src="libR/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libR/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libR/datatables-binding-0.15/datatables.js"></script>
+<link href="libR/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libR/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libR/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libR/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libR/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Enrichment of rare variants in outliers</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-04</h4>
+
+</div>
+
+
+<pre class="r"><code># Load plotting config and functions
+source(&#39;src/config.R&#39;)
+source(&quot;src/functions/Integration/integrate_annotate_omics.R&quot;)
+source(&quot;src/functions/variant_enrichment.R&quot;)
+
+
+# Read integrated omics file 
+# rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS&quot;) %&gt;% as.data.table()
+rp &lt;- readRDS(snakemake@input$patient_omics) %&gt;% as.data.table()
+
+# Subset cases with WES and RNA-seq data avaliable 
+rp &lt;- rp[WES_avaliable == T &amp; RNA_seq_avaliable == T]
+
+
+#Keep only genes, with both RNA and protein measured 
+rp &lt;- rp[ gene_detected == &quot;RNA and protein detected&quot;]
+
+# Filter for the genes, detected as outliers at least once
+outliers &lt;- unique(rp[outlier_class != &quot;non_outlier&quot;]$geneID)
+rp &lt;- rp[geneID %in% outliers]
+
+# Add up- down- outlier class
+rp &lt;- add_up_down_class(rp, 
+                        Padj_threshold =  PADJ_THRESHOLD,
+                        Zscore_threshold = ZSCORE_THRESHOLD, 
+                        l2FC_threshold = LOG2FC_THRESHOLD)
+
+
+###################################################
+# Subset necessary columns
+# Add variant type annotation
+rp[ , var_type := &quot;No rare variant&quot;] 
+rp[ rare == T , var_type := &quot;Rare variant&quot;] 
+rp[ potential_biallelic == T , var_type := &quot;Potential biallelic\n rare variant&quot;] 
+
+
+# Subset necessary columns
+rp &lt;- rp[ , c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;, &quot;var_type&quot;, &quot;outlier_class&quot;, &quot;up_down_outlier&quot;) ]
+rp &lt;- rp[!duplicated(rp), ]
+
+
+###################################################
+
+# As soon as it is not allowed to share genetic data
+# Shared data doesn&#39;t allow to reproduce original figure 
+# Code below was used to produse figure on the full datset 
+
+
+# Read variant annotation 
+
+rp &lt;- rp[ , c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;,  &quot;outlier_class&quot;, &quot;up_down_outlier&quot;) ]
+rp &lt;- rp[!duplicated(rp), ]
+
+vt &lt;- fread(&quot;../rare_variants_pb.tsv&quot;)
+rp &lt;- rp[SAMPLE_ID %in% unique(vt$SAMPLE_ID) ]
+vt &lt;- vt[SAMPLE_ID %in% unique(rp$SAMPLE_ID) ]
+vt &lt;- vt[ geneID %in% unique(rp$geneID)]
+
+rp &lt;- merge(vt, rp, by = c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;), all.y = T )
+rp[is.na(var_type), var_type := &quot;No rare variant&quot;]
+
+
+
+
+
+
+
+
+###################################################
+
+
+
+paste(&quot;Number of samples with WES export and RNA-seq avaliable:&quot;, uniqueN(rp$SAMPLE_ID))</code></pre>
+<pre><code>## [1] &quot;Number of samples with WES export and RNA-seq avaliable: 136&quot;</code></pre>
+<pre class="r"><code>rp[ , Ncases_per_gene := .N, by = geneID]
+paste(&quot;Minimal number of individuals per gene:&quot; , min(rp$Ncases_per_gene))</code></pre>
+<pre><code>## [1] &quot;Minimal number of individuals per gene: 63&quot;</code></pre>
+<pre class="r"><code># Subset necessary columns
+rp &lt;- rp[ , c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;, &quot;var_type&quot;, &quot;outlier_class&quot;, &quot;up_down_outlier&quot;) ]
+rp &lt;- rp[!duplicated(rp), ]
+
+
+
+
+####################</code></pre>
+<div id="outlier-class" class="section level1">
+<h1>Outlier class</h1>
+<pre class="r"><code>os &lt;- rp[, .N, by = outlier_class]</code></pre>
+<div id="number-of-outliers-per-class" class="section level3">
+<h3>Number of outliers per class</h3>
+<pre class="r"><code>DT::datatable(os, caption = &quot;Outlier counts&quot;,   escape = F)</code></pre>
+<div id="htmlwidget-8ce5ff9ea151010e91a9" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8ce5ff9ea151010e91a9">{"x":{"filter":"none","caption":"<caption>Outlier counts<\/caption>","data":[["1","2","3","4"],["non_outlier","RNA-only","protein-only","RNA-and-protein"],[211528,240,1419,163]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>outlier_class<\/th>\n      <th>N<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># All outliers
+enr &lt;- reshape2::dcast(data = rp, geneID +  SAMPLE_ID +  var_type ~ outlier_class , 
+                       fun.aggregate = cat.agg)
+
+enrichments &lt;- data.frame()
+for (outl in unique(rp$outlier_class)){
+  tem_df &lt;- enr
+  setnames(tem_df, outl, &quot;outliers&quot;)
+  tem_df &lt;- tem_df[, c(&quot;geneID&quot;, &quot;SAMPLE_ID&quot;, &quot;outliers&quot;, &quot;var_type&quot; )]
+  feat &lt;- unique(tem_df$var_type)
+  tem_df &lt;- dcast(data = tem_df, geneID + SAMPLE_ID  + outliers ~ var_type, fun.aggregate = cat.agg) 
+  enrichment &lt;- enrich(tem_df, outlier= &quot;outliers&quot; ,features= feat)
+  enrichment$ci_left &lt;- enrichment$Estim - 1.96 * enrichment$Std
+  enrichment$ci_right &lt;- enrichment$Estim + 1.96 * enrichment$Std
+  enrichment$outlier_class &lt;- rep(outl, nrow(enrichment))
+  enrichments &lt;- rbind(enrichments, enrichment)
+  enrichment &lt;- NULL
+  enr$outliers &lt;- NULL
+}
+
+enrichments &lt;- as.data.table(enrichments)
+enrichments[, significant := 1 ]
+enrichments[enrichments$Pval &gt;= 0.05 , significant := 0.9 ]
+nodelist &lt;- levels(enrichments$Cat)
+enrichments$Cat &lt;- factor(enrichments$Cat, levels= c(&quot;No rare variant&quot;, &quot;Rare variant&quot;, &quot;Potential biallelic\n rare variant&quot;))</code></pre>
+</div>
+<div id="outlier-class-1" class="section level2">
+<h2>Outlier class</h2>
+<pre class="r"><code>ggplot(data = enrichments, aes(x = Cat, y = Estim)) +
+  geom_pointrange(aes(x = Cat, ymin = ci_left, ymax = ci_right, colour = outlier_class), position = position_dodge(width = 1)) +
+  geom_hline(yintercept = 0) +
+  geom_vline(color = &quot;gray80&quot;, linetype = &quot;dashed&quot;, xintercept = which(nodelist==&quot;No rare variant&quot;)-0.5) +
+  geom_vline(color = &quot;gray80&quot;, linetype = &quot;dashed&quot;, xintercept = which(nodelist==&quot;Rare variant&quot;)-0.5) +
+  theme_bw() + 
+  xlab(&#39;&#39;) + 
+  ylab(&#39;Log odds ratio&#39;)  + 
+  scale_alpha(guide = &#39;none&#39;)+
+  scale_color_manual(values = outlier_colors)+ 
+  coord_flip(ylim = c(min(enrichments[enrichments$Pval &lt;0.05, &#39;ci_left&#39; ] , na.rm = T),  max(enrichments[enrichments$Pval &lt;0.05, &quot;ci_right&quot; ], na.rm = T))) </code></pre>
+<p><img src="Scripts_MultiOmics_Variant_analysis_enrichment_analysis_files/figure-html/unnamed-chunk-4-1.png" width="576" /></p>
+<pre class="r"><code># write_tsv(enrichments, &quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/variant_tables/enrichment_rare_biallelic.tsv&quot;)
+write_tsv(enrichments,  snakemake@output$enrichment_rare_pb)
+
+
+#####################################</code></pre>
+</div>
+</div>
+<div id="up--down--regulation-outliers" class="section level1">
+<h1>Up- down- regulation outliers</h1>
+<pre class="r"><code>os &lt;- rp[, .N, by = up_down_outlier]</code></pre>
+<div id="number-of-outliers-per-class-1" class="section level3">
+<h3>Number of outliers per class</h3>
+<pre class="r"><code>DT::datatable(os, caption = &quot;Outlier counts&quot;,   escape = F)</code></pre>
+<div id="htmlwidget-fefeb3e21ae7d77b7ab4" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fefeb3e21ae7d77b7ab4">{"x":{"filter":"none","caption":"<caption>Outlier counts<\/caption>","data":[["1","2","3","4","5","6","7","8","9"],["non_outlier","RNA_underexpression","Protein_underexpression","RNA_Protein_underexpression","RNA_over_Protein_under","RNA_overexpression","RNA_Protein_overexpression","Protein_overexpression","RNA_under_Protein_over"],[211528,166,904,144,2,74,16,515,1]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>up_down_outlier<\/th>\n      <th>N<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code>enr &lt;- reshape2::dcast(data = rp, geneID +  SAMPLE_ID +  var_type ~ up_down_outlier , 
+                       fun.aggregate = cat.agg)
+
+enrichments &lt;- data.frame()
+for (outl in unique(rp$up_down_outlier)){
+  tem_df &lt;- enr
+  setnames(tem_df, outl, &quot;outliers&quot;)
+  tem_df &lt;- tem_df[, c(&quot;geneID&quot;, &quot;SAMPLE_ID&quot;, &quot;outliers&quot;, &quot;var_type&quot; )]
+  feat &lt;- unique(tem_df$var_type)
+  tem_df &lt;- dcast(data = tem_df, geneID + SAMPLE_ID  + outliers ~ var_type, fun.aggregate = cat.agg) 
+  enrichment &lt;- enrich(tem_df, outlier= &quot;outliers&quot; ,features= feat)
+  enrichment$ci_left &lt;- enrichment$Estim - 1.96 * enrichment$Std
+  enrichment$ci_right &lt;- enrichment$Estim + 1.96 * enrichment$Std
+  enrichment$outlier_class &lt;- rep(outl, nrow(enrichment))
+  enrichments &lt;- rbind(enrichments, enrichment)
+  enr$outliers &lt;- NULL
+}
+
+enrichments &lt;- as.data.table(enrichments)
+enrichments[, significant := 1 ]
+enrichments[enrichments$Pval &gt;= 0.05 , significant := 0.9 ]
+nodelist &lt;- levels(enrichments$Cat)
+enrichments$Cat &lt;- factor(enrichments$Cat, levels= c(&quot;No rare variant&quot;, &quot;Rare variant&quot;, &quot;Potential biallelic\n rare variant&quot;))</code></pre>
+</div>
+<div id="outlier-class-2" class="section level2">
+<h2>Outlier class</h2>
+<pre class="r"><code>ggplot(data = enrichments[outlier_class %in% c(&quot;RNA_underexpression&quot;, &quot;Protein_underexpression&quot;, &quot;RNA_Protein_underexpression&quot;, &quot;non_outlier&quot;)], aes(x = Cat, y = Estim)) +
+  geom_pointrange(aes(x = Cat, ymin = ci_left, ymax = ci_right, colour = outlier_class, alpha = significant), position = position_dodge(width = 1)) +
+  geom_hline(yintercept = 0) +
+  geom_vline(color = &quot;gray80&quot;, linetype = &quot;dashed&quot;, xintercept = which(nodelist==&quot;No rare variant&quot;)-0.5) +
+  geom_vline(color = &quot;gray80&quot;, linetype = &quot;dashed&quot;, xintercept = which(nodelist==&quot;Rare variant&quot;)-0.5) +
+  theme_bw() + 
+  xlab(&#39;&#39;) + 
+  ylab(&#39;Log odds ratio&#39;)  + 
+  scale_alpha(guide = &#39;none&#39;)+
+  scale_color_manual(values = outlier_colors)+ 
+  coord_flip(ylim = c(min(enrichments[enrichments$Pval &lt;0.05, &#39;ci_left&#39; ] , na.rm = T),  max(enrichments[enrichments$Pval &lt;0.05, &quot;ci_right&quot; ], na.rm = T))) </code></pre>
+<p><img src="Scripts_MultiOmics_Variant_analysis_enrichment_analysis_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
+</div>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IEVucmljaG1lbnQgb2YgcmFyZSB2YXJpYW50cyBpbiBvdXRsaWVycyAgCiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDoKIycgIC0gcGF0aWVudF9vbWljczogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9pbnRlZ3JhdGlvbi9wYXRpZW50X29taWNzX2Z1bGwuUkRTImAnCiMnICBvdXRwdXQ6CiMnICAtIGVucmljaG1lbnRfcmFyZV9wYjogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi92YXJpYW50X3RhYmxlcy9lbnJpY2htZW50X3JhcmVfYmlhbGxlbGljLnRzdiJgJwojJyBvdXRwdXQ6IAojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgojIExvYWQgcGxvdHRpbmcgY29uZmlnIGFuZCBmdW5jdGlvbnMKc291cmNlKCdzcmMvY29uZmlnLlInKQpzb3VyY2UoInNyYy9mdW5jdGlvbnMvSW50ZWdyYXRpb24vaW50ZWdyYXRlX2Fubm90YXRlX29taWNzLlIiKQpzb3VyY2UoInNyYy9mdW5jdGlvbnMvdmFyaWFudF9lbnJpY2htZW50LlIiKQoKCiMgUmVhZCBpbnRlZ3JhdGVkIG9taWNzIGZpbGUgCiMgcnAgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3NfZnVsbC5SRFMiKSAlPiUgYXMuZGF0YS50YWJsZSgpCnJwIDwtIHJlYWRSRFMoc25ha2VtYWtlQGlucHV0JHBhdGllbnRfb21pY3MpICU+JSBhcy5kYXRhLnRhYmxlKCkKCiMgU3Vic2V0IGNhc2VzIHdpdGggV0VTIGFuZCBSTkEtc2VxIGRhdGEgYXZhbGlhYmxlIApycCA8LSBycFtXRVNfYXZhbGlhYmxlID09IFQgJiBSTkFfc2VxX2F2YWxpYWJsZSA9PSBUXQoKCiNLZWVwIG9ubHkgZ2VuZXMsIHdpdGggYm90aCBSTkEgYW5kIHByb3RlaW4gbWVhc3VyZWQgCnJwIDwtIHJwWyBnZW5lX2RldGVjdGVkID09ICJSTkEgYW5kIHByb3RlaW4gZGV0ZWN0ZWQiXQoKIyBGaWx0ZXIgZm9yIHRoZSBnZW5lcywgZGV0ZWN0ZWQgYXMgb3V0bGllcnMgYXQgbGVhc3Qgb25jZQpvdXRsaWVycyA8LSB1bmlxdWUocnBbb3V0bGllcl9jbGFzcyAhPSAibm9uX291dGxpZXIiXSRnZW5lSUQpCnJwIDwtIHJwW2dlbmVJRCAlaW4lIG91dGxpZXJzXQoKIyBBZGQgdXAtIGRvd24tIG91dGxpZXIgY2xhc3MKcnAgPC0gYWRkX3VwX2Rvd25fY2xhc3MocnAsIAogICAgICAgICAgICAgICAgICAgICAgICBQYWRqX3RocmVzaG9sZCA9ICBQQURKX1RIUkVTSE9MRCwKICAgICAgICAgICAgICAgICAgICAgICAgWnNjb3JlX3RocmVzaG9sZCA9IFpTQ09SRV9USFJFU0hPTEQsIAogICAgICAgICAgICAgICAgICAgICAgICBsMkZDX3RocmVzaG9sZCA9IExPRzJGQ19USFJFU0hPTEQpCgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMgU3Vic2V0IG5lY2Vzc2FyeSBjb2x1bW5zCiMgQWRkIHZhcmlhbnQgdHlwZSBhbm5vdGF0aW9uCnJwWyAsIHZhcl90eXBlIDo9ICJObyByYXJlIHZhcmlhbnQiXSAKcnBbIHJhcmUgPT0gVCAsIHZhcl90eXBlIDo9ICJSYXJlIHZhcmlhbnQiXSAKcnBbIHBvdGVudGlhbF9iaWFsbGVsaWMgPT0gVCAsIHZhcl90eXBlIDo9ICJQb3RlbnRpYWwgYmlhbGxlbGljXG4gcmFyZSB2YXJpYW50Il0gCgoKIyBTdWJzZXQgbmVjZXNzYXJ5IGNvbHVtbnMKcnAgPC0gcnBbICwgYygiU0FNUExFX0lEIiwgImdlbmVJRCIsICJ2YXJfdHlwZSIsICJvdXRsaWVyX2NsYXNzIiwgInVwX2Rvd25fb3V0bGllciIpIF0KcnAgPC0gcnBbIWR1cGxpY2F0ZWQocnApLCBdCgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgojIEFzIHNvb24gYXMgaXQgaXMgbm90IGFsbG93ZWQgdG8gc2hhcmUgZ2VuZXRpYyBkYXRhCiMgU2hhcmVkIGRhdGEgZG9lc24ndCBhbGxvdyB0byByZXByb2R1Y2Ugb3JpZ2luYWwgZmlndXJlIAojIENvZGUgYmVsb3cgd2FzIHVzZWQgdG8gcHJvZHVzZSBmaWd1cmUgb24gdGhlIGZ1bGwgZGF0c2V0IAoKCiMgUmVhZCB2YXJpYW50IGFubm90YXRpb24gCgpycCA8LSBycFsgLCBjKCJTQU1QTEVfSUQiLCAiZ2VuZUlEIiwgICJvdXRsaWVyX2NsYXNzIiwgInVwX2Rvd25fb3V0bGllciIpIF0KcnAgPC0gcnBbIWR1cGxpY2F0ZWQocnApLCBdCgp2dCA8LSBmcmVhZCgiLi4vcmFyZV92YXJpYW50c19wYi50c3YiKQpycCA8LSBycFtTQU1QTEVfSUQgJWluJSB1bmlxdWUodnQkU0FNUExFX0lEKSBdCnZ0IDwtIHZ0W1NBTVBMRV9JRCAlaW4lIHVuaXF1ZShycCRTQU1QTEVfSUQpIF0KdnQgPC0gdnRbIGdlbmVJRCAlaW4lIHVuaXF1ZShycCRnZW5lSUQpXQoKcnAgPC0gbWVyZ2UodnQsIHJwLCBieSA9IGMoIlNBTVBMRV9JRCIsICJnZW5lSUQiKSwgYWxsLnkgPSBUICkKcnBbaXMubmEodmFyX3R5cGUpLCB2YXJfdHlwZSA6PSAiTm8gcmFyZSB2YXJpYW50Il0KCgoKCgoKCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgoKcGFzdGUoIk51bWJlciBvZiBzYW1wbGVzIHdpdGggV0VTIGV4cG9ydCBhbmQgUk5BLXNlcSBhdmFsaWFibGU6IiwgdW5pcXVlTihycCRTQU1QTEVfSUQpKQpycFsgLCBOY2FzZXNfcGVyX2dlbmUgOj0gLk4sIGJ5ID0gZ2VuZUlEXQpwYXN0ZSgiTWluaW1hbCBudW1iZXIgb2YgaW5kaXZpZHVhbHMgcGVyIGdlbmU6IiAsIG1pbihycCROY2FzZXNfcGVyX2dlbmUpKQojIFN1YnNldCBuZWNlc3NhcnkgY29sdW1ucwpycCA8LSBycFsgLCBjKCJTQU1QTEVfSUQiLCAiZ2VuZUlEIiwgInZhcl90eXBlIiwgIm91dGxpZXJfY2xhc3MiLCAidXBfZG93bl9vdXRsaWVyIikgXQpycCA8LSBycFshZHVwbGljYXRlZChycCksIF0KCgoKCiMjIyMjIyMjIyMjIyMjIyMjIyMjCgojJyAjIE91dGxpZXIgY2xhc3MKb3MgPC0gcnBbLCAuTiwgYnkgPSBvdXRsaWVyX2NsYXNzXQoKIycgIyMjIE51bWJlciBvZiBvdXRsaWVycyBwZXIgY2xhc3MKRFQ6OmRhdGF0YWJsZShvcywgY2FwdGlvbiA9ICJPdXRsaWVyIGNvdW50cyIsICAgZXNjYXBlID0gRikKCgojIEFsbCBvdXRsaWVycwplbnIgPC0gcmVzaGFwZTI6OmRjYXN0KGRhdGEgPSBycCwgZ2VuZUlEICsgIFNBTVBMRV9JRCArICB2YXJfdHlwZSB+IG91dGxpZXJfY2xhc3MgLCAKICAgICAgICAgICAgICAgICAgICAgICBmdW4uYWdncmVnYXRlID0gY2F0LmFnZykKCmVucmljaG1lbnRzIDwtIGRhdGEuZnJhbWUoKQpmb3IgKG91dGwgaW4gdW5pcXVlKHJwJG91dGxpZXJfY2xhc3MpKXsKICB0ZW1fZGYgPC0gZW5yCiAgc2V0bmFtZXModGVtX2RmLCBvdXRsLCAib3V0bGllcnMiKQogIHRlbV9kZiA8LSB0ZW1fZGZbLCBjKCJnZW5lSUQiLCAiU0FNUExFX0lEIiwgIm91dGxpZXJzIiwgInZhcl90eXBlIiApXQogIGZlYXQgPC0gdW5pcXVlKHRlbV9kZiR2YXJfdHlwZSkKICB0ZW1fZGYgPC0gZGNhc3QoZGF0YSA9IHRlbV9kZiwgZ2VuZUlEICsgU0FNUExFX0lEICArIG91dGxpZXJzIH4gdmFyX3R5cGUsIGZ1bi5hZ2dyZWdhdGUgPSBjYXQuYWdnKSAKICBlbnJpY2htZW50IDwtIGVucmljaCh0ZW1fZGYsIG91dGxpZXI9ICJvdXRsaWVycyIgLGZlYXR1cmVzPSBmZWF0KQogIGVucmljaG1lbnQkY2lfbGVmdCA8LSBlbnJpY2htZW50JEVzdGltIC0gMS45NiAqIGVucmljaG1lbnQkU3RkCiAgZW5yaWNobWVudCRjaV9yaWdodCA8LSBlbnJpY2htZW50JEVzdGltICsgMS45NiAqIGVucmljaG1lbnQkU3RkCiAgZW5yaWNobWVudCRvdXRsaWVyX2NsYXNzIDwtIHJlcChvdXRsLCBucm93KGVucmljaG1lbnQpKQogIGVucmljaG1lbnRzIDwtIHJiaW5kKGVucmljaG1lbnRzLCBlbnJpY2htZW50KQogIGVucmljaG1lbnQgPC0gTlVMTAogIGVuciRvdXRsaWVycyA8LSBOVUxMCn0KCmVucmljaG1lbnRzIDwtIGFzLmRhdGEudGFibGUoZW5yaWNobWVudHMpCmVucmljaG1lbnRzWywgc2lnbmlmaWNhbnQgOj0gMSBdCmVucmljaG1lbnRzW2VucmljaG1lbnRzJFB2YWwgPj0gMC4wNSAsIHNpZ25pZmljYW50IDo9IDAuOSBdCm5vZGVsaXN0IDwtIGxldmVscyhlbnJpY2htZW50cyRDYXQpCmVucmljaG1lbnRzJENhdCA8LSBmYWN0b3IoZW5yaWNobWVudHMkQ2F0LCBsZXZlbHM9IGMoIk5vIHJhcmUgdmFyaWFudCIsICJSYXJlIHZhcmlhbnQiLCAiUG90ZW50aWFsIGJpYWxsZWxpY1xuIHJhcmUgdmFyaWFudCIpKQoKCiMnICMjIE91dGxpZXIgY2xhc3MKIysgZmlnLndpZHRoPTYsIGZpZy5oZWlnaHQ9OQpnZ3Bsb3QoZGF0YSA9IGVucmljaG1lbnRzLCBhZXMoeCA9IENhdCwgeSA9IEVzdGltKSkgKwogIGdlb21fcG9pbnRyYW5nZShhZXMoeCA9IENhdCwgeW1pbiA9IGNpX2xlZnQsIHltYXggPSBjaV9yaWdodCwgY29sb3VyID0gb3V0bGllcl9jbGFzcyksIHBvc2l0aW9uID0gcG9zaXRpb25fZG9kZ2Uod2lkdGggPSAxKSkgKwogIGdlb21faGxpbmUoeWludGVyY2VwdCA9IDApICsKICBnZW9tX3ZsaW5lKGNvbG9yID0gImdyYXk4MCIsIGxpbmV0eXBlID0gImRhc2hlZCIsIHhpbnRlcmNlcHQgPSB3aGljaChub2RlbGlzdD09Ik5vIHJhcmUgdmFyaWFudCIpLTAuNSkgKwogIGdlb21fdmxpbmUoY29sb3IgPSAiZ3JheTgwIiwgbGluZXR5cGUgPSAiZGFzaGVkIiwgeGludGVyY2VwdCA9IHdoaWNoKG5vZGVsaXN0PT0iUmFyZSB2YXJpYW50IiktMC41KSArCiAgdGhlbWVfYncoKSArIAogIHhsYWIoJycpICsgCiAgeWxhYignTG9nIG9kZHMgcmF0aW8nKSAgKyAKICBzY2FsZV9hbHBoYShndWlkZSA9ICdub25lJykrCiAgc2NhbGVfY29sb3JfbWFudWFsKHZhbHVlcyA9IG91dGxpZXJfY29sb3JzKSsgCiAgY29vcmRfZmxpcCh5bGltID0gYyhtaW4oZW5yaWNobWVudHNbZW5yaWNobWVudHMkUHZhbCA8MC4wNSwgJ2NpX2xlZnQnIF0gLCBuYS5ybSA9IFQpLCAgbWF4KGVucmljaG1lbnRzW2VucmljaG1lbnRzJFB2YWwgPDAuMDUsICJjaV9yaWdodCIgXSwgbmEucm0gPSBUKSkpIAoKCiMgd3JpdGVfdHN2KGVucmljaG1lbnRzLCAiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL3ZhcmlhbnRfdGFibGVzL2VucmljaG1lbnRfcmFyZV9iaWFsbGVsaWMudHN2IikKd3JpdGVfdHN2KGVucmljaG1lbnRzLCAgc25ha2VtYWtlQG91dHB1dCRlbnJpY2htZW50X3JhcmVfcGIpCgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojJyAjIFVwLSBkb3duLSByZWd1bGF0aW9uIG91dGxpZXJzCm9zIDwtIHJwWywgLk4sIGJ5ID0gdXBfZG93bl9vdXRsaWVyXQoKCiMnICMjIyBOdW1iZXIgb2Ygb3V0bGllcnMgcGVyIGNsYXNzCkRUOjpkYXRhdGFibGUob3MsIGNhcHRpb24gPSAiT3V0bGllciBjb3VudHMiLCAgIGVzY2FwZSA9IEYpCgplbnIgPC0gcmVzaGFwZTI6OmRjYXN0KGRhdGEgPSBycCwgZ2VuZUlEICsgIFNBTVBMRV9JRCArICB2YXJfdHlwZSB+IHVwX2Rvd25fb3V0bGllciAsIAogICAgICAgICAgICAgICAgICAgICAgIGZ1bi5hZ2dyZWdhdGUgPSBjYXQuYWdnKQoKZW5yaWNobWVudHMgPC0gZGF0YS5mcmFtZSgpCmZvciAob3V0bCBpbiB1bmlxdWUocnAkdXBfZG93bl9vdXRsaWVyKSl7CiAgdGVtX2RmIDwtIGVucgogIHNldG5hbWVzKHRlbV9kZiwgb3V0bCwgIm91dGxpZXJzIikKICB0ZW1fZGYgPC0gdGVtX2RmWywgYygiZ2VuZUlEIiwgIlNBTVBMRV9JRCIsICJvdXRsaWVycyIsICJ2YXJfdHlwZSIgKV0KICBmZWF0IDwtIHVuaXF1ZSh0ZW1fZGYkdmFyX3R5cGUpCiAgdGVtX2RmIDwtIGRjYXN0KGRhdGEgPSB0ZW1fZGYsIGdlbmVJRCArIFNBTVBMRV9JRCAgKyBvdXRsaWVycyB+IHZhcl90eXBlLCBmdW4uYWdncmVnYXRlID0gY2F0LmFnZykgCiAgZW5yaWNobWVudCA8LSBlbnJpY2godGVtX2RmLCBvdXRsaWVyPSAib3V0bGllcnMiICxmZWF0dXJlcz0gZmVhdCkKICBlbnJpY2htZW50JGNpX2xlZnQgPC0gZW5yaWNobWVudCRFc3RpbSAtIDEuOTYgKiBlbnJpY2htZW50JFN0ZAogIGVucmljaG1lbnQkY2lfcmlnaHQgPC0gZW5yaWNobWVudCRFc3RpbSArIDEuOTYgKiBlbnJpY2htZW50JFN0ZAogIGVucmljaG1lbnQkb3V0bGllcl9jbGFzcyA8LSByZXAob3V0bCwgbnJvdyhlbnJpY2htZW50KSkKICBlbnJpY2htZW50cyA8LSByYmluZChlbnJpY2htZW50cywgZW5yaWNobWVudCkKICBlbnIkb3V0bGllcnMgPC0gTlVMTAp9CgplbnJpY2htZW50cyA8LSBhcy5kYXRhLnRhYmxlKGVucmljaG1lbnRzKQplbnJpY2htZW50c1ssIHNpZ25pZmljYW50IDo9IDEgXQplbnJpY2htZW50c1tlbnJpY2htZW50cyRQdmFsID49IDAuMDUgLCBzaWduaWZpY2FudCA6PSAwLjkgXQpub2RlbGlzdCA8LSBsZXZlbHMoZW5yaWNobWVudHMkQ2F0KQplbnJpY2htZW50cyRDYXQgPC0gZmFjdG9yKGVucmljaG1lbnRzJENhdCwgbGV2ZWxzPSBjKCJObyByYXJlIHZhcmlhbnQiLCAiUmFyZSB2YXJpYW50IiwgIlBvdGVudGlhbCBiaWFsbGVsaWNcbiByYXJlIHZhcmlhbnQiKSkKCgojJyAjIyBPdXRsaWVyIGNsYXNzCiMrIGZpZy53aWR0aD02LCBmaWcuaGVpZ2h0PTkKZ2dwbG90KGRhdGEgPSBlbnJpY2htZW50c1tvdXRsaWVyX2NsYXNzICVpbiUgYygiUk5BX3VuZGVyZXhwcmVzc2lvbiIsICJQcm90ZWluX3VuZGVyZXhwcmVzc2lvbiIsICJSTkFfUHJvdGVpbl91bmRlcmV4cHJlc3Npb24iLCAibm9uX291dGxpZXIiKV0sIGFlcyh4ID0gQ2F0LCB5ID0gRXN0aW0pKSArCiAgZ2VvbV9wb2ludHJhbmdlKGFlcyh4ID0gQ2F0LCB5bWluID0gY2lfbGVmdCwgeW1heCA9IGNpX3JpZ2h0LCBjb2xvdXIgPSBvdXRsaWVyX2NsYXNzLCBhbHBoYSA9IHNpZ25pZmljYW50KSwgcG9zaXRpb24gPSBwb3NpdGlvbl9kb2RnZSh3aWR0aCA9IDEpKSArCiAgZ2VvbV9obGluZSh5aW50ZXJjZXB0ID0gMCkgKwogIGdlb21fdmxpbmUoY29sb3IgPSAiZ3JheTgwIiwgbGluZXR5cGUgPSAiZGFzaGVkIiwgeGludGVyY2VwdCA9IHdoaWNoKG5vZGVsaXN0PT0iTm8gcmFyZSB2YXJpYW50IiktMC41KSArCiAgZ2VvbV92bGluZShjb2xvciA9ICJncmF5ODAiLCBsaW5ldHlwZSA9ICJkYXNoZWQiLCB4aW50ZXJjZXB0ID0gd2hpY2gobm9kZWxpc3Q9PSJSYXJlIHZhcmlhbnQiKS0wLjUpICsKICB0aGVtZV9idygpICsgCiAgeGxhYignJykgKyAKICB5bGFiKCdMb2cgb2RkcyByYXRpbycpICArIAogIHNjYWxlX2FscGhhKGd1aWRlID0gJ25vbmUnKSsKICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzID0gb3V0bGllcl9jb2xvcnMpKyAKICBjb29yZF9mbGlwKHlsaW0gPSBjKG1pbihlbnJpY2htZW50c1tlbnJpY2htZW50cyRQdmFsIDwwLjA1LCAnY2lfbGVmdCcgXSAsIG5hLnJtID0gVCksICBtYXgoZW5yaWNobWVudHNbZW5yaWNobWVudHMkUHZhbCA8MC4wNSwgImNpX3JpZ2h0IiBdLCBuYS5ybSA9IFQpKSkgCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("enrichment_analysis.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

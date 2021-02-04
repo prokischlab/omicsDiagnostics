@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Michaela Mueller, vyepez, smirnovd" />
+
+<meta name="date" content="2021-02-01" />
+
+<title>OUTRIDER pipeline</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">OUTRIDER pipeline</h1>
+<h4 class="author">Michaela Mueller, vyepez, smirnovd</h4>
+<h4 class="date">2021-02-01</h4>
+
+</div>
+
+
+<pre class="r"><code>suppressPackageStartupMessages({
+    library(OUTRIDER)
+    library(SummarizedExperiment)
+    library(ggplot2)
+    library(data.table)
+    library(dplyr)
+    library(magrittr)
+    library(readr)
+    library(tibble)
+})</code></pre>
+<div id="part1-filter-counts" class="section level1">
+<h1>Part1: Filter counts</h1>
+<pre class="r"><code>#########################################################
+fpkmCutoff &lt;-  1
+
+
+# Get counts data
+counts &lt;- fread(snakemake@input$counts) %&gt;%  as.data.frame()
+# counts &lt;-  fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/raw_counts.tsv&#39;) %&gt;%  as.data.frame()
+rownames(counts) &lt;- counts$V1
+counts$V1 &lt;- NULL
+
+
+
+# Add sample annotation for OUTRIER object colData
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sa)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+sa &lt;- sa[ SAMPLE_ID %in% colnames(counts) , .(SAMPLE_ID, gender)]
+sa[, sampleID := SAMPLE_ID]
+sa$SAMPLE_ID &lt;- NULL
+
+
+# Add gene annotation rowData
+# gene_annot &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv&#39;)
+gene_annot &lt;- fread(snakemake@input$gencode_annotation)
+gene_annot_data &lt;- data.table(gene_id_unique = rownames(counts))
+gene_annot_data &lt;- left_join(gene_annot_data, gene_annot[,.(gene_id_unique, gene_name_unique, gene_type, gene_status)], by = &quot;gene_id_unique&quot;)
+
+# Create Outrider dataset obj
+ods &lt;- OutriderDataSet(countData=counts, colData = sa, rowData = gene_annot_data)
+
+
+# filter not expressed genes
+gencode_txdb &lt;- loadDb(snakemake@input$txdb)
+# gencode_txdb &lt;- loadDb(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/datasets/txdb.db&#39;)
+seqlevelsStyle(gencode_txdb) &lt;- &quot;UCSC&quot;
+gencode_txdb &lt;- keepStandardChromosomes(gencode_txdb)
+
+ods &lt;- filterExpression(ods, gtfFile=gencode_txdb, filter=FALSE, fpkmCutoff=fpkmCutoff)
+g &lt;- plotFPKM(ods) + theme_bw(base_size = 14)</code></pre>
+<div id="count-filtering-results-fpkm-cutoff-1" class="section level2">
+<h2>Count filtering results, fpkm cutoff = 1</h2>
+<pre class="r"><code>g</code></pre>
+<p><img src="Scripts_MultiOmics_RNA_seq_Aberrant_Expression_detect_outliers_outrider_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>rowData(ods)$counted1sample = rowSums(assay(ods)) &gt; 0
+
+
+
+# Save the ods object before filtering, so as to preserve the original number of genes
+saveRDS(ods, snakemake@output$ods_unfiltered)</code></pre>
+</div>
+</div>
+<div id="part-2-run-outrider-pipeline" class="section level1">
+<h1>Part 2: RUN OUTRIDER pipeline</h1>
+<pre class="r"><code>#########################################################
+# threads &lt;-  30
+
+ods &lt;- ods[mcols(ods)$passedFilter,] 
+ods &lt;- estimateSizeFactors(ods)
+
+a = 5 
+b = min(ncol(ods), nrow(ods)) / 3   # N/3
+Nsteps = min(20, ncol(ods)/3, nrow(ods)/3)   # Do either 20 steps or N
+pars_q &lt;- round(exp(seq(log(a),log(b),length.out = Nsteps))) %&gt;% unique </code></pre>
+<div id="before-outrider" class="section level2">
+<h2>Before OUTRIDER</h2>
+<pre class="r"><code>plotCountCorHeatmap(ods, normalize=F)</code></pre>
+<p><img src="Scripts_MultiOmics_RNA_seq_Aberrant_Expression_detect_outliers_outrider_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>ods &lt;- findEncodingDim(ods, lnorm = T, BPPARAM = MulticoreParam(snakemake@threads), params = pars_q)
+ods &lt;- OUTRIDER(ods, BPPARAM = MulticoreParam(snakemake@threads))</code></pre>
+<pre><code>## [1] &quot;Mon Feb  1 23:17:23 2021: Initial PCA loss: 6.60078870206769&quot;
+## [1] &quot;Mon Feb  1 23:19:29 2021: Iteration: 1 loss: 5.83297821473702&quot;
+## [1] &quot;Mon Feb  1 23:21:12 2021: Iteration: 2 loss: 5.81832823687287&quot;
+## [1] &quot;Mon Feb  1 23:22:50 2021: Iteration: 3 loss: 5.81146452237859&quot;
+## [1] &quot;Mon Feb  1 23:24:15 2021: Iteration: 4 loss: 5.80719344987439&quot;
+## [1] &quot;Mon Feb  1 23:25:27 2021: Iteration: 5 loss: 5.8044622136699&quot;
+## [1] &quot;Mon Feb  1 23:26:38 2021: Iteration: 6 loss: 5.80247503253959&quot;
+## [1] &quot;Mon Feb  1 23:27:10 2021: Iteration: 7 loss: 5.80188189240026&quot;
+## [1] &quot;Mon Feb  1 23:27:31 2021: Iteration: 8 loss: 5.80165358031383&quot;
+## [1] &quot;Mon Feb  1 23:28:18 2021: Iteration: 9 loss: 5.80068130721505&quot;
+## [1] &quot;Mon Feb  1 23:28:43 2021: Iteration: 10 loss: 5.80042677860801&quot;
+## [1] &quot;Mon Feb  1 23:29:31 2021: Iteration: 11 loss: 5.79977086132425&quot;
+## [1] &quot;Mon Feb  1 23:29:49 2021: Iteration: 12 loss: 5.79975585659646&quot;
+## [1] &quot;Mon Feb  1 23:30:05 2021: Iteration: 13 loss: 5.79974488480115&quot;
+## [1] &quot;Mon Feb  1 23:30:26 2021: Iteration: 14 loss: 5.79960787642999&quot;
+## [1] &quot;Mon Feb  1 23:30:43 2021: Iteration: 15 loss: 5.79958925773818&quot;
+## Time difference of 12.96293 mins
+## [1] &quot;Mon Feb  1 23:30:43 2021: 15 Final nb-AE loss: 5.79958925773818&quot;</code></pre>
+<pre class="r"><code>message(&quot;outrider fitting finished&quot;)</code></pre>
+</div>
+<div id="after-outrider" class="section level2">
+<h2>After OUTRIDER</h2>
+<pre class="r"><code>plotCountCorHeatmap(ods, normalize=TRUE)</code></pre>
+<p><img src="Scripts_MultiOmics_RNA_seq_Aberrant_Expression_detect_outliers_outrider_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>row.names(ods) &lt;- rowData(ods)$gene_name_unique
+
+
+# Save  OUTRIDER OBJECT WITH RESULTS
+saveRDS(ods, snakemake@output$ods)
+
+# ods &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/ods.Rds&quot;)
+
+res &lt;- OUTRIDER::results(ods, all = TRUE)
+res[, FC := round(2^l2fc, 2)]
+res[, geneID := toupper(geneID)]
+
+
+setnames(res,
+         c(&quot;geneID&quot;, &quot;sampleID&quot;, &quot;pValue&quot;, &quot;padjust&quot;, &quot;normcounts&quot;,
+           &quot;zScore&quot;,   &quot;l2fc&quot;,    &quot;aberrant&quot;, &quot;FC&quot;), 
+         c(&quot;geneID&quot; , &quot;SAMPLE_ID&quot;, &quot;RNA_PVALUE&quot; , &quot;RNA_PADJ&quot;, &quot;normcounts&quot;,
+           &quot;RNA_ZSCORE&quot;,&quot;RNA_LOG2FC&quot;, &quot;RNA_outlier&quot;,  &quot;RNA_FC&quot; ) , skip_absent=TRUE) 
+res$geneID[grep(&#39;ZNF503_2&#39;, res$geneID)] &lt;- &#39;ZNF503&#39;  # This gene appears as ZNF503_2
+
+
+
+res &lt;- res[,c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;, &quot;normcounts&quot;, &quot;RNA_FC&quot;,&quot;RNA_LOG2FC&quot;, &quot;RNA_ZSCORE&quot;, &quot;RNA_PVALUE&quot; , &quot;RNA_PADJ&quot;,&quot;RNA_outlier&quot;)] 
+res &lt;- res[!duplicated(res), ]
+res &lt;- res[order(res$RNA_PADJ), ]
+res &lt;-res[!duplicated(res[, c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;)]),  ]
+
+res &lt;- res[!is.na(res$geneID), ]
+res &lt;- res[!is.na(res$SAMPLE_ID), ]
+
+
+saveRDS(res,  snakemake@output$results)
+# saveRDS(res, &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/OUTRIDER_results.rds&#39;)</code></pre>
+</div>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IE9VVFJJREVSIHBpcGVsaW5lCiMnIGF1dGhvcjogTWljaGFlbGEgTXVlbGxlciwgdnllcGV6LCBzbWlybm92ZAojJyB3YjoKIycgIGlucHV0OgojJyAgIC0gc2E6ICdgc20gY29uZmlnWyJBTk5PVEFUSU9OIl1gJwojJyAgIC0gZ2VuY29kZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siREFUQVNFVFMiXSArICIvZ2VuZV9hbm5vdGF0aW9uX3YyOS50c3YiYCcKIycgICAtIGNvdW50czogJ2BzbSBjb25maWdbIlJBV19STkEiXWAnCiMnICAgLSB0eGRiOiAnYHNtIGNvbmZpZ1siREFUQVNFVFMiXSArICIvdHhkYi5kYiJgJwojJyAgb3V0cHV0OgojJyAgIC0gb2RzX3VuZmlsdGVyZWQ6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvb3V0cmlkZXIvb2RzX3VuZmlsdGVyZWQuUmRzImAnCiMnICAgLSBvZHM6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvb3V0cmlkZXIvb2RzLlJkcyJgJwojJyAgIC0gcmVzdWx0czogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9vdXRyaWRlci9PVVRSSURFUl9yZXN1bHRzLnJkcyJgJwojJyAgdGhyZWFkczogMzAKIycgb3V0cHV0OiAKIycgICBodG1sX2RvY3VtZW50OgojJyAgICBjb2RlX2ZvbGRpbmc6IGhpZGUKIycgICAgY29kZV9kb3dubG9hZDogVFJVRQojJy0tLQoKCnN1cHByZXNzUGFja2FnZVN0YXJ0dXBNZXNzYWdlcyh7CiAgICBsaWJyYXJ5KE9VVFJJREVSKQogICAgbGlicmFyeShTdW1tYXJpemVkRXhwZXJpbWVudCkKICAgIGxpYnJhcnkoZ2dwbG90MikKICAgIGxpYnJhcnkoZGF0YS50YWJsZSkKICAgIGxpYnJhcnkoZHBseXIpCiAgICBsaWJyYXJ5KG1hZ3JpdHRyKQogICAgbGlicmFyeShyZWFkcikKICAgIGxpYnJhcnkodGliYmxlKQp9KQoKCiMnICMgUGFydDE6IEZpbHRlciBjb3VudHMKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCmZwa21DdXRvZmYgPC0gIDEKCgojIEdldCBjb3VudHMgZGF0YQpjb3VudHMgPC0gZnJlYWQoc25ha2VtYWtlQGlucHV0JGNvdW50cykgJT4lICBhcy5kYXRhLmZyYW1lKCkKIyBjb3VudHMgPC0gIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcmF3X2NvdW50cy50c3YnKSAlPiUgIGFzLmRhdGEuZnJhbWUoKQpyb3duYW1lcyhjb3VudHMpIDwtIGNvdW50cyRWMQpjb3VudHMkVjEgPC0gTlVMTAoKCgojIEFkZCBzYW1wbGUgYW5ub3RhdGlvbiBmb3IgT1VUUklFUiBvYmplY3QgY29sRGF0YQojIHNhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19hbm5vdGF0aW9uLnRzdicpCnNhIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRzYSkKc2EgPC0gc2FbVVNFX0ZPUl9QUk9URU9NSUNTX1BBUEVSID09IFRdCnNhIDwtIHNhWyBTQU1QTEVfSUQgJWluJSBjb2xuYW1lcyhjb3VudHMpICwgLihTQU1QTEVfSUQsIGdlbmRlcildCnNhWywgc2FtcGxlSUQgOj0gU0FNUExFX0lEXQpzYSRTQU1QTEVfSUQgPC0gTlVMTAoKCiMgQWRkIGdlbmUgYW5ub3RhdGlvbiByb3dEYXRhCiMgZ2VuZV9hbm5vdCA8LSBmcmVhZCgnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL2RhdGFzZXRzL2dlbmVfYW5ub3RhdGlvbl92MjkudHN2JykKZ2VuZV9hbm5vdCA8LSBmcmVhZChzbmFrZW1ha2VAaW5wdXQkZ2VuY29kZV9hbm5vdGF0aW9uKQpnZW5lX2Fubm90X2RhdGEgPC0gZGF0YS50YWJsZShnZW5lX2lkX3VuaXF1ZSA9IHJvd25hbWVzKGNvdW50cykpCmdlbmVfYW5ub3RfZGF0YSA8LSBsZWZ0X2pvaW4oZ2VuZV9hbm5vdF9kYXRhLCBnZW5lX2Fubm90WywuKGdlbmVfaWRfdW5pcXVlLCBnZW5lX25hbWVfdW5pcXVlLCBnZW5lX3R5cGUsIGdlbmVfc3RhdHVzKV0sIGJ5ID0gImdlbmVfaWRfdW5pcXVlIikKCiMgQ3JlYXRlIE91dHJpZGVyIGRhdGFzZXQgb2JqCm9kcyA8LSBPdXRyaWRlckRhdGFTZXQoY291bnREYXRhPWNvdW50cywgY29sRGF0YSA9IHNhLCByb3dEYXRhID0gZ2VuZV9hbm5vdF9kYXRhKQoKCiMgZmlsdGVyIG5vdCBleHByZXNzZWQgZ2VuZXMKZ2VuY29kZV90eGRiIDwtIGxvYWREYihzbmFrZW1ha2VAaW5wdXQkdHhkYikKIyBnZW5jb2RlX3R4ZGIgPC0gbG9hZERiKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vZGF0YXNldHMvdHhkYi5kYicpCnNlcWxldmVsc1N0eWxlKGdlbmNvZGVfdHhkYikgPC0gIlVDU0MiCmdlbmNvZGVfdHhkYiA8LSBrZWVwU3RhbmRhcmRDaHJvbW9zb21lcyhnZW5jb2RlX3R4ZGIpCgpvZHMgPC0gZmlsdGVyRXhwcmVzc2lvbihvZHMsIGd0ZkZpbGU9Z2VuY29kZV90eGRiLCBmaWx0ZXI9RkFMU0UsIGZwa21DdXRvZmY9ZnBrbUN1dG9mZikKZyA8LSBwbG90RlBLTShvZHMpICsgdGhlbWVfYncoYmFzZV9zaXplID0gMTQpCgojJyAjIyBDb3VudCBmaWx0ZXJpbmcgcmVzdWx0cywgZnBrbSBjdXRvZmYgPSAxCmcKCnJvd0RhdGEob2RzKSRjb3VudGVkMXNhbXBsZSA9IHJvd1N1bXMoYXNzYXkob2RzKSkgPiAwCgoKCiMgU2F2ZSB0aGUgb2RzIG9iamVjdCBiZWZvcmUgZmlsdGVyaW5nLCBzbyBhcyB0byBwcmVzZXJ2ZSB0aGUgb3JpZ2luYWwgbnVtYmVyIG9mIGdlbmVzCnNhdmVSRFMob2RzLCBzbmFrZW1ha2VAb3V0cHV0JG9kc191bmZpbHRlcmVkKQoKCiMnICMgUGFydCAyOiBSVU4gT1VUUklERVIgcGlwZWxpbmUKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMgdGhyZWFkcyA8LSAgMzAKCm9kcyA8LSBvZHNbbWNvbHMob2RzKSRwYXNzZWRGaWx0ZXIsXSAKb2RzIDwtIGVzdGltYXRlU2l6ZUZhY3RvcnMob2RzKQoKYSA9IDUgCmIgPSBtaW4obmNvbChvZHMpLCBucm93KG9kcykpIC8gMyAgICMgTi8zCk5zdGVwcyA9IG1pbigyMCwgbmNvbChvZHMpLzMsIG5yb3cob2RzKS8zKSAgICMgRG8gZWl0aGVyIDIwIHN0ZXBzIG9yIE4KcGFyc19xIDwtIHJvdW5kKGV4cChzZXEobG9nKGEpLGxvZyhiKSxsZW5ndGgub3V0ID0gTnN0ZXBzKSkpICU+JSB1bmlxdWUgCgoKCiMnICMjIEJlZm9yZSBPVVRSSURFUgpwbG90Q291bnRDb3JIZWF0bWFwKG9kcywgbm9ybWFsaXplPUYpCgoKCm9kcyA8LSBmaW5kRW5jb2RpbmdEaW0ob2RzLCBsbm9ybSA9IFQsIEJQUEFSQU0gPSBNdWx0aWNvcmVQYXJhbShzbmFrZW1ha2VAdGhyZWFkcyksIHBhcmFtcyA9IHBhcnNfcSkKb2RzIDwtIE9VVFJJREVSKG9kcywgQlBQQVJBTSA9IE11bHRpY29yZVBhcmFtKHNuYWtlbWFrZUB0aHJlYWRzKSkKbWVzc2FnZSgib3V0cmlkZXIgZml0dGluZyBmaW5pc2hlZCIpCgojJyAjIyBBZnRlciBPVVRSSURFUgpwbG90Q291bnRDb3JIZWF0bWFwKG9kcywgbm9ybWFsaXplPVRSVUUpCnJvdy5uYW1lcyhvZHMpIDwtIHJvd0RhdGEob2RzKSRnZW5lX25hbWVfdW5pcXVlCgoKIyBTYXZlICBPVVRSSURFUiBPQkpFQ1QgV0lUSCBSRVNVTFRTCnNhdmVSRFMob2RzLCBzbmFrZW1ha2VAb3V0cHV0JG9kcykKCiMgb2RzIDwtIHJlYWRSRFMoIi9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9wcm9jZXNzZWRfZGF0YS9vdXRyaWRlci9vZHMuUmRzIikKCnJlcyA8LSBPVVRSSURFUjo6cmVzdWx0cyhvZHMsIGFsbCA9IFRSVUUpCnJlc1ssIEZDIDo9IHJvdW5kKDJebDJmYywgMildCnJlc1ssIGdlbmVJRCA6PSB0b3VwcGVyKGdlbmVJRCldCgoKc2V0bmFtZXMocmVzLAogICAgICAgICBjKCJnZW5lSUQiLCAic2FtcGxlSUQiLCAicFZhbHVlIiwgInBhZGp1c3QiLCAibm9ybWNvdW50cyIsCiAgICAgICAgICAgInpTY29yZSIsICAgImwyZmMiLCAgICAiYWJlcnJhbnQiLCAiRkMiKSwgCiAgICAgICAgIGMoImdlbmVJRCIgLCAiU0FNUExFX0lEIiwgIlJOQV9QVkFMVUUiICwgIlJOQV9QQURKIiwgIm5vcm1jb3VudHMiLAogICAgICAgICAgICJSTkFfWlNDT1JFIiwiUk5BX0xPRzJGQyIsICJSTkFfb3V0bGllciIsICAiUk5BX0ZDIiApICwgc2tpcF9hYnNlbnQ9VFJVRSkgCnJlcyRnZW5lSURbZ3JlcCgnWk5GNTAzXzInLCByZXMkZ2VuZUlEKV0gPC0gJ1pORjUwMycgICMgVGhpcyBnZW5lIGFwcGVhcnMgYXMgWk5GNTAzXzIKCgoKcmVzIDwtIHJlc1ssYygiU0FNUExFX0lEIiwgImdlbmVJRCIsICJub3JtY291bnRzIiwgIlJOQV9GQyIsIlJOQV9MT0cyRkMiLCAiUk5BX1pTQ09SRSIsICJSTkFfUFZBTFVFIiAsICJSTkFfUEFESiIsIlJOQV9vdXRsaWVyIildIApyZXMgPC0gcmVzWyFkdXBsaWNhdGVkKHJlcyksIF0KcmVzIDwtIHJlc1tvcmRlcihyZXMkUk5BX1BBREopLCBdCnJlcyA8LXJlc1shZHVwbGljYXRlZChyZXNbLCBjKCJTQU1QTEVfSUQiLCAiZ2VuZUlEIildKSwgIF0KCnJlcyA8LSByZXNbIWlzLm5hKHJlcyRnZW5lSUQpLCBdCnJlcyA8LSByZXNbIWlzLm5hKHJlcyRTQU1QTEVfSUQpLCBdCgoKc2F2ZVJEUyhyZXMsICBzbmFrZW1ha2VAb3V0cHV0JHJlc3VsdHMpCiMgc2F2ZVJEUyhyZXMsICcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcHJvY2Vzc2VkX2RhdGEvb3V0cmlkZXIvT1VUUklERVJfcmVzdWx0cy5yZHMnKQoKCgoKCgoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("detect_outliers_outrider.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

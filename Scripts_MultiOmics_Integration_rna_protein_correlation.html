@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-03" />
+
+<title>RNA vs protein correlation</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">RNA vs protein correlation</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-03</h4>
+
+</div>
+
+
+<pre class="r"><code># Load plotting config and functions
+source(&#39;src/config.R&#39;)
+
+# READ ANNOTATION
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+
+
+# Load disease genes table
+# dis_genes &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv&#39;)
+dis_genes &lt;- fread(snakemake@input$disease_genes)
+
+
+# Read integrated omics file 
+# rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS&quot;) %&gt;% as.data.table()
+rp &lt;- readRDS(snakemake@input$patient_omics) %&gt;% as.data.table()
+rp &lt;- rp[ gene_detected == &quot;RNA and protein detected&quot;]
+
+
+##################################################</code></pre>
+<div id="z-scores" class="section level1">
+<h1>Z-scores</h1>
+<pre class="r"><code>range &lt;- c(rp$RNA_ZSCORE, rp$PROTEIN_ZSCORE)</code></pre>
+<pre class="r"><code>ggplot(rp, aes(RNA_ZSCORE, PROTEIN_ZSCORE) )+
+  geom_hex( )+
+  stat_cor( aes(label = paste(..r.label.. , ..rr.label.., ..p.label.., sep = &quot;~`,`~&quot;)), method = &quot;pearson&quot;, na.rm = T)+
+  geom_smooth(method = lm, se = FALSE)+
+  coord_fixed( xlim = c( min(range , na.rm = T) , max( range  , na.rm = T) ),  
+               ylim = c( min(range , na.rm = T),  max( range  , na.rm = T)  )) + 
+  xlab(&quot;RNA zScore&quot;) + 
+  ylab(&quot;Protein zScore&quot;) +
+  theme_bw()+
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=9, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=9, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>##################################################</code></pre>
+</div>
+<div id="log2fold-change" class="section level1">
+<h1>log2(Fold change)</h1>
+<pre class="r"><code>rp$RNA_LOG2FC &lt;- log2(rp$RNA_FC)
+rp$PROTEIN_LOG2FC &lt;- log2(rp$PROTEIN_FC)
+
+rpx &lt;- rp[!is.na(RNA_LOG2FC ) &amp; !is.na(PROTEIN_LOG2FC )]
+rpx &lt;- rp[!is.infinite(RNA_LOG2FC ) &amp; !is.infinite(PROTEIN_LOG2FC )]
+
+range &lt;- c(rpx$RNA_LOG2FC , rpx$PROTEIN_LOG2FC)</code></pre>
+<pre class="r"><code>ggplot(rpx, aes(RNA_LOG2FC, PROTEIN_LOG2FC ) )+
+  geom_hex( )+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_hline(yintercept = 0, color = &quot;grey50&quot;) +
+  stat_cor( aes(label = paste(..r.label.. , ..rr.label.., ..p.label.., sep = &quot;~`,`~&quot;)), method = &quot;pearson&quot;, na.rm = T)+
+  geom_smooth(method = lm, se = FALSE)+
+  coord_fixed( xlim = c( min(range , na.rm = T) , max( range  , na.rm = T) ),  
+               ylim = c( min(range , na.rm = T),  max( range  , na.rm = T)  )) + 
+  xlab(&quot;RNA log2(fold change)&quot;) + 
+  ylab(&quot;Protein log2(fold change)&quot;) +
+  theme_bw()+
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=9, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=9, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>##################################################</code></pre>
+</div>
+<div id="abundance" class="section level1">
+<h1>Abundance</h1>
+<pre class="r"><code>rp$log10_RNA_counts &lt;- log10(rp$normcounts)
+rp$log10_Protein_intensity &lt;- log10(rp$PROTEIN_INT)
+
+rpx &lt;- rp[!is.na(log10_RNA_counts ) &amp; !is.na(log10_Protein_intensity )]
+rpx &lt;- rp[!is.infinite(log10_RNA_counts ) &amp; !is.infinite(log10_Protein_intensity )]
+
+range &lt;- c(rpx$log10_RNA_counts , rpx$log10_Protein_intensity)</code></pre>
+<pre class="r"><code>ggplot(rpx, aes(log10_RNA_counts, log10_Protein_intensity ) )+
+  geom_hex( )+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_hline(yintercept = 0, color = &quot;grey50&quot;) +
+  stat_cor( aes(label = paste(..r.label.. , ..rr.label.., ..p.label.., sep = &quot;~`,`~&quot;)), method = &quot;pearson&quot;, na.rm = T)+
+  geom_smooth(method = lm, se = FALSE)+
+  coord_fixed( xlim = c( min(range , na.rm = T) , max( range  , na.rm = T) ),  
+               ylim = c( min(range , na.rm = T),  max( range  , na.rm = T)  )) + 
+  xlab(&quot;RNA log10(counts)&quot;) + 
+  ylab(&quot;Protein log10(intensity)&quot;) +
+  theme_bw()+
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=9, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=9, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>##################################################</code></pre>
+</div>
+<div id="gene---protein-correlation-pearson" class="section level1">
+<h1>Gene - protein correlation Pearson</h1>
+<pre class="r"><code>gp_p &lt;- as.data.table(rpx[ , cor.test(log10_RNA_counts, log10_Protein_intensity, method=&quot;pearson&quot;)[-2], by= geneID])
+setnames(gp_p, &quot;estimate&quot;, &quot;cor&quot; )
+med &lt;- median(gp_p$cor)
+gp_p[ , padj := p.adjust(p.value, method = &quot;BH&quot;)]
+gp_p[, significant := padj &lt; 0.05]</code></pre>
+<pre class="r"><code>ggplot(gp_p, aes(cor, fill = significant))+
+  geom_histogram(bins = 90)+
+  theme_classic()+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_vline(xintercept = med, linetype = &quot;dashed&quot;) +
+  scale_fill_brewer()+
+  coord_cartesian( xlim = c( -1 , 1 )) + 
+  ylab(&quot;# of genes&quot;) + 
+  xlab(&quot;Pearson correlation&quot;) + 
+  ggtitle(&quot;Gene - protein correlation&quot;) +
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
+<div id="disease-genes" class="section level2">
+<h2>Disease genes</h2>
+<pre class="r"><code>gp_p_dg &lt;- merge(dis_genes , gp_p, by = &quot;geneID&quot;)</code></pre>
+<pre class="r"><code>ggplot(gp_p_dg, aes(cor, fill = significant))+
+  geom_histogram()+
+  theme_classic()+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_vline(xintercept = med, linetype = &quot;dashed&quot;) +
+  scale_fill_brewer()+
+  #coord_cartesian( xlim = c( -1 , 1 )) + 
+  ylab(&quot;# of genes&quot;) + 
+  xlab(&quot;Pearson correlation&quot;) + 
+  facet_wrap( ~DISEASE, scales = &quot;free&quot;)+
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-11-1.png" width="864" /></p>
+<pre class="r"><code>##################################################</code></pre>
+</div>
+</div>
+<div id="gene---protein-correlation-spearman" class="section level1">
+<h1>Gene - protein correlation Spearman</h1>
+<pre class="r"><code>gp_s &lt;- as.data.table(rpx[ , cor.test(log10_RNA_counts, log10_Protein_intensity, method=&quot;spearman&quot;)[-2], by= geneID])
+setnames(gp_s, &quot;estimate&quot;, &quot;rho&quot; )
+med &lt;- median(gp_s$rho)
+gp_s[ , padj := p.adjust(p.value, method = &quot;BH&quot;)]
+gp_s[, significant := padj &lt; 0.05]</code></pre>
+<pre class="r"><code>ggplot(gp_s, aes(rho, fill = significant))+
+  geom_histogram(bins = 90)+
+  theme_classic()+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_vline(xintercept = med, linetype = &quot;dashed&quot;) +
+  scale_fill_brewer()+
+  coord_cartesian( xlim = c( -1 , 1 )) + 
+  ylab(&quot;# of genes&quot;) + 
+  xlab(&quot;Spearman&#39;s rho&quot;) + 
+  ggtitle(&quot;Gene - protein correlation&quot;) +
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
+<div id="disease-genes-1" class="section level2">
+<h2>Disease genes</h2>
+<pre class="r"><code>gp_s_dg &lt;- merge(dis_genes , gp_s, by = &quot;geneID&quot;)</code></pre>
+<pre class="r"><code>ggplot(gp_s_dg, aes(rho, fill = significant))+
+  geom_histogram()+
+  theme_classic()+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_vline(xintercept = med, linetype = &quot;dashed&quot;) +
+  scale_fill_brewer()+
+  #coord_cartesian( xlim = c( -1 , 1 )) + 
+  ylab(&quot;# of genes&quot;) + 
+  xlab(&quot;Spearman&#39;s rho&quot;) + 
+  facet_wrap( ~DISEASE, scales = &quot;free&quot;)+
+  theme(plot.title = element_text(size=14, hjust = 0.5, face=&quot;bold&quot;),
+        axis.title.x= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.title.y= element_text( size=12, margin = NULL,face=&quot;bold&quot;),
+        axis.text.x= element_text( size=10, margin = NULL,face=&quot;bold&quot;),
+        axis.text.y= element_text( size=10, margin = NULL,face=&quot;bold&quot;))</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-15-1.png" width="864" /></p>
+</div>
+<div id="causal-genes" class="section level2">
+<h2>Causal genes</h2>
+<pre class="r"><code>causal_genes &lt;- gp_s[ geneID %in% sa[CATEGORY %in% c(&quot;I&quot;, &quot;IIa&quot;, &quot;III&quot;)]$KNOWN_MUTATION, c(&quot;geneID&quot;, &quot;rho&quot;, &quot;p.value&quot;, &quot;padj&quot;,  &quot;significant&quot;)]
+
+annot &lt;- rp[causal_gene == T , c(&quot;geneID&quot;, &quot;outlier_class&quot;)]
+
+causal_genes &lt;- merge(causal_genes, annot, by = &quot;geneID&quot;)
+
+
+ggplot(causal_genes[ outlier_class != &quot;non_outlier&quot;], aes(rho, -log10(p.value)))+
+  geom_point( aes(color = outlier_class ) )+
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_hline(yintercept = -log10(0.05), color = &quot;grey50&quot;, linetype = &quot;dashed&quot;) +
+  geom_text_repel(aes(label = geneID), size = 2.5)+
+  scale_color_manual(breaks = c(&quot;non_outlier&quot;,&quot;RNA-only&quot;, &quot;protein-only&quot;, &quot;RNA-and-protein&quot;),
+                     values = outlier_colors)+
+  xlab(&quot;Spearman&#39;s rho&quot;) + 
+  theme_bw()</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+</div>
+<div id="genes-detected-as-outliers" class="section level2">
+<h2>Genes detected as outliers</h2>
+<pre class="r"><code>annot &lt;- rp[outlier_class != &quot;non_outlier&quot; , c(&quot;geneID&quot;, &quot;outlier_class&quot;)]</code></pre>
+<p>consider only genes, that were detected as outliers of one class</p>
+<pre class="r"><code>annot &lt;- annot[ !( geneID %in%  annot[duplicated(geneID) ]$geneID ) ]
+outlier_genes &lt;- merge(gp_s, annot, by = &quot;geneID&quot;)
+
+outlier_genes$outlier_class &lt;- factor(outlier_genes$outlier_class , levels =  c(&quot;RNA-only&quot;,&quot;protein-only&quot;, &quot;RNA-and-protein&quot;))
+
+ggplot(outlier_genes, aes(outlier_class, rho, fill = outlier_class))+
+  geom_boxplot()+
+  scale_fill_manual(breaks = c(&quot;non_outlier&quot;,&quot;RNA-only&quot;,&quot;protein-only&quot;, &quot;RNA-and-protein&quot;),
+                    values = outlier_colors)+
+  theme_bw() + 
+  ylab(&quot;Spearman&#39;s rho&quot;) + 
+  stat_compare_means(comparisons = list(c(&quot;RNA-only&quot; ,&quot;protein-only&quot; ),
+                                        c(&quot;protein-only&quot;,  &quot;RNA-and-protein&quot;),
+                                        c(&quot;RNA-only&quot;, &quot;RNA-and-protein&quot;) ) )+
+  #stat_compare_means(label.y = 1.2) + 
+  ggtitle(&quot;Genes detected as outliers of one category&quot;)</code></pre>
+<p><img src="Scripts_MultiOmics_Integration_rna_protein_correlation_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+</div>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFJOQSB2cyBwcm90ZWluIGNvcnJlbGF0aW9uICAKIycgYXV0aG9yOiBzbWlybm92ZAojJyB3YjoKIycgIGlucHV0OgojJyAgLSBzYW1wbGVfYW5ub3RhdGlvbjogJ2BzbSBjb25maWdbIkFOTk9UQVRJT04iXWAnCiMnICAtIGRpc2Vhc2VfZ2VuZXM6ICdgc20gY29uZmlnWyJEQVRBU0VUUyJdICsgIi9kaXNlYXNlX2dlbmVzLnRzdiJgJwojJyAgLSBwYXRpZW50X29taWNzOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3MuUkRTImAnCiMnICBvdXRwdXQ6CiMnIG91dHB1dDogCiMnICAgaHRtbF9kb2N1bWVudDoKIycgICAgY29kZV9mb2xkaW5nOiBoaWRlCiMnICAgIGNvZGVfZG93bmxvYWQ6IFRSVUUKIyctLS0KCiMgTG9hZCBwbG90dGluZyBjb25maWcgYW5kIGZ1bmN0aW9ucwpzb3VyY2UoJ3NyYy9jb25maWcuUicpCgojIFJFQUQgQU5OT1RBVElPTgojIHNhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19hbm5vdGF0aW9uLnRzdicpCnNhIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRzYW1wbGVfYW5ub3RhdGlvbikKc2EgPC0gc2FbVVNFX0ZPUl9QUk9URU9NSUNTX1BBUEVSID09IFRdCgoKCiMgTG9hZCBkaXNlYXNlIGdlbmVzIHRhYmxlCiMgZGlzX2dlbmVzIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vZGF0YXNldHMvZGlzZWFzZV9nZW5lcy50c3YnKQpkaXNfZ2VuZXMgPC0gZnJlYWQoc25ha2VtYWtlQGlucHV0JGRpc2Vhc2VfZ2VuZXMpCgoKIyBSZWFkIGludGVncmF0ZWQgb21pY3MgZmlsZSAKIyBycCA8LSByZWFkUkRTKCIvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcHJvY2Vzc2VkX2RhdGEvaW50ZWdyYXRpb24vcGF0aWVudF9vbWljcy5SRFMiKSAlPiUgYXMuZGF0YS50YWJsZSgpCnJwIDwtIHJlYWRSRFMoc25ha2VtYWtlQGlucHV0JHBhdGllbnRfb21pY3MpICU+JSBhcy5kYXRhLnRhYmxlKCkKcnAgPC0gcnBbIGdlbmVfZGV0ZWN0ZWQgPT0gIlJOQSBhbmQgcHJvdGVpbiBkZXRlY3RlZCJdCgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCiMnICMgWi1zY29yZXMKcmFuZ2UgPC0gYyhycCRSTkFfWlNDT1JFLCBycCRQUk9URUlOX1pTQ09SRSkKIysgZmlnLndpZHRoPTcsIGZpZy5oZWlnaHQ9NwpnZ3Bsb3QocnAsIGFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSkgKSsKICBnZW9tX2hleCggKSsKICBzdGF0X2NvciggYWVzKGxhYmVsID0gcGFzdGUoLi5yLmxhYmVsLi4gLCAuLnJyLmxhYmVsLi4sIC4ucC5sYWJlbC4uLCBzZXAgPSAifmAsYH4iKSksIG1ldGhvZCA9ICJwZWFyc29uIiwgbmEucm0gPSBUKSsKICBnZW9tX3Ntb290aChtZXRob2QgPSBsbSwgc2UgPSBGQUxTRSkrCiAgY29vcmRfZml4ZWQoIHhsaW0gPSBjKCBtaW4ocmFuZ2UgLCBuYS5ybSA9IFQpICwgbWF4KCByYW5nZSAgLCBuYS5ybSA9IFQpICksICAKICAgICAgICAgICAgICAgeWxpbSA9IGMoIG1pbihyYW5nZSAsIG5hLnJtID0gVCksICBtYXgoIHJhbmdlICAsIG5hLnJtID0gVCkgICkpICsgCiAgeGxhYigiUk5BIHpTY29yZSIpICsgCiAgeWxhYigiUHJvdGVpbiB6U2NvcmUiKSArCiAgdGhlbWVfYncoKSsKICB0aGVtZShwbG90LnRpdGxlID0gZWxlbWVudF90ZXh0KHNpemU9MTQsIGhqdXN0ID0gMC41LCBmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50aXRsZS54PSBlbGVtZW50X3RleHQoIHNpemU9MTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGl0bGUueT0gZWxlbWVudF90ZXh0KCBzaXplPTEwLCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRleHQueD0gZWxlbWVudF90ZXh0KCBzaXplPTksIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGV4dC55PSBlbGVtZW50X3RleHQoIHNpemU9OSwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIikpCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgojJyAjIGxvZzIoRm9sZCBjaGFuZ2UpCnJwJFJOQV9MT0cyRkMgPC0gbG9nMihycCRSTkFfRkMpCnJwJFBST1RFSU5fTE9HMkZDIDwtIGxvZzIocnAkUFJPVEVJTl9GQykKCnJweCA8LSBycFshaXMubmEoUk5BX0xPRzJGQyApICYgIWlzLm5hKFBST1RFSU5fTE9HMkZDICldCnJweCA8LSBycFshaXMuaW5maW5pdGUoUk5BX0xPRzJGQyApICYgIWlzLmluZmluaXRlKFBST1RFSU5fTE9HMkZDICldCgpyYW5nZSA8LSBjKHJweCRSTkFfTE9HMkZDICwgcnB4JFBST1RFSU5fTE9HMkZDKQojKyBmaWcud2lkdGg9NywgZmlnLmhlaWdodD03CmdncGxvdChycHgsIGFlcyhSTkFfTE9HMkZDLCBQUk9URUlOX0xPRzJGQyApICkrCiAgZ2VvbV9oZXgoICkrCiAgZ2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgY29sb3IgPSAiZ3JleTUwIikgKwogIGdlb21faGxpbmUoeWludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICBzdGF0X2NvciggYWVzKGxhYmVsID0gcGFzdGUoLi5yLmxhYmVsLi4gLCAuLnJyLmxhYmVsLi4sIC4ucC5sYWJlbC4uLCBzZXAgPSAifmAsYH4iKSksIG1ldGhvZCA9ICJwZWFyc29uIiwgbmEucm0gPSBUKSsKICBnZW9tX3Ntb290aChtZXRob2QgPSBsbSwgc2UgPSBGQUxTRSkrCiAgY29vcmRfZml4ZWQoIHhsaW0gPSBjKCBtaW4ocmFuZ2UgLCBuYS5ybSA9IFQpICwgbWF4KCByYW5nZSAgLCBuYS5ybSA9IFQpICksICAKICAgICAgICAgICAgICAgeWxpbSA9IGMoIG1pbihyYW5nZSAsIG5hLnJtID0gVCksICBtYXgoIHJhbmdlICAsIG5hLnJtID0gVCkgICkpICsgCiAgeGxhYigiUk5BIGxvZzIoZm9sZCBjaGFuZ2UpIikgKyAKICB5bGFiKCJQcm90ZWluIGxvZzIoZm9sZCBjaGFuZ2UpIikgKwogIHRoZW1lX2J3KCkrCiAgdGhlbWUocGxvdC50aXRsZSA9IGVsZW1lbnRfdGV4dChzaXplPTE0LCBoanVzdCA9IDAuNSwgZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGl0bGUueD0gZWxlbWVudF90ZXh0KCBzaXplPTEwLCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRpdGxlLnk9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMCwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50ZXh0Lng9IGVsZW1lbnRfdGV4dCggc2l6ZT05LCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRleHQueT0gZWxlbWVudF90ZXh0KCBzaXplPTksIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpKQoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKIycgIyBBYnVuZGFuY2UKcnAkbG9nMTBfUk5BX2NvdW50cyA8LSBsb2cxMChycCRub3JtY291bnRzKQpycCRsb2cxMF9Qcm90ZWluX2ludGVuc2l0eSA8LSBsb2cxMChycCRQUk9URUlOX0lOVCkKCnJweCA8LSBycFshaXMubmEobG9nMTBfUk5BX2NvdW50cyApICYgIWlzLm5hKGxvZzEwX1Byb3RlaW5faW50ZW5zaXR5ICldCnJweCA8LSBycFshaXMuaW5maW5pdGUobG9nMTBfUk5BX2NvdW50cyApICYgIWlzLmluZmluaXRlKGxvZzEwX1Byb3RlaW5faW50ZW5zaXR5ICldCgpyYW5nZSA8LSBjKHJweCRsb2cxMF9STkFfY291bnRzICwgcnB4JGxvZzEwX1Byb3RlaW5faW50ZW5zaXR5KQojKyBmaWcud2lkdGg9NywgZmlnLmhlaWdodD03CmdncGxvdChycHgsIGFlcyhsb2cxMF9STkFfY291bnRzLCBsb2cxMF9Qcm90ZWluX2ludGVuc2l0eSApICkrCiAgZ2VvbV9oZXgoICkrCiAgZ2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgY29sb3IgPSAiZ3JleTUwIikgKwogIGdlb21faGxpbmUoeWludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICBzdGF0X2NvciggYWVzKGxhYmVsID0gcGFzdGUoLi5yLmxhYmVsLi4gLCAuLnJyLmxhYmVsLi4sIC4ucC5sYWJlbC4uLCBzZXAgPSAifmAsYH4iKSksIG1ldGhvZCA9ICJwZWFyc29uIiwgbmEucm0gPSBUKSsKICBnZW9tX3Ntb290aChtZXRob2QgPSBsbSwgc2UgPSBGQUxTRSkrCiAgY29vcmRfZml4ZWQoIHhsaW0gPSBjKCBtaW4ocmFuZ2UgLCBuYS5ybSA9IFQpICwgbWF4KCByYW5nZSAgLCBuYS5ybSA9IFQpICksICAKICAgICAgICAgICAgICAgeWxpbSA9IGMoIG1pbihyYW5nZSAsIG5hLnJtID0gVCksICBtYXgoIHJhbmdlICAsIG5hLnJtID0gVCkgICkpICsgCiAgeGxhYigiUk5BIGxvZzEwKGNvdW50cykiKSArIAogIHlsYWIoIlByb3RlaW4gbG9nMTAoaW50ZW5zaXR5KSIpICsKICB0aGVtZV9idygpKwogIHRoZW1lKHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQoc2l6ZT0xNCwgaGp1c3QgPSAwLjUsIGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRpdGxlLng9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMCwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50aXRsZS55PSBlbGVtZW50X3RleHQoIHNpemU9MTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGV4dC54PSBlbGVtZW50X3RleHQoIHNpemU9OSwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50ZXh0Lnk9IGVsZW1lbnRfdGV4dCggc2l6ZT05LCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSkKCgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgojJyAjIEdlbmUgLSBwcm90ZWluIGNvcnJlbGF0aW9uIFBlYXJzb24KCmdwX3AgPC0gYXMuZGF0YS50YWJsZShycHhbICwgY29yLnRlc3QobG9nMTBfUk5BX2NvdW50cywgbG9nMTBfUHJvdGVpbl9pbnRlbnNpdHksIG1ldGhvZD0icGVhcnNvbiIpWy0yXSwgYnk9IGdlbmVJRF0pCnNldG5hbWVzKGdwX3AsICJlc3RpbWF0ZSIsICJjb3IiICkKbWVkIDwtIG1lZGlhbihncF9wJGNvcikKZ3BfcFsgLCBwYWRqIDo9IHAuYWRqdXN0KHAudmFsdWUsIG1ldGhvZCA9ICJCSCIpXQpncF9wWywgc2lnbmlmaWNhbnQgOj0gcGFkaiA8IDAuMDVdCiMrIGZpZy53aWR0aD04LCBmaWcuaGVpZ2h0PTYKZ2dwbG90KGdwX3AsIGFlcyhjb3IsIGZpbGwgPSBzaWduaWZpY2FudCkpKwogIGdlb21faGlzdG9ncmFtKGJpbnMgPSA5MCkrCiAgdGhlbWVfY2xhc3NpYygpKwogIGdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSBtZWQsIGxpbmV0eXBlID0gImRhc2hlZCIpICsKICBzY2FsZV9maWxsX2JyZXdlcigpKwogIGNvb3JkX2NhcnRlc2lhbiggeGxpbSA9IGMoIC0xICwgMSApKSArIAogIHlsYWIoIiMgb2YgZ2VuZXMiKSArIAogIHhsYWIoIlBlYXJzb24gY29ycmVsYXRpb24iKSArIAogIGdndGl0bGUoIkdlbmUgLSBwcm90ZWluIGNvcnJlbGF0aW9uIikgKwogIHRoZW1lKHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQoc2l6ZT0xNCwgaGp1c3QgPSAwLjUsIGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRpdGxlLng9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMiwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50aXRsZS55PSBlbGVtZW50X3RleHQoIHNpemU9MTIsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGV4dC54PSBlbGVtZW50X3RleHQoIHNpemU9MTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGV4dC55PSBlbGVtZW50X3RleHQoIHNpemU9MTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpKQoKCiMnICMjIERpc2Vhc2UgZ2VuZXMgCmdwX3BfZGcgPC0gbWVyZ2UoZGlzX2dlbmVzICwgZ3BfcCwgYnkgPSAiZ2VuZUlEIikKIysgZmlnLndpZHRoPTksIGZpZy5oZWlnaHQ9NwpnZ3Bsb3QoZ3BfcF9kZywgYWVzKGNvciwgZmlsbCA9IHNpZ25pZmljYW50KSkrCiAgZ2VvbV9oaXN0b2dyYW0oKSsKICB0aGVtZV9jbGFzc2ljKCkrCiAgZ2VvbV92bGluZSh4aW50ZXJjZXB0ID0gMCwgY29sb3IgPSAiZ3JleTUwIikgKwogIGdlb21fdmxpbmUoeGludGVyY2VwdCA9IG1lZCwgbGluZXR5cGUgPSAiZGFzaGVkIikgKwogIHNjYWxlX2ZpbGxfYnJld2VyKCkrCiAgI2Nvb3JkX2NhcnRlc2lhbiggeGxpbSA9IGMoIC0xICwgMSApKSArIAogIHlsYWIoIiMgb2YgZ2VuZXMiKSArIAogIHhsYWIoIlBlYXJzb24gY29ycmVsYXRpb24iKSArIAogIGZhY2V0X3dyYXAoIH5ESVNFQVNFLCBzY2FsZXMgPSAiZnJlZSIpKwogIHRoZW1lKHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQoc2l6ZT0xNCwgaGp1c3QgPSAwLjUsIGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRpdGxlLng9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMiwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50aXRsZS55PSBlbGVtZW50X3RleHQoIHNpemU9MTIsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGV4dC54PSBlbGVtZW50X3RleHQoIHNpemU9MTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGV4dC55PSBlbGVtZW50X3RleHQoIHNpemU9MTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpKQoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCgojJyAjIEdlbmUgLSBwcm90ZWluIGNvcnJlbGF0aW9uIFNwZWFybWFuCgpncF9zIDwtIGFzLmRhdGEudGFibGUocnB4WyAsIGNvci50ZXN0KGxvZzEwX1JOQV9jb3VudHMsIGxvZzEwX1Byb3RlaW5faW50ZW5zaXR5LCBtZXRob2Q9InNwZWFybWFuIilbLTJdLCBieT0gZ2VuZUlEXSkKc2V0bmFtZXMoZ3BfcywgImVzdGltYXRlIiwgInJobyIgKQptZWQgPC0gbWVkaWFuKGdwX3MkcmhvKQpncF9zWyAsIHBhZGogOj0gcC5hZGp1c3QocC52YWx1ZSwgbWV0aG9kID0gIkJIIildCmdwX3NbLCBzaWduaWZpY2FudCA6PSBwYWRqIDwgMC4wNV0KCiMrIGZpZy53aWR0aD04LCBmaWcuaGVpZ2h0PTYKZ2dwbG90KGdwX3MsIGFlcyhyaG8sIGZpbGwgPSBzaWduaWZpY2FudCkpKwogIGdlb21faGlzdG9ncmFtKGJpbnMgPSA5MCkrCiAgdGhlbWVfY2xhc3NpYygpKwogIGdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSBtZWQsIGxpbmV0eXBlID0gImRhc2hlZCIpICsKICBzY2FsZV9maWxsX2JyZXdlcigpKwogIGNvb3JkX2NhcnRlc2lhbiggeGxpbSA9IGMoIC0xICwgMSApKSArIAogIHlsYWIoIiMgb2YgZ2VuZXMiKSArIAogIHhsYWIoIlNwZWFybWFuJ3MgcmhvIikgKyAKICBnZ3RpdGxlKCJHZW5lIC0gcHJvdGVpbiBjb3JyZWxhdGlvbiIpICsKICB0aGVtZShwbG90LnRpdGxlID0gZWxlbWVudF90ZXh0KHNpemU9MTQsIGhqdXN0ID0gMC41LCBmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50aXRsZS54PSBlbGVtZW50X3RleHQoIHNpemU9MTIsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGl0bGUueT0gZWxlbWVudF90ZXh0KCBzaXplPTEyLCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRleHQueD0gZWxlbWVudF90ZXh0KCBzaXplPTEwLCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRleHQueT0gZWxlbWVudF90ZXh0KCBzaXplPTEwLCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSkKCiMnICMjIERpc2Vhc2UgZ2VuZXMgCgpncF9zX2RnIDwtIG1lcmdlKGRpc19nZW5lcyAsIGdwX3MsIGJ5ID0gImdlbmVJRCIpCiMrIGZpZy53aWR0aD05LCBmaWcuaGVpZ2h0PTcKZ2dwbG90KGdwX3NfZGcsIGFlcyhyaG8sIGZpbGwgPSBzaWduaWZpY2FudCkpKwogIGdlb21faGlzdG9ncmFtKCkrCiAgdGhlbWVfY2xhc3NpYygpKwogIGdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSBtZWQsIGxpbmV0eXBlID0gImRhc2hlZCIpICsKICBzY2FsZV9maWxsX2JyZXdlcigpKwogICNjb29yZF9jYXJ0ZXNpYW4oIHhsaW0gPSBjKCAtMSAsIDEgKSkgKyAKICB5bGFiKCIjIG9mIGdlbmVzIikgKyAKICB4bGFiKCJTcGVhcm1hbidzIHJobyIpICsgCiAgZmFjZXRfd3JhcCggfkRJU0VBU0UsIHNjYWxlcyA9ICJmcmVlIikrCiAgdGhlbWUocGxvdC50aXRsZSA9IGVsZW1lbnRfdGV4dChzaXplPTE0LCBoanVzdCA9IDAuNSwgZmFjZT0iYm9sZCIpLAogICAgICAgIGF4aXMudGl0bGUueD0gZWxlbWVudF90ZXh0KCBzaXplPTEyLCBtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiKSwKICAgICAgICBheGlzLnRpdGxlLnk9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMiwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50ZXh0Lng9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMCwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiksCiAgICAgICAgYXhpcy50ZXh0Lnk9IGVsZW1lbnRfdGV4dCggc2l6ZT0xMCwgbWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIikpCgoKIycgIyMgQ2F1c2FsIGdlbmVzCmNhdXNhbF9nZW5lcyA8LSBncF9zWyBnZW5lSUQgJWluJSBzYVtDQVRFR09SWSAlaW4lIGMoIkkiLCAiSUlhIiwgIklJSSIpXSRLTk9XTl9NVVRBVElPTiwgYygiZ2VuZUlEIiwgInJobyIsICJwLnZhbHVlIiwgInBhZGoiLCAgInNpZ25pZmljYW50IildCgphbm5vdCA8LSBycFtjYXVzYWxfZ2VuZSA9PSBUICwgYygiZ2VuZUlEIiwgIm91dGxpZXJfY2xhc3MiKV0KCmNhdXNhbF9nZW5lcyA8LSBtZXJnZShjYXVzYWxfZ2VuZXMsIGFubm90LCBieSA9ICJnZW5lSUQiKQoKCmdncGxvdChjYXVzYWxfZ2VuZXNbIG91dGxpZXJfY2xhc3MgIT0gIm5vbl9vdXRsaWVyIl0sIGFlcyhyaG8sIC1sb2cxMChwLnZhbHVlKSkpKwogIGdlb21fcG9pbnQoIGFlcyhjb2xvciA9IG91dGxpZXJfY2xhc3MgKSApKwogIGdlb21fdmxpbmUoeGludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAtbG9nMTAoMC4wNSksIGNvbG9yID0gImdyZXk1MCIsIGxpbmV0eXBlID0gImRhc2hlZCIpICsKICBnZW9tX3RleHRfcmVwZWwoYWVzKGxhYmVsID0gZ2VuZUlEKSwgc2l6ZSA9IDIuNSkrCiAgc2NhbGVfY29sb3JfbWFudWFsKGJyZWFrcyA9IGMoIm5vbl9vdXRsaWVyIiwiUk5BLW9ubHkiLCAicHJvdGVpbi1vbmx5IiwgIlJOQS1hbmQtcHJvdGVpbiIpLAogICAgICAgICAgICAgICAgICAgICB2YWx1ZXMgPSBvdXRsaWVyX2NvbG9ycykrCiAgeGxhYigiU3BlYXJtYW4ncyByaG8iKSArIAogIHRoZW1lX2J3KCkKCiMnICMjIEdlbmVzIGRldGVjdGVkIGFzIG91dGxpZXJzCgphbm5vdCA8LSBycFtvdXRsaWVyX2NsYXNzICE9ICJub25fb3V0bGllciIgLCBjKCJnZW5lSUQiLCAib3V0bGllcl9jbGFzcyIpXQoKIycgY29uc2lkZXIgb25seSBnZW5lcywgdGhhdCB3ZXJlIGRldGVjdGVkIGFzIG91dGxpZXJzIG9mIG9uZSBjbGFzcwphbm5vdCA8LSBhbm5vdFsgISggZ2VuZUlEICVpbiUgIGFubm90W2R1cGxpY2F0ZWQoZ2VuZUlEKSBdJGdlbmVJRCApIF0Kb3V0bGllcl9nZW5lcyA8LSBtZXJnZShncF9zLCBhbm5vdCwgYnkgPSAiZ2VuZUlEIikKCm91dGxpZXJfZ2VuZXMkb3V0bGllcl9jbGFzcyA8LSBmYWN0b3Iob3V0bGllcl9nZW5lcyRvdXRsaWVyX2NsYXNzICwgbGV2ZWxzID0gIGMoIlJOQS1vbmx5IiwicHJvdGVpbi1vbmx5IiwgIlJOQS1hbmQtcHJvdGVpbiIpKQoKZ2dwbG90KG91dGxpZXJfZ2VuZXMsIGFlcyhvdXRsaWVyX2NsYXNzLCByaG8sIGZpbGwgPSBvdXRsaWVyX2NsYXNzKSkrCiAgZ2VvbV9ib3hwbG90KCkrCiAgc2NhbGVfZmlsbF9tYW51YWwoYnJlYWtzID0gYygibm9uX291dGxpZXIiLCJSTkEtb25seSIsInByb3RlaW4tb25seSIsICJSTkEtYW5kLXByb3RlaW4iKSwKICAgICAgICAgICAgICAgICAgICB2YWx1ZXMgPSBvdXRsaWVyX2NvbG9ycykrCiAgdGhlbWVfYncoKSArIAogIHlsYWIoIlNwZWFybWFuJ3MgcmhvIikgKyAKICBzdGF0X2NvbXBhcmVfbWVhbnMoY29tcGFyaXNvbnMgPSBsaXN0KGMoIlJOQS1vbmx5IiAsInByb3RlaW4tb25seSIgKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGMoInByb3RlaW4tb25seSIsICAiUk5BLWFuZC1wcm90ZWluIiksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjKCJSTkEtb25seSIsICJSTkEtYW5kLXByb3RlaW4iKSApICkrCiAgI3N0YXRfY29tcGFyZV9tZWFucyhsYWJlbC55ID0gMS4yKSArIAogIGdndGl0bGUoIkdlbmVzIGRldGVjdGVkIGFzIG91dGxpZXJzIG9mIG9uZSBjYXRlZ29yeSIpCgoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("rna_protein_correlation.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

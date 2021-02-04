@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-01-19" />
+
+<title>Supplementary Fig 3</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Supplementary Fig 3</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-01-19</h4>
+
+</div>
+
+
+<pre class="r"><code># Load config
+source(snakemake@input$config)
+
+# Load plotting functions
+source(&quot;src/functions/plots.R&quot;)
+
+
+# Load sample annotation
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/filemappings/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+# Subset diagnosed cases from discovery cohort
+sa &lt;- sa[ !is.na(KNOWN_MUTATION) &amp; CATEGORY == &quot;III&quot;]
+
+# Remove cases appearing in the main figures
+sa &lt;- sa[ !(KNOWN_MUTATION %in% c(&quot;LIG3&quot;, &quot;MRPL38&quot;, &quot;MORC2&quot;, &quot;DARS2&quot;, &quot;MRPS25&quot;) )]
+
+# Read integrated omics file 
+# rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS&quot;) %&gt;% as.data.table()
+rp &lt;- readRDS(snakemake@input$patient_omics) %&gt;% as.data.table()
+# Subset diagnosed cases and candidates
+rp &lt;- rp[SAMPLE_ID %in% sa$SAMPLE_ID]
+
+# Subset outliers only 
+rp &lt;- rp[ outlier_class != &#39;non_outlier&#39; | causal_gene == T]</code></pre>
+<pre class="r"><code>for (i in sa$SAMPLE_ID){
+  plot_sample &lt;- plot_patient_main(rp, sample = i) + 
+    ggtitle(paste(&quot;Sample ID:&quot;, i, &quot;\nCasual gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+
+  print(plot_sample)
+}</code></pre>
+<p><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-1.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-2.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-3.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-4.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-5.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-6.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-7.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-8.png" width="480" /><img src="Scripts_Paper_figures_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-9.png" width="480" /></p>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFN1cHBsZW1lbnRhcnkgRmlnIDMgCiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDogCiMnICAtIGNvbmZpZzogJ3NyYy9jb25maWcuUicKIycgIC0gcGF0aWVudF9vbWljczogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9pbnRlZ3JhdGlvbi9wYXRpZW50X29taWNzX2Z1bGwuUkRTImAnCiMnICAtIHNhbXBsZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siQU5OT1RBVElPTiJdYCcKIycgIG91dHB1dDoKIycgb3V0cHV0OiAKIycgICBodG1sX2RvY3VtZW50OgojJyAgICBjb2RlX2ZvbGRpbmc6IGhpZGUKIycgICAgY29kZV9kb3dubG9hZDogVFJVRQojJy0tLQoKCiMgTG9hZCBjb25maWcKc291cmNlKHNuYWtlbWFrZUBpbnB1dCRjb25maWcpCgojIExvYWQgcGxvdHRpbmcgZnVuY3Rpb25zCnNvdXJjZSgic3JjL2Z1bmN0aW9ucy9wbG90cy5SIikKCgojIExvYWQgc2FtcGxlIGFubm90YXRpb24KIyBzYSA8LSBmcmVhZCgnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL2ZpbGVtYXBwaW5ncy9wcm90ZW9taWNzX2Fubm90YXRpb24udHN2JykKc2EgPC0gZnJlYWQoc25ha2VtYWtlQGlucHV0JHNhbXBsZV9hbm5vdGF0aW9uKQpzYSA8LSBzYVtVU0VfRk9SX1BST1RFT01JQ1NfUEFQRVIgPT0gVF0KCiMgU3Vic2V0IGRpYWdub3NlZCBjYXNlcyBmcm9tIGRpc2NvdmVyeSBjb2hvcnQKc2EgPC0gc2FbICFpcy5uYShLTk9XTl9NVVRBVElPTikgJiBDQVRFR09SWSA9PSAiSUlJIl0KCiMgUmVtb3ZlIGNhc2VzIGFwcGVhcmluZyBpbiB0aGUgbWFpbiBmaWd1cmVzCnNhIDwtIHNhWyAhKEtOT1dOX01VVEFUSU9OICVpbiUgYygiTElHMyIsICJNUlBMMzgiLCAiTU9SQzIiLCAiREFSUzIiLCAiTVJQUzI1IikgKV0KCiMgUmVhZCBpbnRlZ3JhdGVkIG9taWNzIGZpbGUgCiMgcnAgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3MuUkRTIikgJT4lIGFzLmRhdGEudGFibGUoKQpycCA8LSByZWFkUkRTKHNuYWtlbWFrZUBpbnB1dCRwYXRpZW50X29taWNzKSAlPiUgYXMuZGF0YS50YWJsZSgpCiMgU3Vic2V0IGRpYWdub3NlZCBjYXNlcyBhbmQgY2FuZGlkYXRlcwpycCA8LSBycFtTQU1QTEVfSUQgJWluJSBzYSRTQU1QTEVfSURdCgojIFN1YnNldCBvdXRsaWVycyBvbmx5IApycCA8LSBycFsgb3V0bGllcl9jbGFzcyAhPSAnbm9uX291dGxpZXInIHwgY2F1c2FsX2dlbmUgPT0gVF0KCiMrIGZpZy53aWR0aD01LCBmaWcuaGVpZ2h0PTUKZm9yIChpIGluIHNhJFNBTVBMRV9JRCl7CiAgcGxvdF9zYW1wbGUgPC0gcGxvdF9wYXRpZW50X21haW4ocnAsIHNhbXBsZSA9IGkpICsgCiAgICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgaSwgIlxuQ2FzdWFsIGdlbmU6Iiwgc2FbU0FNUExFX0lEID09IGldJEtOT1dOX01VVEFUSU9OICkgKQoKICBwcmludChwbG90X3NhbXBsZSkKfQoKCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("S_Fig3.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

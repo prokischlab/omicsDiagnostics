@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>omicsDiagnostics</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="lib/theme/bootstrap.min.css">
+  <script src="lib/theme/jquery.min.js"></script>
+  <script src="lib/theme/bootstrap.min.js"></script>
+  <script>
+      function wol(url){
+      var hash = window.location.hash.substr(1);
+      if(hash==''){hash=url;}
+      window.frames['Iframe'].src =  hash;
+      }
+      window.onload = function () {
+        wol( "readme.html" );
+};
+
+      function navigate(url){
+	window.location.href =  window.location.href.split('#')[0]+ '#' + url;
+	window.frames['Iframe'].src =  url;
+	window.frames['Iframe'].location =  url;
+	window.frames['Iframe'].reload(true);
+	
+  }    
+  </script>
+  <style>
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 100%}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+
+    iframe {
+   display: block;       /* iframes are inline by default */
+    border: none;         /* Reset default border */
+    height: 90vh;        /* Viewport-relative units */
+    width: 100%;
+    }
+    .dropdown-submenu {
+	position: relative;
+    }
+
+    .dropdown-submenu>.dropdown-menu {
+	top: 0;
+	left: 100%;
+	margin-top: -6px;
+	margin-left: -1px;
+	-webkit-border-radius: 0 6px 6px 6px;
+	-moz-border-radius: 0 6px 6px;
+	border-radius: 0 6px 6px 6px;
+    }
+
+    .dropdown-submenu:hover>.dropdown-menu {
+	display: block;
+    }
+
+    .dropdown-submenu>a:after {
+	display: block;
+	content: " ";
+	float: right;
+	width: 0;
+	height: 0;
+	border-color: transparent;
+	border-style: solid;
+	border-width: 5px 0 5px 5px;
+	border-left-color: #ccc;
+	margin-top: 5px;
+	margin-right: -10px;
+    }
+
+    .dropdown-submenu:hover>a:after {
+	border-left-color: #fff;
+    }
+
+    .dropdown-submenu.pull-left {
+	float: none;
+    }
+
+    .dropdown-submenu.pull-left>.dropdown-menu {
+	left: -100%;
+	margin-left: 10px;
+	-webkit-border-radius: 6px 0 6px 6px;
+	-moz-border-radius: 6px 0 6px 6px;
+	border-radius: 6px 0 6px 6px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+      <a class="navbar-brand" href="https://i12g-gagneurweb.informatik.tu-muenchen.de/gitlab/wachutka/wBuild">wBuild</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="javascript:navigate( 'readme.html');">Readme</a></li> 
+        <li><a href="javascript:navigate('dep.svg');">Dependency</a></li>
+        <!--
+        <li><a href="javascript:navigate('readme.html');">Readme</a></li>
+        <li><a href="javascript:navigate('dep.svg');">Dependency</a></li>
+        -->
+	<li class="dropdown">
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">MultiOmics<span class="caret"></span></a>
+   <ul class="dropdown-menu multi-level" role="menu">
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">HPO_phenotype</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_HPO_phenotype_Compare_HPOmatch_SemSim.html');">Compare_HPOmatch_SemSim.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_HPO_phenotype_HPO_match.html');">HPO_match.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_HPO_phenotype_Organ_involvment.html');">Organ_involvment.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_HPO_phenotype_Semantic_similarity.html');">Semantic_similarity.R</a></li>
+    </ul>
+</li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">Integration</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Integration_RNA_proteome_match.html');">RNA_proteome_match.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Integration_integrate_omics.html');">integrate_omics.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Integration_rna_protein_correlation.html');">rna_protein_correlation.R</a></li>
+    </ul>
+</li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">Proteomics</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_disease_gene_coverage.html');">disease_gene_coverage.R</a></li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">Aberrant_Expression</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Aberrant_Expression_limma_vs_protrider.html');">limma_vs_protrider.R</a></li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">LIMMA</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_LIMMASummary.html');">LIMMASummary.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization.html');">batch_normalization.R</a></li>
+    </ul>
+</li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">PROTRIDER</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Aberrant_Expression_PROTRIDER_PROTRIDERSummary.html');">PROTRIDERSummary.R</a></li>
+    </ul>
+</li>
+    </ul>
+</li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">Protein_complexes</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Protein_complexes_AE_complexes_Protrider.html');">AE_complexes_Protrider.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Protein_complexes_AE_complexes_limma.html');">AE_complexes_limma.R</a></li>
+    </ul>
+</li>
+    </ul>
+</li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">RNA_seq</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_RNA_seq_disease_gene_coverage.html');">disease_gene_coverage.R</a></li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">Aberrant_Expression</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_RNA_seq_Aberrant_Expression_OutriderSummary.html');">OutriderSummary.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_RNA_seq_Aberrant_Expression_detect_outliers_outrider.html');">detect_outliers_outrider.R</a></li>
+    </ul>
+</li>
+    </ul>
+</li>
+<li class="dropdown-submenu">
+    <a tabindex="-1" href="#">Variant_analysis</a>
+    <ul class="dropdown-menu">
+    <li><a href="javascript:navigate('Scripts_MultiOmics_Variant_analysis_enrichment_analysis.html');">enrichment_analysis.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Variant_analysis_enrichment_analysis_variant_type.html');">enrichment_analysis_variant_type.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Variant_analysis_outlier_proportions.html');">outlier_proportions.R</a></li>
+<li><a href="javascript:navigate('Scripts_MultiOmics_Variant_analysis_outlier_proportions_variant_type.html');">outlier_proportions_variant_type.R</a></li>
+    </ul>
+</li>
+   </ul>
+</li>
+<li class="dropdown">
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Paper_figures<span class="caret"></span></a>
+   <ul class="dropdown-menu multi-level" role="menu">
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure1.html');">Figure1.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_a.html');">Figure2_a.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_b.html');">Figure2_b.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_c.html');">Figure2_c.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_d.html');">Figure2_d.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_e.html');">Figure2_e.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_f.html');">Figure2_f.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_g.html');">Figure2_g.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure2_h.html');">Figure2_h.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure3_a.html');">Figure3_a.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure3_c.html');">Figure3_c.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure3_e.html');">Figure3_e.R</a></li>
+<li><a href="javascript:navigate('Scripts_Paper_figures_Figure4.html');">Figure4.R</a></li>
+   </ul>
+</li>
+<li class="dropdown">
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Patient_analysis<span class="caret"></span></a>
+   <ul class="dropdown-menu multi-level" role="menu">
+<li><a href="javascript:navigate('Scripts_Patient_analysis_Patient_analysis.html');">Patient_analysis.R</a></li>
+<li><a href="javascript:navigate('Scripts_Patient_analysis_detected_genes.html');">detected_genes.R</a></li>
+<li><a href="javascript:navigate('Scripts_Patient_analysis_diagnosed_cases.html');">diagnosed_cases.R</a></li>
+<li><a href="javascript:navigate('Scripts_Patient_analysis_samples_overview.html');">samples_overview.R</a></li>
+   </ul>
+</li>
+<li class="dropdown">
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Supplementary_figures<span class="caret"></span></a>
+   <ul class="dropdown-menu multi-level" role="menu">
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_a.html');">S_Fig2_a.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_b.html');">S_Fig2_b.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_c.html');">S_Fig2_c.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_d.html');">S_Fig2_d.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_e.html');">S_Fig2_e.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_f.html');">S_Fig2_f.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig2_g.html');">S_Fig2_g.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig3.html');">S_Fig3.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig4.html');">S_Fig4.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig5.html');">S_Fig5.R</a></li>
+<li><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig5_ab.html');">S_Fig5_ab.R</a></li>
+   </ul>
+</li>
+
+        <!--
+	<li><a href="#">Projects</a></li>
+	<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li>
+	-->
+
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="javascript:navigate('todo.html');"><span class="glyphicons glyphicons-pencil"></span>> Todo</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+<div class="container-fluid text-left" >    
+  <div class="row content">
+    <div class="col-sm-2 sidenav" >
+      <p><b>Recent Files</b></p>
+      <p><a href="javascript:navigate('Scripts_MultiOmics_Variant_analysis_enrichment_analysis.html');" >Scripts MultiOmics Variant analysis enrichment analysis</a></p>
+<p><a href="javascript:navigate('Scripts_MultiOmics_Variant_analysis_enrichment_analysis_variant_type.html');" >Scripts MultiOmics Variant analysis enrichment analysis variant type</a></p>
+<p><a href="javascript:navigate('Scripts_MultiOmics_Integration_rna_protein_correlation.html');" >Scripts MultiOmics Integration rna protein correlation</a></p>
+<p><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Aberrant_Expression_limma_vs_protrider.html');" >Scripts MultiOmics Proteomics Aberrant Expression limma vs protrider</a></p>
+<p><a href="javascript:navigate('Scripts_Patient_analysis_Patient_analysis.html');" >Scripts Patient analysis Patient analysis</a></p>
+<p><a href="javascript:navigate('Scripts_Paper_figures_Figure1.html');" >Scripts Paper figures Figure1</a></p>
+<p><a href="javascript:navigate('Scripts_Paper_figures_Figure2_d.html');" >Scripts Paper figures Figure2 d</a></p>
+<p><a href="javascript:navigate('Scripts_Patient_analysis_detected_genes.html');" >Scripts Patient analysis detected genes</a></p>
+<p><a href="javascript:navigate('Scripts_Paper_figures_Figure3_e.html');" >Scripts Paper figures Figure3 e</a></p>
+<p><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig3.html');" >Scripts Supplementary figures S Fig3</a></p>
+
+      <!--
+      <p><a href="#">Link</a></p>
+      <p><a href="#">Link</a></p>
+      <p><a href="#">Link</a></p>
+      -->
+    </div>
+    <div class="col-sm-10 text-left"> 
+      <iframe id="Iframe" src="readme.html" width=100% height=95% ></iframe> 
+      <!--
+      <iframe id="Iframe" src="readme.html" width=100% height=95% ></iframe> 
+      -->
+    </div>
+  </div>
+</div>
+
+<footer class="container-fluid text-center">
+  <p>wBuild by <a href="mailto:wachutka@in.tum.de">Leonhard Wachutka</a></p>
+</footer>
+
+</body>
+</html>
