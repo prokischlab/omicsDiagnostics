@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-25" />
+
+<title>Figure 3e LIG3 case example</title>
+
+<script src="libR/header-attrs-2.3/header-attrs.js"></script>
+<script src="libR/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+<script src="libR/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libR/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libR/datatables-binding-0.15/datatables.js"></script>
+<link href="libR/dt-core-bootstrap-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="libR/dt-core-bootstrap-1.10.20/css/dataTables.bootstrap.extra.css" rel="stylesheet" />
+<script src="libR/dt-core-bootstrap-1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="libR/dt-core-bootstrap-1.10.20/js/dataTables.bootstrap.min.js"></script>
+<script src="libR/jszip-1.10.20/jszip.min.js"></script>
+<script src="libR/pdfmake-1.10.20/pdfmake.js"></script>
+<script src="libR/pdfmake-1.10.20/vfs_fonts.js"></script>
+<link href="libR/dt-ext-buttons-bootstrap-1.10.20/css/buttons.bootstrap.min.css" rel="stylesheet" />
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/dataTables.buttons.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.flash.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.html5.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.colVis.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.print.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.bootstrap.min.js"></script>
+<link href="libR/dt-ext-colreorder-bootstrap-1.10.20/css/colReorder.bootstrap.min.css" rel="stylesheet" />
+<script src="libR/dt-ext-colreorder-bootstrap-1.10.20/js/dataTables.colReorder.min.js"></script>
+<script src="libR/dt-ext-colreorder-bootstrap-1.10.20/js/colReorder.bootstrap.min.js"></script>
+<link href="libR/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="libR/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="libR/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="libR/selectize-0.12.0/selectize.min.js"></script>
+<link href="libR/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libR/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Figure 3e LIG3 case example</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-25</h4>
+
+</div>
+
+
+<pre class="r"><code>dev.off()</code></pre>
+<pre><code>## null device 
+##           1</code></pre>
+<pre class="r"><code>source(snakemake@input$config)
+
+
+# Add necessaries for gene structures
+suppressPackageStartupMessages({
+  stringsAsFactors=F
+  library(Gviz)
+  library(GenomicRanges)
+  library(ggbio)
+  library(EnsDb.Hsapiens.v75)
+})
+
+## Making a short cut to ensembl 
+edb &lt;- EnsDb.Hsapiens.v75
+
+
+# Load sample annotation
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+# Read integrated omics file 
+# rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS&quot;) %&gt;% as.data.table()
+rp &lt;- readRDS(snakemake@input$patient_omics) %&gt;% as.data.table()
+
+
+
+# Load patient&#39;s affected organs
+patients &lt;- fread(snakemake@input$patient_organs)
+# patients &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_affected_organs.tsv&#39;)
+
+
+######################################################</code></pre>
+<pre class="r"><code>fig_human &lt;- gganatogram(data=  patients[SAMPLE_ID == &quot;OM91786&quot;], 
+                         fillOutline=&#39;white&#39;, organism=&#39;human&#39;, 
+                         sex= unique(patients[SAMPLE_ID == &quot;OM91786&quot;]$sex), 
+                         fill=&quot;colour&quot;)+ 
+  theme_void() + 
+  theme(plot.title = element_text(margin = NULL,face=&quot;bold&quot;, size = 9, hjust = 0.5),
+        plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;))
+fig_human</code></pre>
+<p><img src="Scripts_Paper_figures_Figure3_e_LIG3_files/figure-html/unnamed-chunk-2-1.png" width="288" /></p>
+<pre class="r"><code>pdf(snakemake@output$fig_human, # &quot;/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_e_human.pdf&quot;,  
+    width = 3, height =5,  useDingbats=FALSE )
+print(fig_human) 
+dev.off()</code></pre>
+<pre><code>## png 
+##   2</code></pre>
+<pre class="r"><code>###############################################################################
+samp &lt;- rp[ SAMPLE_ID == &quot;OM91786&quot;  &amp; outlier_class != &quot;non_outlier&quot; ] #subset for patient
+
+fig &lt;- ggplot(samp[gene_detected == &quot;RNA and protein detected&quot; ], aes(RNA_ZSCORE, PROTEIN_ZSCORE)) +
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_hline(yintercept = 0, color = &quot;grey50&quot;) +
+  
+  geom_point(aes(color= outlier_class, shape= gene_class, size = Semantic_sim )) + 
+  
+  xlab(&quot;RNA zScore&quot;) + 
+  ylab(&quot;Protein zScore&quot;) +
+  scale_color_manual(breaks = c(&quot;non_outlier&quot;,&quot;RNA_outlier&quot;,&quot;Protein_outlier&quot;, &quot;RNA_Protein_outlier&quot;),
+                     values = outlier_colors) +
+  
+  scale_shape_manual(values = gene_shapes) +
+  
+  scale_size(range = c(2.5, 6)) +
+  
+  geom_text_repel(data= samp[gene_detected == &quot;RNA and protein detected&quot;  &amp; gene_class == &quot;no rare variant&quot; ], 
+                  mapping=aes(RNA_ZSCORE, PROTEIN_ZSCORE, label= geneID), colour= &quot;grey20&quot;, 
+                  size= 2.5, show.legend = F)+ 
+  
+  geom_text_repel(data= samp[gene_detected == &quot;RNA and protein detected&quot;  &amp; gene_class == &quot;1 rare variant&quot; &amp; ( causal_gene ==F | is.na(causal_gene)) ], 
+                  mapping=aes(RNA_ZSCORE, PROTEIN_ZSCORE, label= geneID), colour= &quot;black&quot;, 
+                  size= 3.1, show.legend = F) + 
+  
+  geom_label_repel(data= samp[gene_detected == &quot;RNA and protein detected&quot; &amp; gene_class == &quot;rare pot. biallelic variants&quot; | causal_gene == T], 
+                   mapping=aes(RNA_ZSCORE, PROTEIN_ZSCORE, label= geneID ), 
+                   box.padding = unit(0.3, &quot;lines&quot;), colour= &quot;black&quot;, 
+                   size= 4, show.legend = F ) + 
+  
+  coord_fixed( xlim = c( -7, 7 ),  ylim = c( -7,  7 )) +  
+  theme_bw() +
+  
+  theme( axis.title.x= element_text( size= 10, margin = NULL,face=&quot;bold&quot;),
+         axis.title.y= element_text( size= 10, margin = NULL,face=&quot;bold&quot;),
+         legend.title = element_blank(),
+         axis.text.x = element_text(face=&quot;bold&quot;,  size=10),
+         axis.text.y = element_text(face=&quot;bold&quot;,  size=10),
+         legend.position = &quot;none&quot;,
+         plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;) ) </code></pre>
+<pre class="r"><code>fig</code></pre>
+<p><img src="Scripts_Paper_figures_Figure3_e_LIG3_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+<pre class="r"><code>pdf(snakemake@output$fig, # &quot;/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_e.pdf&quot;,  
+    width = 5, height =5,  useDingbats=FALSE )
+print(fig) 
+dev.off()</code></pre>
+<pre><code>## png 
+##   2</code></pre>
+<p>Gene structure and variant</p>
+<pre class="r"><code>autoplot(edb, ~ gene_name == &quot;LIG3&quot;, stat = &quot;reduce&quot;,  names.expr=&quot;LIG3&quot;) + 
+  theme_void()  </code></pre>
+<p><img src="Scripts_Paper_figures_Figure3_e_LIG3_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+<pre class="r"><code>dev.off()</code></pre>
+<pre><code>## null device 
+##           1</code></pre>
+<pre class="r"><code>unloadNamespace(&quot;ggbio&quot;)
+
+
+
+
+fig_no_lines &lt;- ggplot(samp[gene_detected == &quot;RNA and protein detected&quot; ], aes(RNA_ZSCORE, PROTEIN_ZSCORE)) +
+  geom_vline(xintercept = 0, color = &quot;grey50&quot;) +
+  geom_hline(yintercept = 0, color = &quot;grey50&quot;) +
+  
+  geom_point(aes(color= outlier_class, shape= gene_class, size = Semantic_sim )) + 
+  
+  xlab(&quot;RNA zScore&quot;) + 
+  ylab(&quot;Protein zScore&quot;) +
+  scale_color_manual(breaks = c(&quot;non_outlier&quot;,&quot;RNA_outlier&quot;,&quot;Protein_outlier&quot;, &quot;RNA_Protein_outlier&quot;),
+                     values = outlier_colors) +
+  
+  scale_shape_manual(values = gene_shapes) +
+  
+  scale_size(range = c(2.5, 6)) +
+  
+  geom_text_repel(data= samp[gene_detected == &quot;RNA and protein detected&quot;  &amp; gene_class == &quot;no rare variant&quot; ], 
+                  mapping=aes(RNA_ZSCORE, PROTEIN_ZSCORE, label= geneID), colour= &quot;grey20&quot;, 
+                  min.segment.length = Inf, size= 2.5, show.legend = F)+ 
+  
+  geom_text_repel(data= samp[gene_detected == &quot;RNA and protein detected&quot;  &amp; gene_class == &quot;1 rare variant&quot; &amp; ( causal_gene ==F | is.na(causal_gene)) ], 
+                  mapping=aes(RNA_ZSCORE, PROTEIN_ZSCORE, label= geneID), colour= &quot;black&quot;, 
+                  min.segment.length = Inf, size= 3.1, show.legend = F) + 
+  
+  geom_label_repel(data= samp[gene_detected == &quot;RNA and protein detected&quot; &amp; gene_class == &quot;rare pot. biallelic variants&quot; | causal_gene == T], 
+                   mapping=aes(RNA_ZSCORE, PROTEIN_ZSCORE, label= geneID ), 
+                   box.padding = unit(0.3, &quot;lines&quot;), colour= &quot;black&quot;, 
+                   min.segment.length = Inf, size= 4, show.legend = F ) + 
+  
+  coord_fixed( xlim = c( -7, 7 ),  ylim = c( -7,  7 )) +  
+  theme_bw() +
+  
+  theme( axis.title.x= element_text( size= 10, margin = NULL,face=&quot;bold&quot;),
+         axis.title.y= element_text( size= 10, margin = NULL,face=&quot;bold&quot;),
+         legend.title = element_blank(),
+         axis.text.x = element_text(face=&quot;bold&quot;,  size=10),
+         axis.text.y = element_text(face=&quot;bold&quot;,  size=10),
+         legend.position = &quot;none&quot;,
+         plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;) ) </code></pre>
+<pre class="r"><code>fig_no_lines</code></pre>
+<p><img src="Scripts_Paper_figures_Figure3_e_LIG3_files/figure-html/unnamed-chunk-5-1.png" width="480" /></p>
+<pre class="r"><code>pdf(snakemake@output$fig2, # &quot;/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_e_nolines.pdf&quot;,  
+    width = 5, height =5,  useDingbats=FALSE )
+print(fig_no_lines) 
+dev.off()</code></pre>
+<pre><code>## png 
+##   2</code></pre>
+<div id="values" class="section level1">
+<h1>Values</h1>
+<pre class="r"><code>DT::datatable(samp, 
+              caption = &quot;&quot;, style = &#39;bootstrap&#39;, filter = &#39;top&#39;, escape = F,
+              extensions = c( &#39;Buttons&#39;, &#39;ColReorder&#39; ), 
+              options = list( colReorder = TRUE, dom = &#39;Bfrtip&#39;,
+                              buttons = c(&#39;copy&#39;, &#39;csv&#39;, &#39;excel&#39;, &#39;pdf&#39;, &#39;print&#39;)))</code></pre>
+<div id="htmlwidget-cebb7e9e078c8527cd42" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-cebb7e9e078c8527cd42">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"disabled\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;,&quot;na&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"0\" data-max=\"4.58368043217972\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"disabled\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"-6.41\" data-max=\"5.03\" data-scale=\"2\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"-7.37222366487103\" data-max=\"4.38230979399088\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"0.02\" data-max=\"1.75\" data-scale=\"2\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"0.026133020659853\" data-max=\"1.87546826553776\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"7.3410083e-08\" data-max=\"0.988714437910912\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"1.67e-13\" data-max=\"0.827490336896189\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"1\" data-max=\"146\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"17.44\" data-max=\"30156.73\" data-scale=\"2\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"1\" data-max=\"147\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"1301.34813887\" data-max=\"15269264.1423429\" data-scale=\"13\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"disabled\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"disabled\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"disabled\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"disabled\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons","ColReorder"],"caption":"<caption><\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90"],["OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786"],["AEBP1","AKAP9","CHCHD1","CNOT8","COX19","COX5B","COX7A2","COX7A2L","CRTC3","DAP3","DLG5","EMC10","ERAL1","FAM45A","FASTKD2","GADD45GIP1","GALNT1","GPD2","GTPBP10","GUF1","ISLR","LIG3","LRPPRC","MRPL11","MRPL13","MRPL14","MRPL15","MRPL16","MRPL17","MRPL18","MRPL19","MRPL2","MRPL22","MRPL27","MRPL3","MRPL30","MRPL32","MRPL33","MRPL34","MRPL35","MRPL38","MRPL39","MRPL4","MRPL41","MRPL44","MRPL45","MRPL50","MRPL53","MRPL55","MRPL9","MRPS12","MRPS15","MRPS2","MRPS21","MRPS22","MRPS23","MRPS28","MRPS30","MRPS31","MRPS33","MRPS35","MRPS5","MRPS9","MT-CO2","MT-ND5","NDUFA2","NDUFA8","NDUFS5","NDUFS7","NDUFS8","NDUFV1","NOA1","PHF1","PTCD2","PTCD3","RAC2","RNF187","RPS24","SLC12A6","SLC38A5","TBRG4","TFAM","TJAP1","TMEM126A","TMEM87B","TRAF3","TRMT1","TUBGCP4","UQCRB","UQCRC2"],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false],["no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","1 rare variant","no rare variant","no rare variant","no rare variant","no rare variant","1 rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","1 rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","1 rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","no rare variant","rare pot. biallelic variants","no rare variant","no rare variant","no rare variant"],[true,true,null,null,null,null,null,null,null,null,null,null,false,null,false,null,null,false,null,true,null,null,true,null,null,null,null,null,null,null,null,null,null,null,true,null,null,null,null,null,null,null,null,null,true,null,null,null,null,null,null,null,true,null,true,false,false,null,null,null,null,null,null,null,null,true,null,null,true,true,true,null,null,null,null,false,null,true,true,null,null,false,null,false,null,true,true,true,true,true],[1.9163269569516,1.20519329698444,0,0,0,0,0,0,0,0,0,0,0.0319936896003241,0,2.97547337365805,0,0,2.7124476603112,0,2.44244874212932,0,0,2.97678359780069,0,0,0,0,0,0,0,0,0,0,0,1.89301516760136,0,0,0,0,0,0,0,0,0,2.33534318850203,0,0,0,0,0,0,0,3.19056973726251,0,2.85687313827719,3.73684710982967,2.36758990700385,0,0,0,0,0,0,0,0,4.30046417608447,0,0,4.50219145084362,4.17630946040324,4.58368043217972,0,0,0,0,1.37069634387925,0,1.57967153652457,2.01103596200346,0,0,1.85715243373112,0,0.031739583908091,0,2.38877040602624,1.74020615893532,1.75867950667154,2.32291905733436,2.62519064704069],[true,true,false,false,false,false,false,false,false,false,false,false,true,false,true,false,false,true,false,true,false,false,true,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,true,false,true,true,true,false,false,false,false,false,false,false,false,true,false,false,true,true,true,false,false,false,false,true,false,true,true,false,false,true,false,true,false,true,true,true,true,true],["RNA-and-protein","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","RNA-only","RNA-only","protein-only","protein-only","protein-only","protein-only","RNA-only","RNA-and-protein","protein-only","protein-only","RNA-only","RNA-and-protein","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","RNA-and-protein","RNA-and-protein","RNA-and-protein","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","RNA-only","protein-only","RNA-only","protein-only","RNA-and-protein","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only","protein-only"],[false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false],["RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected","RNA and protein detected"],[-6.41,-0.17,2.11,1,0.58,1.41,-0.05,0.33,1.84,-1.1,4.26,-5.13,-0.11,-2.55,0.11,1.92,4.14,3.26,-0.05,0.47,-6.28,-3.26,-2.48,-0.93,0.09,-2.05,-0.23,0.16,-0.17,0.95,1.16,-0.35,-0.48,-0.7,-0.8,-1.39,0.5,1.37,-0.81,0.57,0.55,0.39,-0.17,0.34,-1.15,0.7,0.54,0.31,0.66,0.79,1.23,0.78,0,2.77,0.42,-0.55,0.05,0.45,-0.56,1.3,0.8,0.25,1.39,-5.01,-3.32,-3.77,0.95,-1.27,0.83,1.36,0.38,-0.69,1.72,-0.38,-0.7,-5.74,-1.41,5.03,0.6,-5.88,0.7,-1.17,0.52,0.85,-0.83,-0.57,0.46,0.85,0.38,-2.53],[-3.77055275030333,3.999841277842,-4.91244287215506,-4.20865008432753,-4.6863804836047,-5.12963185972204,-4.30763044533705,-4.42675035205746,-5.71566882925416,-6.34263793787431,2.4466565252053,-1.30274733852059,-4.2301819843779,-4.67490148378267,-4.00317124733617,-6.91743214428822,2.44013296786297,4.38230979399088,-6.82784369475352,-3.99938582090472,-1.61585361024177,-4.49544108176223,-6.88923951011025,-5.66290090900318,-5.35152502318975,-7.37222366487103,-7.16078742295187,-4.44598954175862,-5.44036022756749,-5.55948838268081,-7.2662989147465,-6.31114977536072,-6.43641595340337,-6.55883227635059,-6.40073544443299,-4.38572746623126,-4.58597699842409,-3.92672795491123,-5.26352207269008,-4.09254332454939,-6.34162498738711,-7.0661380063463,-6.42573870595839,-5.49253658247492,-5.09356776005778,-5.63791097982238,-4.98418395525057,-6.42880994605834,-6.99603258804316,-5.34218893596095,-5.32283947973238,-6.74397019300071,-6.32811464275987,-4.26669352416123,-3.87556802277183,-6.5439692125823,-5.03582697927589,-6.81194994926184,-6.19584402097249,-6.19974319093752,-5.58537413767905,-6.99668574995457,-6.7086272895936,-3.99179067089353,-4.41344948583726,-4.09688247873468,-4.87838750772166,-4.14639287405714,-4.39149209012739,-4.17498312877807,-4.12792008699768,-4.69237595886629,3.99756755148913,-4.46972255364297,-4.97167940995868,-2.12340166982972,-4.19092055076097,-0.217920951294146,4.07189970145595,-5.89100465016573,-4.35106645293941,-6.11082653095926,-4.09151069744848,4.16081354163687,-5.05410358042053,-4.99995884169502,-4.76098433680431,4.29407642619987,-4.28158261705341,-4.25475696178504],[0.18,0.98,1.11,1.06,1.06,1.07,0.99,1.01,1.16,0.96,1.38,0.6,0.99,0.81,1,1.13,1.75,1.47,0.99,1.03,0.11,0.78,0.84,0.95,1,0.87,0.98,1.01,0.99,1.06,1.08,0.98,0.97,0.96,0.97,0.92,1.03,1.09,0.92,1.02,1.04,1.03,0.99,1.03,0.93,1.04,1.03,1.02,1.06,1.04,1.09,1.04,1,1.16,1.02,0.97,1,1.03,0.96,1.11,1.04,1.01,1.08,0.26,0.31,0.78,1.04,0.85,1.09,1.1,1.01,0.96,1.1,0.97,0.97,0.14,0.9,1.36,1.07,0.02,1.04,0.93,1.03,1.05,0.91,0.95,1.03,1.07,1.01,0.92],[0.360470017987172,1.58477655553891,0.438968813296972,0.595098469496766,0.533751211589429,0.401522401914098,0.361728394533975,0.395196564650189,0.277234244391794,0.544949830341533,1.19638855959695,0.78366977335676,0.471351775394502,0.673362342062034,0.616980467103368,0.313787797157755,1.46471301575217,1.52588097210021,0.316524671484546,0.603785663262512,0.606129804387043,0.729773017307382,0.500869087204085,0.512671937651342,0.478504821366479,0.317470032476622,0.370870030465066,0.497638808579308,0.539089080818705,0.422119506018879,0.375198489468495,0.355792040243631,0.425902563538396,0.351346541816369,0.416402926526285,0.316805756624019,0.48037983504932,0.531628210811804,0.43205754689891,0.546673991643395,0.383626121226706,0.373825043167602,0.416487743306116,0.51121267138163,0.519370867285343,0.517864016074999,0.52932233143481,0.538498615662455,0.319247735964483,0.364353595422115,0.418178612083506,0.334802858379595,0.464973360186511,0.441119966015013,0.674692130334608,0.42766725822222,0.502189870027938,0.332047620090103,0.443159828279094,0.298049736774466,0.466208026070449,0.368472569578494,0.416694550852925,0.431628900382013,0.271854533817635,0.485422147708944,0.370127105982578,0.377591280890825,0.474169651928007,0.485851552162634,0.487005685301022,0.494533453008815,1.35355210616885,0.390710582069495,0.550157015807177,0.513886816890854,0.0866013316319195,0.977808464358565,1.87546826553775,0.0261330206598537,0.549726890728726,0.47905137933717,0.729643926949834,1.50479440738288,0.307724552702398,0.045762089802174,0.641005495799181,1.78565745496357,0.550347128622847,0.546726215627255],[7.3410083481265e-08,0.850420418266251,0.0254721131831752,0.315937686549331,0.579059903867185,0.149261865925987,0.930475842560052,0.752215497638901,0.0638784225135493,0.253045373846709,7.10960685522434e-06,1.06697923438668e-06,0.898995555719437,0.0130129524463548,0.928085909281332,0.0477149241866923,5.06739728949734e-06,0.000465452689585817,0.942266357102922,0.641746379629091,1.75322163614576e-07,0.00184407826252601,0.01432683132268,0.334836009319696,0.948336442120043,0.0416765079764235,0.799567403853198,0.882692543405563,0.847234511845178,0.32938233937819,0.232542464704785,0.719411025743219,0.598137232511205,0.466401223685467,0.405709023159528,0.149337499781719,0.612326493393282,0.143667796548658,0.414340735768027,0.553330415680224,0.577652063782179,0.705704511145346,0.871626390842197,0.778476755654142,0.221335492791154,0.49017118746332,0.583716054828139,0.777034897960133,0.487323612817555,0.414454803113579,0.190964849472355,0.435531381619776,0.988714437910912,0.00388358763331982,0.684739059203803,0.561082318958777,0.983295625872056,0.658401295108698,0.528034743728753,0.177230775814041,0.405114143022346,0.81101349125716,0.149642492439761,1.60178968415732e-05,0.00332102795895512,0.000251446876863664,0.32257734589941,0.199093747886034,0.374495814579959,0.165572800587686,0.720106350138985,0.479344456499311,0.0756458511847137,0.671563720481214,0.456039142027646,3.83609759866693e-06,0.159929416871144,1.46449125067276e-07,0.557001126805032,8.67271682712787e-07,0.475910095869948,0.239681465889426,0.618133708222984,0.381809152612944,0.395842961687845,0.557292199467156,0.657577921921662,0.392029761789547,0.717735523561636,0.0132657378022869],[0.000162886452087934,6.33849773665762e-05,8.9948620212443e-07,2.56901712080651e-05,2.78079226096801e-06,2.90308574599039e-07,1.65012793850829e-05,9.56633644106861e-06,1.09272775827081e-08,2.25863989721539e-10,0.0144188102910019,0.192660896909321,2.33502700604185e-05,2.94094238821102e-06,6.24991516569141e-05,4.59904026342728e-12,0.0146818728187412,1.17427792922786e-05,8.62004635801746e-12,6.35070562846511e-05,0.10612593007693,6.94259535408604e-06,5.60914923582357e-12,1.48835339000796e-08,8.72160769618412e-08,1.67805005009543e-13,8.02150039259999e-13,8.74881826865314e-06,5.31729982707106e-08,2.70566325270235e-08,3.69470790708944e-13,2.76970261762118e-10,1.22327607940172e-10,5.42308330707138e-11,1.54630232743177e-10,1.1559904406112e-05,4.51868587615873e-06,8.61093239088117e-05,1.4132145609135e-07,4.26667701678323e-05,2.27354296984323e-10,1.5930512610525e-12,1.31230999568183e-10,3.96201357870999e-08,3.51387426595356e-07,1.72125814928479e-08,6.22238408176909e-07,1.28606684687077e-10,2.63312160764458e-12,9.18307115491292e-08,1.02159910802252e-07,1.5411623633989e-11,2.48174828903163e-10,1.98391273541146e-05,0.000106376339266852,5.99071664683861e-11,4.75791899872463e-07,9.62847383922589e-12,5.79736038912971e-10,5.65555094346303e-10,2.33197499029727e-08,2.62088386503741e-12,1.9646365296973e-11,6.55763451645481e-05,1.01736526086249e-05,4.18751124560088e-05,1.06956851349106e-06,3.37753971257251e-05,1.12575263937291e-05,2.98008433151004e-05,3.66059299802367e-05,2.70050123534916e-06,6.39967296478527e-05,7.83210927994293e-06,6.63753545302723e-07,0.0337202185163471,2.77826345909993e-05,0.827490336896188,4.66312841256311e-05,3.83856052633819e-09,1.35476961894602e-05,9.91164722646739e-10,4.28572545327027e-05,3.17115708525773e-05,4.32416799091044e-07,5.73425586718889e-07,1.92651225666669e-06,1.75422023402927e-05,1.85568677746368e-05,2.09276078795324e-05],[1,63,146,123,105,136,60,90,141,18,146,2,63,1,80,144,146,146,64,104,1,1,2,23,78,4,57,82,66,122,127,55,46,42,28,11,104,136,31,100,111,101,61,90,12,114,106,89,118,115,135,115,73,145,98,40,75,106,37,134,114,84,133,1,2,1,122,17,121,136,98,40,137,49,37,1,12,146,106,2,110,21,103,117,31,40,104,122,96,3],[2511.7,1663.27,954.14,2689.88,397.44,1451.61,3236.39,4509.91,2034.51,3541.42,5086.66,1498.86,2124.91,2005.21,1576.64,1038.39,7956.99,3344.97,675.84,1340.35,783.45,1103.6,4549.25,1097.63,1504.61,1013.19,1731.7,1356.64,1844.66,1972.15,1861.52,647.7,801.18,1417.54,3570.89,1245.59,1344.78,1880.96,367.17,1552.82,867.7,826.88,706.4,311.08,998.73,1768,955.47,457.62,351.03,1794.82,517.23,2135.3,943.04,2364.33,1380.08,1426.85,645.9,840.11,467.23,1257.96,2219.59,1741.76,1003.47,24419.92,11775.41,617.97,1598.49,3252.24,302.66,955.3,2239.78,694.54,2106.58,632.21,2073.27,108.53,3959.07,30156.73,1570.96,17.44,1417.57,1007.88,896.19,946.59,2789.41,1195.25,890.09,1200.75,4996.87,5142.3],[1,146,2,1,1,1,1,2,1,1,146,9,1,1,1,1,145,147,1,2,10,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,139,1,1,4,1,54,139,1,1,1,1,147,1,1,1,146,1,1],[204775.011508653,4107823.68533617,175277.609832755,34502.0204251531,90626.1066641141,2874142.09375341,815638.64580535,233682.203839954,11072.0718895201,1437863.73800841,1091497.4621487,183186.0340797,252760.447130863,624289.99468389,122612.124540739,66311.389411964,1266399.52519905,10363823.0922298,134921.015487819,121053.168224654,76225.8922967921,1580620.66238044,15269264.1423429,1985506.84761545,533970.046493389,221151.040849943,784106.061009008,691353.398114516,972828.631060541,238432.170887181,682359.522543892,251580.357567851,261308.214749557,235452.556050533,623228.424443678,123933.168723506,91586.0945629317,132012.683139567,48329.1610745663,245944.93475552,691411.291736145,539604.844765853,385106.219021001,339582.121145635,947573.883853628,767522.740815597,384697.260500122,350082.422918632,228592.039209383,414351.559628053,287728.263100287,494537.823600883,656222.699976754,88874.3137996834,1558788.10443276,520750.824822522,300341.695132102,461467.072055922,642313.338710648,199076.002861921,521212.407986631,579525.122974148,445945.610447201,2211236.83970703,43867.1232283503,590640.546087943,892528.220393728,491379.094815573,809392.846358637,516130.760899108,2224272.72884037,62442.6152552408,213826.129328144,20272.8929602877,830897.93272448,57504.1832248988,1301.34813887,6860024.49896587,188523.834565929,1786.35985429443,824790.887403313,821611.773389889,303796.491474544,2301429.51983283,130195.779851402,1607.03643853689,406781.913665109,512906.191906634,937148.208346701,4066293.93586427],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>SAMPLE_ID<\/th>\n      <th>geneID<\/th>\n      <th>causal_gene<\/th>\n      <th>rare<\/th>\n      <th>potential_biallelic<\/th>\n      <th>gene_class<\/th>\n      <th>HPO_match<\/th>\n      <th>Semantic_sim<\/th>\n      <th>MDG<\/th>\n      <th>outlier_class<\/th>\n      <th>validated<\/th>\n      <th>gene_detected<\/th>\n      <th>RNA_ZSCORE<\/th>\n      <th>PROTEIN_ZSCORE<\/th>\n      <th>RNA_FC<\/th>\n      <th>PROTEIN_FC<\/th>\n      <th>RNA_PVALUE<\/th>\n      <th>PROTEIN_PVALUE<\/th>\n      <th>rank_rna<\/th>\n      <th>normcounts<\/th>\n      <th>rank_protein<\/th>\n      <th>PROTEIN_INT<\/th>\n      <th>WES_avaliable<\/th>\n      <th>HPO_avaliable<\/th>\n      <th>RNA_seq_avaliable<\/th>\n      <th>Proteomics_avaliable<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"colReorder":true,"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":[8,13,14,15,16,17,18,19,20,21,22]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IEZpZ3VyZSAzZSBMSUczIGNhc2UgZXhhbXBsZQojJyBhdXRob3I6IHNtaXJub3ZkCiMnIHdiOgojJyAgaW5wdXQ6CiMnICAtIGNvbmZpZzogJ3NyYy9jb25maWcuUicKIycgIC0gcGF0aWVudF9vbWljczogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9pbnRlZ3JhdGlvbi9wYXRpZW50X29taWNzLlJEUyJgJwojJyAgLSBzYW1wbGVfYW5ub3RhdGlvbjogJ2BzbSBjb25maWdbIkFOTk9UQVRJT04iXWAnCiMnICAtIHBhdGllbnRfb3JnYW5zOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL0hQTy9QYXRpZW50c19hZmZlY3RlZF9vcmdhbnMudHN2ImAnCiMnICBvdXRwdXQ6CiMnICAtIGZpZ19odW1hbjogJ2BzbSBjb25maWdbIkZJR1VSRV9ESVIiXSArICIvRmlnM19lX2h1bWFuLnBkZiJgJwojJyAgLSBmaWc6ICdgc20gY29uZmlnWyJGSUdVUkVfRElSIl0gKyAiL0ZpZzNfZS5wZGYiYCcKIycgIC0gZmlnMjogJ2BzbSBjb25maWdbIkZJR1VSRV9ESVIiXSArICIvRmlnM19lX25vbGluZXMucGRmImAnCiMnIG91dHB1dDogCiMnICAgaHRtbF9kb2N1bWVudDoKIycgICAgY29kZV9mb2xkaW5nOiBoaWRlCiMnICAgIGNvZGVfZG93bmxvYWQ6IFRSVUUKIyctLS0KCgpkZXYub2ZmKCkKc291cmNlKHNuYWtlbWFrZUBpbnB1dCRjb25maWcpCgoKIyBBZGQgbmVjZXNzYXJpZXMgZm9yIGdlbmUgc3RydWN0dXJlcwpzdXBwcmVzc1BhY2thZ2VTdGFydHVwTWVzc2FnZXMoewogIHN0cmluZ3NBc0ZhY3RvcnM9RgogIGxpYnJhcnkoR3ZpeikKICBsaWJyYXJ5KEdlbm9taWNSYW5nZXMpCiAgbGlicmFyeShnZ2JpbykKICBsaWJyYXJ5KEVuc0RiLkhzYXBpZW5zLnY3NSkKfSkKCiMjIE1ha2luZyBhIHNob3J0IGN1dCB0byBlbnNlbWJsIAplZGIgPC0gRW5zRGIuSHNhcGllbnMudjc1CgoKIyBMb2FkIHNhbXBsZSBhbm5vdGF0aW9uCiMgc2EgPC0gZnJlYWQoJy9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9yYXdfZGF0YS9wcm90ZW9taWNzX2Fubm90YXRpb24udHN2JykKc2EgPC0gZnJlYWQoc25ha2VtYWtlQGlucHV0JHNhbXBsZV9hbm5vdGF0aW9uKQpzYSA8LSBzYVtVU0VfRk9SX1BST1RFT01JQ1NfUEFQRVIgPT0gVF0KCiMgUmVhZCBpbnRlZ3JhdGVkIG9taWNzIGZpbGUgCiMgcnAgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3MuUkRTIikgJT4lIGFzLmRhdGEudGFibGUoKQpycCA8LSByZWFkUkRTKHNuYWtlbWFrZUBpbnB1dCRwYXRpZW50X29taWNzKSAlPiUgYXMuZGF0YS50YWJsZSgpCgoKCiMgTG9hZCBwYXRpZW50J3MgYWZmZWN0ZWQgb3JnYW5zCnBhdGllbnRzIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRwYXRpZW50X29yZ2FucykKIyBwYXRpZW50cyA8LSBmcmVhZCgnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL0hQTy9QYXRpZW50c19hZmZlY3RlZF9vcmdhbnMudHN2JykKCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMKCiMrIGZpZy53aWR0aD0zLCBmaWcuaGVpZ2h0PTUKCmZpZ19odW1hbiA8LSBnZ2FuYXRvZ3JhbShkYXRhPSAgcGF0aWVudHNbU0FNUExFX0lEID09ICJPTTkxNzg2Il0sIAogICAgICAgICAgICAgICAgICAgICAgICAgZmlsbE91dGxpbmU9J3doaXRlJywgb3JnYW5pc209J2h1bWFuJywgCiAgICAgICAgICAgICAgICAgICAgICAgICBzZXg9IHVuaXF1ZShwYXRpZW50c1tTQU1QTEVfSUQgPT0gIk9NOTE3ODYiXSRzZXgpLCAKICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGw9ImNvbG91ciIpKyAKICB0aGVtZV92b2lkKCkgKyAKICB0aGVtZShwbG90LnRpdGxlID0gZWxlbWVudF90ZXh0KG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIsIHNpemUgPSA5LCBoanVzdCA9IDAuNSksCiAgICAgICAgcGxvdC5tYXJnaW4gPSBtYXJnaW4oMCwgMCwgMCwgMCwgImNtIikpCmZpZ19odW1hbgoKCnBkZihzbmFrZW1ha2VAb3V0cHV0JGZpZ19odW1hbiwgIyAiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL0ZpZ3VyZXMvRmlnM19lX2h1bWFuLnBkZiIsICAKICAgIHdpZHRoID0gMywgaGVpZ2h0ID01LCAgdXNlRGluZ2JhdHM9RkFMU0UgKQpwcmludChmaWdfaHVtYW4pIApkZXYub2ZmKCkKCgoKIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwpzYW1wIDwtIHJwWyBTQU1QTEVfSUQgPT0gIk9NOTE3ODYiICAmIG91dGxpZXJfY2xhc3MgIT0gIm5vbl9vdXRsaWVyIiBdICNzdWJzZXQgZm9yIHBhdGllbnQKCmZpZyA8LSBnZ3Bsb3Qoc2FtcFtnZW5lX2RldGVjdGVkID09ICJSTkEgYW5kIHByb3RlaW4gZGV0ZWN0ZWQiIF0sIGFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSkpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCBjb2xvciA9ICJncmV5NTAiKSArCiAgZ2VvbV9obGluZSh5aW50ZXJjZXB0ID0gMCwgY29sb3IgPSAiZ3JleTUwIikgKwogIAogIGdlb21fcG9pbnQoYWVzKGNvbG9yPSBvdXRsaWVyX2NsYXNzLCBzaGFwZT0gZ2VuZV9jbGFzcywgc2l6ZSA9IFNlbWFudGljX3NpbSApKSArIAogIAogIHhsYWIoIlJOQSB6U2NvcmUiKSArIAogIHlsYWIoIlByb3RlaW4gelNjb3JlIikgKwogIHNjYWxlX2NvbG9yX21hbnVhbChicmVha3MgPSBjKCJub25fb3V0bGllciIsIlJOQV9vdXRsaWVyIiwiUHJvdGVpbl9vdXRsaWVyIiwgIlJOQV9Qcm90ZWluX291dGxpZXIiKSwKICAgICAgICAgICAgICAgICAgICAgdmFsdWVzID0gb3V0bGllcl9jb2xvcnMpICsKICAKICBzY2FsZV9zaGFwZV9tYW51YWwodmFsdWVzID0gZ2VuZV9zaGFwZXMpICsKICAKICBzY2FsZV9zaXplKHJhbmdlID0gYygyLjUsIDYpKSArCiAgCiAgZ2VvbV90ZXh0X3JlcGVsKGRhdGE9IHNhbXBbZ2VuZV9kZXRlY3RlZCA9PSAiUk5BIGFuZCBwcm90ZWluIGRldGVjdGVkIiAgJiBnZW5lX2NsYXNzID09ICJubyByYXJlIHZhcmlhbnQiIF0sIAogICAgICAgICAgICAgICAgICBtYXBwaW5nPWFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSwgbGFiZWw9IGdlbmVJRCksIGNvbG91cj0gImdyZXkyMCIsIAogICAgICAgICAgICAgICAgICBzaXplPSAyLjUsIHNob3cubGVnZW5kID0gRikrIAogIAogIGdlb21fdGV4dF9yZXBlbChkYXRhPSBzYW1wW2dlbmVfZGV0ZWN0ZWQgPT0gIlJOQSBhbmQgcHJvdGVpbiBkZXRlY3RlZCIgICYgZ2VuZV9jbGFzcyA9PSAiMSByYXJlIHZhcmlhbnQiICYgKCBjYXVzYWxfZ2VuZSA9PUYgfCBpcy5uYShjYXVzYWxfZ2VuZSkpIF0sIAogICAgICAgICAgICAgICAgICBtYXBwaW5nPWFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSwgbGFiZWw9IGdlbmVJRCksIGNvbG91cj0gImJsYWNrIiwgCiAgICAgICAgICAgICAgICAgIHNpemU9IDMuMSwgc2hvdy5sZWdlbmQgPSBGKSArIAogIAogIGdlb21fbGFiZWxfcmVwZWwoZGF0YT0gc2FtcFtnZW5lX2RldGVjdGVkID09ICJSTkEgYW5kIHByb3RlaW4gZGV0ZWN0ZWQiICYgZ2VuZV9jbGFzcyA9PSAicmFyZSBwb3QuIGJpYWxsZWxpYyB2YXJpYW50cyIgfCBjYXVzYWxfZ2VuZSA9PSBUXSwgCiAgICAgICAgICAgICAgICAgICBtYXBwaW5nPWFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSwgbGFiZWw9IGdlbmVJRCApLCAKICAgICAgICAgICAgICAgICAgIGJveC5wYWRkaW5nID0gdW5pdCgwLjMsICJsaW5lcyIpLCBjb2xvdXI9ICJibGFjayIsIAogICAgICAgICAgICAgICAgICAgc2l6ZT0gNCwgc2hvdy5sZWdlbmQgPSBGICkgKyAKICAKICBjb29yZF9maXhlZCggeGxpbSA9IGMoIC03LCA3ICksICB5bGltID0gYyggLTcsICA3ICkpICsgIAogIHRoZW1lX2J3KCkgKwogIAogIHRoZW1lKCBheGlzLnRpdGxlLng9IGVsZW1lbnRfdGV4dCggc2l6ZT0gMTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgICBheGlzLnRpdGxlLnk9IGVsZW1lbnRfdGV4dCggc2l6ZT0gMTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksCiAgICAgICAgIGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGZhY2U9ImJvbGQiLCAgc2l6ZT0xMCksCiAgICAgICAgIGF4aXMudGV4dC55ID0gZWxlbWVudF90ZXh0KGZhY2U9ImJvbGQiLCAgc2l6ZT0xMCksCiAgICAgICAgIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgcGxvdC5tYXJnaW4gPSBtYXJnaW4oMCwgMCwgMCwgMCwgImNtIikgKSAKCiMrIGZpZy53aWR0aD01LCBmaWcuaGVpZ2h0PTUKZmlnCgpwZGYoc25ha2VtYWtlQG91dHB1dCRmaWcsICMgIi9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9GaWd1cmVzL0ZpZzNfZS5wZGYiLCAgCiAgICB3aWR0aCA9IDUsIGhlaWdodCA9NSwgIHVzZURpbmdiYXRzPUZBTFNFICkKcHJpbnQoZmlnKSAKZGV2Lm9mZigpCgoKCiMnIEdlbmUgc3RydWN0dXJlIGFuZCB2YXJpYW50IAojKyBmaWcud2lkdGg9NSwgZmlnLmhlaWdodD0yCmF1dG9wbG90KGVkYiwgfiBnZW5lX25hbWUgPT0gIkxJRzMiLCBzdGF0ID0gInJlZHVjZSIsICBuYW1lcy5leHByPSJMSUczIikgKyAKICB0aGVtZV92b2lkKCkgIApkZXYub2ZmKCkKCgp1bmxvYWROYW1lc3BhY2UoImdnYmlvIikKCgoKCmZpZ19ub19saW5lcyA8LSBnZ3Bsb3Qoc2FtcFtnZW5lX2RldGVjdGVkID09ICJSTkEgYW5kIHByb3RlaW4gZGV0ZWN0ZWQiIF0sIGFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSkpICsKICBnZW9tX3ZsaW5lKHhpbnRlcmNlcHQgPSAwLCBjb2xvciA9ICJncmV5NTAiKSArCiAgZ2VvbV9obGluZSh5aW50ZXJjZXB0ID0gMCwgY29sb3IgPSAiZ3JleTUwIikgKwogIAogIGdlb21fcG9pbnQoYWVzKGNvbG9yPSBvdXRsaWVyX2NsYXNzLCBzaGFwZT0gZ2VuZV9jbGFzcywgc2l6ZSA9IFNlbWFudGljX3NpbSApKSArIAogIAogIHhsYWIoIlJOQSB6U2NvcmUiKSArIAogIHlsYWIoIlByb3RlaW4gelNjb3JlIikgKwogIHNjYWxlX2NvbG9yX21hbnVhbChicmVha3MgPSBjKCJub25fb3V0bGllciIsIlJOQV9vdXRsaWVyIiwiUHJvdGVpbl9vdXRsaWVyIiwgIlJOQV9Qcm90ZWluX291dGxpZXIiKSwKICAgICAgICAgICAgICAgICAgICAgdmFsdWVzID0gb3V0bGllcl9jb2xvcnMpICsKICAKICBzY2FsZV9zaGFwZV9tYW51YWwodmFsdWVzID0gZ2VuZV9zaGFwZXMpICsKICAKICBzY2FsZV9zaXplKHJhbmdlID0gYygyLjUsIDYpKSArCiAgCiAgZ2VvbV90ZXh0X3JlcGVsKGRhdGE9IHNhbXBbZ2VuZV9kZXRlY3RlZCA9PSAiUk5BIGFuZCBwcm90ZWluIGRldGVjdGVkIiAgJiBnZW5lX2NsYXNzID09ICJubyByYXJlIHZhcmlhbnQiIF0sIAogICAgICAgICAgICAgICAgICBtYXBwaW5nPWFlcyhSTkFfWlNDT1JFLCBQUk9URUlOX1pTQ09SRSwgbGFiZWw9IGdlbmVJRCksIGNvbG91cj0gImdyZXkyMCIsIAogICAgICAgICAgICAgICAgICBtaW4uc2VnbWVudC5sZW5ndGggPSBJbmYsIHNpemU9IDIuNSwgc2hvdy5sZWdlbmQgPSBGKSsgCiAgCiAgZ2VvbV90ZXh0X3JlcGVsKGRhdGE9IHNhbXBbZ2VuZV9kZXRlY3RlZCA9PSAiUk5BIGFuZCBwcm90ZWluIGRldGVjdGVkIiAgJiBnZW5lX2NsYXNzID09ICIxIHJhcmUgdmFyaWFudCIgJiAoIGNhdXNhbF9nZW5lID09RiB8IGlzLm5hKGNhdXNhbF9nZW5lKSkgXSwgCiAgICAgICAgICAgICAgICAgIG1hcHBpbmc9YWVzKFJOQV9aU0NPUkUsIFBST1RFSU5fWlNDT1JFLCBsYWJlbD0gZ2VuZUlEKSwgY29sb3VyPSAiYmxhY2siLCAKICAgICAgICAgICAgICAgICAgbWluLnNlZ21lbnQubGVuZ3RoID0gSW5mLCBzaXplPSAzLjEsIHNob3cubGVnZW5kID0gRikgKyAKICAKICBnZW9tX2xhYmVsX3JlcGVsKGRhdGE9IHNhbXBbZ2VuZV9kZXRlY3RlZCA9PSAiUk5BIGFuZCBwcm90ZWluIGRldGVjdGVkIiAmIGdlbmVfY2xhc3MgPT0gInJhcmUgcG90LiBiaWFsbGVsaWMgdmFyaWFudHMiIHwgY2F1c2FsX2dlbmUgPT0gVF0sIAogICAgICAgICAgICAgICAgICAgbWFwcGluZz1hZXMoUk5BX1pTQ09SRSwgUFJPVEVJTl9aU0NPUkUsIGxhYmVsPSBnZW5lSUQgKSwgCiAgICAgICAgICAgICAgICAgICBib3gucGFkZGluZyA9IHVuaXQoMC4zLCAibGluZXMiKSwgY29sb3VyPSAiYmxhY2siLCAKICAgICAgICAgICAgICAgICAgIG1pbi5zZWdtZW50Lmxlbmd0aCA9IEluZiwgc2l6ZT0gNCwgc2hvdy5sZWdlbmQgPSBGICkgKyAKICAKICBjb29yZF9maXhlZCggeGxpbSA9IGMoIC03LCA3ICksICB5bGltID0gYyggLTcsICA3ICkpICsgIAogIHRoZW1lX2J3KCkgKwogIAogIHRoZW1lKCBheGlzLnRpdGxlLng9IGVsZW1lbnRfdGV4dCggc2l6ZT0gMTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgICBheGlzLnRpdGxlLnk9IGVsZW1lbnRfdGV4dCggc2l6ZT0gMTAsIG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIpLAogICAgICAgICBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksCiAgICAgICAgIGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGZhY2U9ImJvbGQiLCAgc2l6ZT0xMCksCiAgICAgICAgIGF4aXMudGV4dC55ID0gZWxlbWVudF90ZXh0KGZhY2U9ImJvbGQiLCAgc2l6ZT0xMCksCiAgICAgICAgIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIiwKICAgICAgICAgcGxvdC5tYXJnaW4gPSBtYXJnaW4oMCwgMCwgMCwgMCwgImNtIikgKSAKCiMrIGZpZy53aWR0aD01LCBmaWcuaGVpZ2h0PTUKZmlnX25vX2xpbmVzCgpwZGYoc25ha2VtYWtlQG91dHB1dCRmaWcyLCAjICIvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vRmlndXJlcy9GaWczX2Vfbm9saW5lcy5wZGYiLCAgCiAgICB3aWR0aCA9IDUsIGhlaWdodCA9NSwgIHVzZURpbmdiYXRzPUZBTFNFICkKcHJpbnQoZmlnX25vX2xpbmVzKSAKZGV2Lm9mZigpCgoKCgojJyAjIFZhbHVlcwpEVDo6ZGF0YXRhYmxlKHNhbXAsIAogICAgICAgICAgICAgIGNhcHRpb24gPSAiIiwgc3R5bGUgPSAnYm9vdHN0cmFwJywgZmlsdGVyID0gJ3RvcCcsIGVzY2FwZSA9IEYsCiAgICAgICAgICAgICAgZXh0ZW5zaW9ucyA9IGMoICdCdXR0b25zJywgJ0NvbFJlb3JkZXInICksIAogICAgICAgICAgICAgIG9wdGlvbnMgPSBsaXN0KCBjb2xSZW9yZGVyID0gVFJVRSwgZG9tID0gJ0JmcnRpcCcsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1dHRvbnMgPSBjKCdjb3B5JywgJ2NzdicsICdleGNlbCcsICdwZGYnLCAncHJpbnQnKSkpCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Figure3_e_LIG3.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

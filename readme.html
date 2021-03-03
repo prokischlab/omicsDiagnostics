@@ -575,7 +575,8 @@ border-color: #4078c0;
 </ul>
 </nav>
 <h1 id="integration-of-proteomics-with-genomics-and-transcriptomics-increases-the-diagnosis-rate-of-mendelian-disorders">Integration of proteomics with genomics and transcriptomics increases the diagnosis rate of Mendelian disorders</h1>
-<p>This project contains different scripts to automatize and visualize analysis performed for the “Integration of proteomics with genomics and transcriptomics increases the diagnosis rate of Mendelian disorders” <a href="https://drive.google.com/file/d/1y_AXrBBlkk0nG5TFiq4ayRu6qy2I3gLo/view?usp=sharing">paper</a>.</p>
+<p>This project contains different scripts to automatize and visualize analysis performed for the “Integration of proteomics with genomics and transcriptomics increases the diagnosis rate of Mendelian disorders” <a href>paper</a>.</p>
+<p><a href="https://prokischlab.github.io/omicsDiagnostics/#readme.html">Webserver</a>, produced as one of the outputs of the pipeline.</p>
 <h2 id="project-structure">Project structure</h2>
 <p>This project is setup as a <a href="https://github.com/gagneurlab/wBuild">wBuild workflow</a>. This is an automatic build tool for R reports based on <a href="https://snakemake.readthedocs.io/en/stable/">snakemake</a>.</p>
 <ul>
@@ -588,8 +589,8 @@ border-color: #4078c0;
 </ul></li>
 </ul>
 <h2 id="data-and-prerequisites">Data and prerequisites</h2>
-<p>This project depends on the python packages <code>wBuild</code> and <code>OUTRIDER2</code></p>
-<p>The pipeline starts with the series of files available via <a href="https://zenodo.org/">Zenodo</a>:</p>
+<p>This project depends on the python packages <code>wBuild</code> and <code>PROTRIDER</code></p>
+<p>The pipeline starts with the series of files available via <a href="https://zenodo.org/">Zenodo</a>: <code>DOI:10.5281/zenodo.4501904</code></p>
 <ul>
 <li><code>raw_data</code>
 <ul>
@@ -602,22 +603,18 @@ border-color: #4078c0;
 </ul></li>
 <li><code>datasets</code>
 <ul>
-<li><code>disease_genes.tsv</code> - List of Mendelian disease genes aggregated from several studies. Downloaded automatically:</li>
-<li><code>gencode.v29lift37.annotation.gtf.gz</code> - Gene-level model based on the <a href="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/GRCh37_mapping/gencode.v29lift37.annotation.gtf.gz">GENCODE 29 transcript model</a></li>
-<li><code>Table_S1_gene_info_at_protein_level.xlsx</code> - Supplementary Tble1 from <a href="https://www.cell.com/cell/fulltext/S0092-8674(20)31078-3?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS0092867420310783%3Fshowall%3Dtrue">GTEx proteomics study Jiang et al, 2020, Cell</a> Data is available at the <a href="https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx">GTEx page</a></li>
-<li><code>allComplexes.txt</code> - CORUM protein complexes, available at CORUM <a href="http://mips.helmholtz-muenchen.de/corum/download/allComplexes.txt.zip">web page</a></li>
+<li><p><code>disease_genes.tsv</code> - List of Mendelian disease genes aggregated from several studies.</p></li>
+<li><p><code>HGNC_mito_groups.tsv</code> - Subset of <a href="https://www.genenames.org/tools/search/#!/groups?query=mitochondrial">HGNC gene groups</a> related to mitochondria.</p>
+<p>Downloaded automatically:</p></li>
+<li><p><code>gencode.v29lift37.annotation.gtf.gz</code> - Gene-level model based on the <a href="ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/GRCh37_mapping/gencode.v29lift37.annotation.gtf.gz">GENCODE 29 transcript model</a></p></li>
+<li><p><code>Table_S1_gene_info_at_protein_level.xlsx</code> - Supplementary Tble1 from <a href="https://www.cell.com/cell/fulltext/S0092-8674(20)31078-3?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS0092867420310783%3Fshowall%3Dtrue">GTEx proteomics study Jiang et al, 2020, Cell</a> Data is available at the <a href="https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx">GTEx page</a></p></li>
+<li><p><code>allComplexes.txt</code> - CORUM protein complexes, available at CORUM <a href="http://mips.helmholtz-muenchen.de/corum/download/allComplexes.txt.zip">web page</a></p></li>
 </ul></li>
 </ul>
 <p>The proteomic raw data and MaxQuant search files have been deposited to the <a href="http://proteomecentral.proteomexchange.org">ProteomeXchange Consortium</a> via the PRIDE partner repository and can be accessed using the dataset identifier PXD022803</p>
 <h2 id="repository-setup">Repository setup</h2>
 <p>First download the repo and its dependencies:</p>
-<pre><code># outrider2 package for python omplementation of PRTRIDER
-git clone --branch outrider2 git@gitlab.cmm.in.tum.de:brechtma/OUTRIDER.git
-git clone --branch outrider2 git@gitlab.cmm.in.tum.de:gagneurlab/py_outrider.git
-ln -s OUTRIDER/inst/python py_outrider/py_outrider
-ln -s /data/nasif12/home_if12/smirnovd/omicsDiagnostics/OUTRIDER/inst/python /data/nasif12/home_if12/smirnovd/omicsDiagnostics/py_outrider/py_outrider
-
-# analysis code
+<pre><code># analysis code
 git clone https://github.com/gagneurlab/omicsDiagnostics
 cd omicsDiagnostics</code></pre>
 <p>and install wbuild using pip by running.</p>
@@ -631,9 +628,10 @@ git checkout readme.md</code></pre>
 <ul>
 <li>R packages
 <ul>
+<li>Make sure that <code>data.table</code> is installed or install with <code>install.packages(&quot;data.table&quot;)</code></li>
 <li><code>Rscript src/installRPackages.R src/requirementsR.txt</code></li>
 </ul></li>
-<li>Conda enviorment
+<li>Create Conda environment
 <ul>
 <li><code>conda env create --name omicsDiagnostics --file=environment.yml</code></li>
 </ul></li>

@@ -11,10 +11,11 @@
 
 <meta name="author" content="smirnovd" />
 
-<meta name="date" content="2021-02-03" />
+<meta name="date" content="2021-02-25" />
 
 <title>Supplementary Fig 3</title>
 
+<script src="libR/header-attrs-2.3/header-attrs.js"></script>
 <script src="libR/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -276,7 +277,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Supplementary Fig 3</h1>
 <h4 class="author">smirnovd</h4>
-<h4 class="date">2021-02-03</h4>
+<h4 class="date">2021-02-25</h4>
 
 </div>
 
@@ -297,7 +298,7 @@ sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
 sa &lt;- sa[ !is.na(KNOWN_MUTATION) &amp; CATEGORY == &quot;III&quot;]
 
 # Remove cases appearing in the main figures
-sa &lt;- sa[ !(KNOWN_MUTATION %in% c(&quot;LIG3&quot;, &quot;MRPL38&quot;, &quot;MORC2&quot;, &quot;DARS2&quot;, &quot;MRPS25&quot;) )]
+sa &lt;- sa[ !(KNOWN_MUTATION %in% c(&quot;LIG3&quot;, &quot;MRPL38&quot;, &quot;MORC2&quot;, &quot;DARS2&quot;, &quot;MRPS25&quot;, &quot;EPG5&quot;) )]
 
 # Read integrated omics file 
 # rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS&quot;) %&gt;% as.data.table()
@@ -311,25 +312,39 @@ rp &lt;- rp[ outlier_class != &#39;non_outlier&#39; | causal_gene == T]
 
 
 
-samples &lt;- unique(sa$SAMPLE_ID)</code></pre>
-<pre class="r"><code>for (i in samples){
-  plot_sample &lt;- plot_patient_main(rp, sample = i) + 
-    ggtitle(paste(&quot;Sample ID:&quot;, i, &quot;\nCasual gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
-  print(plot_sample)
-}</code></pre>
-<p><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-1.png" width="480" /><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-2.png" width="480" /><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-3.png" width="480" /><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-4.png" width="480" /><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-5.png" width="480" /><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-6.png" width="480" /><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-2-7.png" width="480" /></p>
-<pre class="r"><code>pdf(snakemake@output$fig, # &quot;/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig3.pdf&quot;,  
-    useDingbats=FALSE,  paper = &quot;a4&quot;) # paper = &quot;a4&quot;
-for (i in samples){
-  plot_sample &lt;- plot_patient_main(rp, sample = i) + 
-    ggtitle(paste(&quot;Sample ID:&quot;, i, &quot;\nCasual gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
-  print(plot_sample)
-}
+samples &lt;- unique(sa$SAMPLE_ID)
+
+# #+ fig.width=5, fig.height=5
+# for (i in samples){
+#   plot_sample &lt;- plot_patient_main(rp, sample = i) + 
+#     ggtitle(paste(&quot;Sample ID:&quot;, i, &quot;\nCasual gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+#   print(plot_sample)
+# }
+
+
+
+ 
+plot_OM87369 &lt;- plot_patient_main(rp, sample = &quot;OM87369&quot;) +  ggtitle(paste(&quot;Sample ID:&quot;, &quot;OM87369&quot;, &quot;\nMolecular diagnosis:&quot;, sa[SAMPLE_ID == &quot;OM87369&quot;]$KNOWN_MUTATION ) ) #+ theme(legend.title = element_blank(), legend.position = &quot;none&quot;) 
+plot_OM34814 &lt;- plot_patient_main(rp, sample = &quot;OM34814&quot;) +  ggtitle(paste(&quot;Sample ID:&quot;, &quot;OM34814&quot;, &quot;\nMolecular diagnosis:&quot;, sa[SAMPLE_ID == &quot;OM34814&quot;]$KNOWN_MUTATION ) ) #+ theme(legend.title = element_blank(), legend.position = &quot;none&quot;) 
+plot_OM38813 &lt;- plot_patient_main(rp, sample = &quot;OM38813&quot;) +  ggtitle(paste(&quot;Sample ID:&quot;, &quot;OM38813&quot;, &quot;\nMolecular diagnosis:&quot;, sa[SAMPLE_ID == &quot;OM38813&quot;]$KNOWN_MUTATION ) ) #+ theme(legend.title = element_blank(), legend.position = &quot;none&quot;) 
+plot_OM21111 &lt;- plot_patient_main(rp, sample = &quot;OM21111&quot;) +  ggtitle(paste(&quot;Sample ID:&quot;, &quot;OM21111&quot;, &quot;\nMolecular diagnosis:&quot;, sa[SAMPLE_ID == &quot;OM21111&quot;]$KNOWN_MUTATION ) ) #+ theme(legend.title = element_blank(), legend.position = &quot;none&quot;) 
+plot_OM56706 &lt;- plot_patient_main(rp, sample = &quot;OM56706&quot;) +  ggtitle(paste(&quot;Sample ID:&quot;, &quot;OM56706&quot;, &quot;\nMolecular diagnosis:&quot;, sa[SAMPLE_ID == &quot;OM56706&quot;]$KNOWN_MUTATION ) ) #+ theme(legend.title = element_blank(), legend.position = &quot;none&quot;) 
+plot_OM03592 &lt;- plot_patient_main(rp, sample = &quot;OM03592&quot;) +  ggtitle(paste(&quot;Sample ID:&quot;, &quot;OM03592&quot;, &quot;\nMolecular diagnosis:&quot;, sa[SAMPLE_ID == &quot;OM03592&quot;]$KNOWN_MUTATION ) )
+
+s_fig &lt;- plot_OM87369 + plot_OM34814 + plot_OM38813 +  plot_OM21111 + plot_OM56706  + plot_OM03592  + 
+  plot_layout(ncol = 2) # + plot_annotation(tag_levels = &#39;a&#39;) &amp; theme(plot.tag = element_text(size = 14, face = &quot;bold&quot;) )
+
+# #+ fig.width=13, fig.height=16
+s_fig</code></pre>
+<p><img src="Scripts_Supplementary_figures_S_Fig3_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>pdf( snakemake@output$fig, # &quot;/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig3.pdf&quot;,   # 
+    useDingbats=FALSE, width = 13, height =16,  ) # paper = &quot;a4&quot;
+s_fig
 dev.off()</code></pre>
 <pre><code>## png 
 ##   2</code></pre>
 
-<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFN1cHBsZW1lbnRhcnkgRmlnIDMgCiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDogCiMnICAtIGNvbmZpZzogJ3NyYy9jb25maWcuUicKIycgIC0gcGF0aWVudF9vbWljczogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9pbnRlZ3JhdGlvbi9wYXRpZW50X29taWNzX2Z1bGwuUkRTImAnCiMnICAtIHNhbXBsZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siQU5OT1RBVElPTiJdYCcKIycgIG91dHB1dDoKIycgIC0gZmlnOiAnYHNtIGNvbmZpZ1siRklHVVJFX0RJUiJdICsgIi9TdXBwbGVtZW50YXJ5X2ZpZ3VyZXMvU19GaWczLnBkZiJgJwojJyBvdXRwdXQ6IAojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgoKIyBMb2FkIGNvbmZpZwpzb3VyY2Uoc25ha2VtYWtlQGlucHV0JGNvbmZpZykKCiMgTG9hZCBwbG90dGluZyBmdW5jdGlvbnMKc291cmNlKCJzcmMvZnVuY3Rpb25zL3Bsb3RzLlIiKQoKCiMgTG9hZCBzYW1wbGUgYW5ub3RhdGlvbgojIHNhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19hbm5vdGF0aW9uLnRzdicpCnNhIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRzYW1wbGVfYW5ub3RhdGlvbikKc2EgPC0gc2FbVVNFX0ZPUl9QUk9URU9NSUNTX1BBUEVSID09IFRdCgojIFN1YnNldCBkaWFnbm9zZWQgY2FzZXMgZnJvbSBkaXNjb3ZlcnkgY29ob3J0CnNhIDwtIHNhWyAhaXMubmEoS05PV05fTVVUQVRJT04pICYgQ0FURUdPUlkgPT0gIklJSSJdCgojIFJlbW92ZSBjYXNlcyBhcHBlYXJpbmcgaW4gdGhlIG1haW4gZmlndXJlcwpzYSA8LSBzYVsgIShLTk9XTl9NVVRBVElPTiAlaW4lIGMoIkxJRzMiLCAiTVJQTDM4IiwgIk1PUkMyIiwgIkRBUlMyIiwgIk1SUFMyNSIpICldCgojIFJlYWQgaW50ZWdyYXRlZCBvbWljcyBmaWxlIAojIHJwIDwtIHJlYWRSRFMoIi9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9wcm9jZXNzZWRfZGF0YS9pbnRlZ3JhdGlvbi9wYXRpZW50X29taWNzLlJEUyIpICU+JSBhcy5kYXRhLnRhYmxlKCkKcnAgPC0gcmVhZFJEUyhzbmFrZW1ha2VAaW5wdXQkcGF0aWVudF9vbWljcykgJT4lIGFzLmRhdGEudGFibGUoKQojIFN1YnNldCBkaWFnbm9zZWQgY2FzZXMgYW5kIGNhbmRpZGF0ZXMKcnAgPC0gcnBbU0FNUExFX0lEICVpbiUgc2EkU0FNUExFX0lEXQoKIyBTdWJzZXQgb3V0bGllcnMgb25seSAKcnAgPC0gcnBbIG91dGxpZXJfY2xhc3MgIT0gJ25vbl9vdXRsaWVyJyB8IGNhdXNhbF9nZW5lID09IFRdCgoKCgpzYW1wbGVzIDwtIHVuaXF1ZShzYSRTQU1QTEVfSUQpCgojKyBmaWcud2lkdGg9NSwgZmlnLmhlaWdodD01CmZvciAoaSBpbiBzYW1wbGVzKXsKICBwbG90X3NhbXBsZSA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gaSkgKyAKICAgIGdndGl0bGUocGFzdGUoIlNhbXBsZSBJRDoiLCBpLCAiXG5DYXN1YWwgZ2VuZToiLCBzYVtTQU1QTEVfSUQgPT0gaV0kS05PV05fTVVUQVRJT04gKSApCiAgcHJpbnQocGxvdF9zYW1wbGUpCn0KCgoKCnBkZihzbmFrZW1ha2VAb3V0cHV0JGZpZywgIyAiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL0ZpZ3VyZXMvU3VwcGxlbWVudGFyeV9maWd1cmVzL1NfRmlnMy5wZGYiLCAgCiAgICB1c2VEaW5nYmF0cz1GQUxTRSwgIHBhcGVyID0gImE0IikgIyBwYXBlciA9ICJhNCIKZm9yIChpIGluIHNhbXBsZXMpewogIHBsb3Rfc2FtcGxlIDwtIHBsb3RfcGF0aWVudF9tYWluKHJwLCBzYW1wbGUgPSBpKSArIAogICAgZ2d0aXRsZShwYXN0ZSgiU2FtcGxlIElEOiIsIGksICJcbkNhc3VhbCBnZW5lOiIsIHNhW1NBTVBMRV9JRCA9PSBpXSRLTk9XTl9NVVRBVElPTiApICkKICBwcmludChwbG90X3NhbXBsZSkKfQpkZXYub2ZmKCkKCgoKCgoKCg==</div>
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFN1cHBsZW1lbnRhcnkgRmlnIDMgCiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDogCiMnICAtIGNvbmZpZzogJ3NyYy9jb25maWcuUicKIycgIC0gcGF0aWVudF9vbWljczogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9pbnRlZ3JhdGlvbi9wYXRpZW50X29taWNzX2Z1bGwuUkRTImAnCiMnICAtIHNhbXBsZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siQU5OT1RBVElPTiJdYCcKIycgIG91dHB1dDoKIycgIC0gZmlnOiAnYHNtIGNvbmZpZ1siRklHVVJFX0RJUiJdICsgIi9TdXBwbGVtZW50YXJ5X2ZpZ3VyZXMvU19GaWczLnBkZiJgJwojJyBvdXRwdXQ6IAojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgoKIyBMb2FkIGNvbmZpZwpzb3VyY2Uoc25ha2VtYWtlQGlucHV0JGNvbmZpZykKCiMgTG9hZCBwbG90dGluZyBmdW5jdGlvbnMKc291cmNlKCJzcmMvZnVuY3Rpb25zL3Bsb3RzLlIiKQoKCiMgTG9hZCBzYW1wbGUgYW5ub3RhdGlvbgojIHNhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19hbm5vdGF0aW9uLnRzdicpCnNhIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRzYW1wbGVfYW5ub3RhdGlvbikKc2EgPC0gc2FbVVNFX0ZPUl9QUk9URU9NSUNTX1BBUEVSID09IFRdCgojIFN1YnNldCBkaWFnbm9zZWQgY2FzZXMgZnJvbSBkaXNjb3ZlcnkgY29ob3J0CnNhIDwtIHNhWyAhaXMubmEoS05PV05fTVVUQVRJT04pICYgQ0FURUdPUlkgPT0gIklJSSJdCgojIFJlbW92ZSBjYXNlcyBhcHBlYXJpbmcgaW4gdGhlIG1haW4gZmlndXJlcwpzYSA8LSBzYVsgIShLTk9XTl9NVVRBVElPTiAlaW4lIGMoIkxJRzMiLCAiTVJQTDM4IiwgIk1PUkMyIiwgIkRBUlMyIiwgIk1SUFMyNSIsICJFUEc1IikgKV0KCiMgUmVhZCBpbnRlZ3JhdGVkIG9taWNzIGZpbGUgCiMgcnAgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3MuUkRTIikgJT4lIGFzLmRhdGEudGFibGUoKQpycCA8LSByZWFkUkRTKHNuYWtlbWFrZUBpbnB1dCRwYXRpZW50X29taWNzKSAlPiUgYXMuZGF0YS50YWJsZSgpCiMgU3Vic2V0IGRpYWdub3NlZCBjYXNlcyBhbmQgY2FuZGlkYXRlcwpycCA8LSBycFtTQU1QTEVfSUQgJWluJSBzYSRTQU1QTEVfSURdCgojIFN1YnNldCBvdXRsaWVycyBvbmx5IApycCA8LSBycFsgb3V0bGllcl9jbGFzcyAhPSAnbm9uX291dGxpZXInIHwgY2F1c2FsX2dlbmUgPT0gVF0KCgoKCnNhbXBsZXMgPC0gdW5pcXVlKHNhJFNBTVBMRV9JRCkKCiMgIysgZmlnLndpZHRoPTUsIGZpZy5oZWlnaHQ9NQojIGZvciAoaSBpbiBzYW1wbGVzKXsKIyAgIHBsb3Rfc2FtcGxlIDwtIHBsb3RfcGF0aWVudF9tYWluKHJwLCBzYW1wbGUgPSBpKSArIAojICAgICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgaSwgIlxuQ2FzdWFsIGdlbmU6Iiwgc2FbU0FNUExFX0lEID09IGldJEtOT1dOX01VVEFUSU9OICkgKQojICAgcHJpbnQocGxvdF9zYW1wbGUpCiMgfQoKCgogCnBsb3RfT004NzM2OSA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gIk9NODczNjkiKSArICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgIk9NODczNjkiLCAiXG5Nb2xlY3VsYXIgZGlhZ25vc2lzOiIsIHNhW1NBTVBMRV9JRCA9PSAiT004NzM2OSJdJEtOT1dOX01VVEFUSU9OICkgKSAjKyB0aGVtZShsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgCnBsb3RfT00zNDgxNCA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gIk9NMzQ4MTQiKSArICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgIk9NMzQ4MTQiLCAiXG5Nb2xlY3VsYXIgZGlhZ25vc2lzOiIsIHNhW1NBTVBMRV9JRCA9PSAiT00zNDgxNCJdJEtOT1dOX01VVEFUSU9OICkgKSAjKyB0aGVtZShsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgCnBsb3RfT00zODgxMyA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gIk9NMzg4MTMiKSArICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgIk9NMzg4MTMiLCAiXG5Nb2xlY3VsYXIgZGlhZ25vc2lzOiIsIHNhW1NBTVBMRV9JRCA9PSAiT00zODgxMyJdJEtOT1dOX01VVEFUSU9OICkgKSAjKyB0aGVtZShsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgCnBsb3RfT00yMTExMSA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gIk9NMjExMTEiKSArICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgIk9NMjExMTEiLCAiXG5Nb2xlY3VsYXIgZGlhZ25vc2lzOiIsIHNhW1NBTVBMRV9JRCA9PSAiT00yMTExMSJdJEtOT1dOX01VVEFUSU9OICkgKSAjKyB0aGVtZShsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgCnBsb3RfT001NjcwNiA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gIk9NNTY3MDYiKSArICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgIk9NNTY3MDYiLCAiXG5Nb2xlY3VsYXIgZGlhZ25vc2lzOiIsIHNhW1NBTVBMRV9JRCA9PSAiT001NjcwNiJdJEtOT1dOX01VVEFUSU9OICkgKSAjKyB0aGVtZShsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgCnBsb3RfT00wMzU5MiA8LSBwbG90X3BhdGllbnRfbWFpbihycCwgc2FtcGxlID0gIk9NMDM1OTIiKSArICBnZ3RpdGxlKHBhc3RlKCJTYW1wbGUgSUQ6IiwgIk9NMDM1OTIiLCAiXG5Nb2xlY3VsYXIgZGlhZ25vc2lzOiIsIHNhW1NBTVBMRV9JRCA9PSAiT00wMzU5MiJdJEtOT1dOX01VVEFUSU9OICkgKQoKc19maWcgPC0gcGxvdF9PTTg3MzY5ICsgcGxvdF9PTTM0ODE0ICsgcGxvdF9PTTM4ODEzICsgIHBsb3RfT00yMTExMSArIHBsb3RfT001NjcwNiAgKyBwbG90X09NMDM1OTIgICsgCiAgcGxvdF9sYXlvdXQobmNvbCA9IDIpICMgKyBwbG90X2Fubm90YXRpb24odGFnX2xldmVscyA9ICdhJykgJiB0aGVtZShwbG90LnRhZyA9IGVsZW1lbnRfdGV4dChzaXplID0gMTQsIGZhY2UgPSAiYm9sZCIpICkKCiMgIysgZmlnLndpZHRoPTEzLCBmaWcuaGVpZ2h0PTE2CnNfZmlnCgoKcGRmKCBzbmFrZW1ha2VAb3V0cHV0JGZpZywgIyAiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL0ZpZ3VyZXMvU3VwcGxlbWVudGFyeV9maWd1cmVzL1NfRmlnMy5wZGYiLCAgICMgCiAgICB1c2VEaW5nYmF0cz1GQUxTRSwgd2lkdGggPSAxMywgaGVpZ2h0ID0xNiwgICkgIyBwYXBlciA9ICJhNCIKc19maWcKZGV2Lm9mZigpCgoKCgoKCgoK</div>
 
 
 </div>

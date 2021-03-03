@@ -11,7 +11,7 @@
 
 <meta name="author" content="smirnovd" />
 
-<meta name="date" content="2021-02-02" />
+<meta name="date" content="2021-02-15" />
 
 <title>Supplementary Fig 2e outliers per sample</title>
 
@@ -276,7 +276,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Supplementary Fig 2e outliers per sample</h1>
 <h4 class="author">smirnovd</h4>
-<h4 class="date">2021-02-02</h4>
+<h4 class="date">2021-02-15</h4>
 
 </div>
 
@@ -325,7 +325,7 @@ protr &lt;- readRDS(snakemake@input$protrider_results) %&gt;% as.data.table()
 
 protr &lt;- protr[!is.na(PROTEIN_PVALUE)]
 paste(&quot;Number of outliers in PROTRIDER:&quot;, nrow(protr[ PROTEIN_outlier == T]) )</code></pre>
-<pre><code>## [1] &quot;Number of outliers in PROTRIDER: 1635&quot;</code></pre>
+<pre><code>## [1] &quot;Number of outliers in PROTRIDER: 1569&quot;</code></pre>
 <pre class="r"><code>osx &lt;- protr[ PROTEIN_outlier == T , .N, by = c(&#39;SAMPLE_ID&#39;)]
 osx &lt;- as.data.table(merge(sa, osx, by = &quot;SAMPLE_ID&quot;, all.x = T))
 osx[is.na(N), N:= 0]
@@ -344,7 +344,7 @@ outrider &lt;- readRDS(snakemake@input$outrider_results) %&gt;% as.data.table()
 
 outrider &lt;- outrider[!is.na(RNA_PVALUE)]
 paste(&quot;Number of outliers in OUTRIDER:&quot;, nrow(outrider[ RNA_outlier == T]) )</code></pre>
-<pre><code>## [1] &quot;Number of outliers in OUTRIDER: 583&quot;</code></pre>
+<pre><code>## [1] &quot;Number of outliers in OUTRIDER: 582&quot;</code></pre>
 <pre class="r"><code>osx &lt;- outrider[ RNA_outlier == T , .N, by = c(&#39;SAMPLE_ID&#39;)]
 osx &lt;- as.data.table(merge(sa, osx, by = &quot;SAMPLE_ID&quot;, all.x = T))
 osx[is.na(N), N:= 0]
