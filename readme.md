@@ -68,6 +68,10 @@ git checkout readme.md
 ```
 
 
+Specify correct file and folder locations in the `wbuild.yaml`.
+
+
+
 ## Install dependencies
 * R packages
   * Make sure that `data.table` is installed or install with `install.packages("data.table")`
