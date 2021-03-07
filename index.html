@@ -14,7 +14,7 @@
       window.frames['Iframe'].src =  hash;
       }
       window.onload = function () {
-        wol("/data/nasif12/home_if12/smirnovd/multiOMICs_integration/Output/html/readme.html" );
+        wol( "readme.html" );
 };
 
       function navigate(url){
@@ -127,8 +127,8 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li><a href="javascript:navigate( '/data/nasif12/home_if12/smirnovd/multiOMICs_integration/Output/html/readme.html');">Readme</a></li> 
-        <li><a href="javascript:navigate('/data/nasif12/home_if12/smirnovd/multiOMICs_integration/Output/html/dep.svg');">Dependency</a></li>
+        <li><a href="javascript:navigate( 'readme.html');">Readme</a></li> 
+        <li><a href="javascript:navigate('dep.svg');">Dependency</a></li>
         <!--
         <li><a href="javascript:navigate('readme.html');">Readme</a></li>
         <li><a href="javascript:navigate('dep.svg');">Dependency</a></li>
@@ -292,11 +292,11 @@
   <div class="row content">
     <div class="col-sm-2 sidenav" >
       <p><b>Recent Files</b></p>
-      <p><a href="javascript:navigate('readme.html');" >readme</a></p>
-<p><a href="javascript:navigate('Scripts_Patient_analysis_Patient_analysis.html');" >Scripts Patient analysis Patient analysis</a></p>
-<p><a href="javascript:navigate('Scripts_Paper_figures_Figure1_c_positive_controls.html');" >Scripts Paper figures Figure1 c positive controls</a></p>
+      <p><a href="javascript:navigate('Scripts_Paper_figures_Figure1_c_positive_controls.html');" >Scripts Paper figures Figure1 c positive controls</a></p>
 <p><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider.html');" >Scripts MultiOmics Proteomics Protein complexes AE MITO groups Protrider</a></p>
 <p><a href="javascript:navigate('Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_complexes_Protrider.html');" >Scripts MultiOmics Proteomics Protein complexes AE MITO complexes Protrider</a></p>
+<p><a href="javascript:navigate('readme.html');" >readme</a></p>
+<p><a href="javascript:navigate('dep.svg');" >dep.svg</a></p>
 <p><a href="javascript:navigate('Scripts_Paper_figures_Figure3_h_complexes.html');" >Scripts Paper figures Figure3 h complexes</a></p>
 <p><a href="javascript:navigate('Scripts_Patient_analysis_detected_genes.html');" >Scripts Patient analysis detected genes</a></p>
 <p><a href="javascript:navigate('Scripts_Supplementary_figures_S_Fig1_e_gtex_proteomics.html');" >Scripts Supplementary figures S Fig1 e gtex proteomics</a></p>
@@ -310,7 +310,7 @@
       -->
     </div>
     <div class="col-sm-10 text-left"> 
-      <iframe id="Iframe" src="/data/nasif12/home_if12/smirnovd/multiOMICs_integration/Output/html/readme.html" width=100% height=95% ></iframe> 
+      <iframe id="Iframe" src="readme.html" width=100% height=95% ></iframe> 
       <!--
       <iframe id="Iframe" src="readme.html" width=100% height=95% ></iframe> 
       -->
@@ -319,6 +319,7 @@
 </div>
 
 <footer class="container-fluid text-center">
+    <p>Created by <a href="mailto:dmitrii.smirnov@helmholtz-muenchen.de">Dmitrii Smirnov</a></p>
   <p>wBuild by <a href="mailto:wachutka@in.tum.de">Leonhard Wachutka</a></p>
 </footer>
 
