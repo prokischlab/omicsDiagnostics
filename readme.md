@@ -40,7 +40,7 @@ The pipeline starts with the series of files available via [Zenodo](https://zeno
   Data is available at the [GTEx page](https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx)
   * `allComplexes.txt` - CORUM protein complexes, available at CORUM [web page](http://mips.helmholtz-muenchen.de/corum/download/allComplexes.txt.zip)
 
-The proteomic raw data and MaxQuant search files have been deposited to the [ProteomeXchange Consortium](http://proteomecentral.proteomexchange.org) via the PRIDE partner repository and can be accessed using the dataset identifier PXD022803
+The proteomic raw data and MaxQuant search files have been deposited to the [ProteomeXchange Consortium](http://proteomecentral.proteomexchange.org) via the [PRIDE partner repository](https://www.ebi.ac.uk/pride/archive/projects/PXD022803) and can be accessed using the dataset identifier `PXD022803`
 
 ## Repository setup
 
