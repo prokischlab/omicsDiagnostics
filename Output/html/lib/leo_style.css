@@ -1,7 +1,0 @@
-body div.main-container {
-    margin-left: 0;
-    max-width: 100%;
-}
-html body div.container-fluid.main-container div.row-fluid div.col-xs-12.col-sm-4.col-md-3{
-	width: 0;
-}
