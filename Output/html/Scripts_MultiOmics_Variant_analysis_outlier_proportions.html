@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-15" />
+
+<title>Proportion of outliers with variants and phenotype simmilarity</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Proportion of outliers with variants and phenotype simmilarity</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-15</h4>
+
+</div>
+
+
+<pre class="r"><code># Load plotting config and functions
+source(snakemake@input$config)
+source(&quot;src/functions/Integration/integrate_annotate_omics.R&quot;)
+source(&quot;src/functions/variant_enrichment.R&quot;)
+
+
+# Read integrated omics file 
+# rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS&quot;) %&gt;% as.data.table()
+rp &lt;- readRDS(snakemake@input$patient_omics) %&gt;% as.data.table()
+
+# Subset cases with WES and RNA-seq data avaliable 
+rp &lt;- rp[WES_avaliable == T &amp; RNA_seq_avaliable == T]
+paste(&quot;Number of samples with WES export and RNA-seq avaliable:&quot;, uniqueN(rp$SAMPLE_ID))</code></pre>
+<pre><code>## [1] &quot;Number of samples with WES export and RNA-seq avaliable: 140&quot;</code></pre>
+<pre class="r"><code>#Keep only genes, with both RNA and protein measured 
+rp &lt;- rp[ gene_detected == &quot;RNA and protein detected&quot;]
+
+# Filter for the genes, detected as outliers at least once
+outliers &lt;- unique(rp[outlier_class != &quot;non_outlier&quot;]$geneID)
+rp &lt;- rp[geneID %in% outliers]
+
+
+# Add up- down- outlier class
+rp &lt;- add_up_down_class(rp, 
+                        Padj_threshold =  PADJ_THRESHOLD,
+                        Zscore_threshold = ZSCORE_THRESHOLD, 
+                        l2FC_threshold = LOG2FC_THRESHOLD)
+
+
+# Add phenotype semantic simillarity class
+rp[, ss_cat:= Semantic_sim &gt; 2]
+rp[is.na(ss_cat), ss_cat := F]
+
+
+# Add variant type annotation
+rp[ , var_type := &quot;no rare variant&quot;] 
+rp[ rare == T , var_type := &quot;rare&quot;] 
+rp[ potential_biallelic == T , var_type := &quot;potential_biallelic&quot;] 
+rp[potential_biallelic == T &amp; ss_cat == T,  var_type:= &quot;potential biallelic SemSim &gt; 2&quot;]
+
+# Subset necessary columns
+rp &lt;- rp[ , c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;, &quot;var_type&quot;, &quot;up_down_outlier&quot;) ]
+
+
+# Calculate proportions of outliers
+pr &lt;- rp[, .N, by = .(up_down_outlier, var_type)]
+pr[, total := sum(N), by = .(up_down_outlier)]
+pr[, prop := N/sum(N), by = up_down_outlier]
+pr[, type := &quot;pb&quot;]
+
+# write_tsv(pr, &quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/variant_tables/proportions_rare_biallelic.tsv&quot;)
+write_tsv(pr, snakemake@output$proportions_rare_pb)
+
+pr[, var_type := factor(var_type, levels = c(&quot;no rare variant&quot;, &quot;rare&quot;, &quot;potential_biallelic&quot;, &quot;potential biallelic SemSim &gt; 2&quot;))]
+pr[, outlier_class_label := paste0(up_down_outlier ,&#39;\n&#39;, &quot;(n = &quot;, total, &quot;)&quot;) ]</code></pre>
+<div id="underexpression-outliers" class="section level3">
+<h3>Underexpression outliers</h3>
+<p>Performed on the not representative subset of the data, to illutrate the analysis</p>
+<pre class="r"><code>pr &lt;- pr[up_down_outlier %in% c(&quot;RNA_underexpression&quot;, &quot;Protein_underexpression&quot;, &quot;RNA_Protein_underexpression&quot;, &quot;non_outlier&quot;)]</code></pre>
+<pre class="r"><code>ggplot(pr, aes(outlier_class_label, prop)) +
+  geom_bar(stat= &#39;identity&#39;, aes(fill = var_type)) +
+  scale_fill_manual(values = variant_colors2 ) +
+  coord_flip(ylim = c(0,1)) +
+  scale_y_continuous(breaks=seq(0,1, 0.1), labels=scales::percent) +
+  labs( y = &quot;Proportion of outliers with rare variants&quot;)+
+  theme_classic()+
+  theme(legend.position=&quot;top&quot;,  axis.title.y = element_blank() ,legend.direction = &quot;horizontal&quot;,
+        legend.title = element_blank(),
+        axis.text.y = element_text(face=&quot;bold&quot;, size=12)) +
+  guides(fill = guide_legend(nrow = 1))</code></pre>
+<p><img src="Scripts_MultiOmics_Variant_analysis_outlier_proportions_files/figure-html/unnamed-chunk-3-1.png" width="1248" /></p>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFByb3BvcnRpb24gb2Ygb3V0bGllcnMgd2l0aCB2YXJpYW50cyBhbmQgcGhlbm90eXBlIHNpbW1pbGFyaXR5CiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDoKIycgIC0gY29uZmlnOiAnc3JjL2NvbmZpZy5SJwojJyAgLSBwYXRpZW50X29taWNzOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3NfZnVsbC5SRFMiYCcKIycgIG91dHB1dDoKIycgIC0gcHJvcG9ydGlvbnNfcmFyZV9wYjogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi92YXJpYW50X3RhYmxlcy9wcm9wb3J0aW9uc19yYXJlX2JpYWxsZWxpYy50c3YiYCcKIycgb3V0cHV0OiAKIycgICBodG1sX2RvY3VtZW50OgojJyAgICBjb2RlX2ZvbGRpbmc6IGhpZGUKIycgICAgY29kZV9kb3dubG9hZDogVFJVRQojJy0tLQoKIyBMb2FkIHBsb3R0aW5nIGNvbmZpZyBhbmQgZnVuY3Rpb25zCnNvdXJjZShzbmFrZW1ha2VAaW5wdXQkY29uZmlnKQpzb3VyY2UoInNyYy9mdW5jdGlvbnMvSW50ZWdyYXRpb24vaW50ZWdyYXRlX2Fubm90YXRlX29taWNzLlIiKQpzb3VyY2UoInNyYy9mdW5jdGlvbnMvdmFyaWFudF9lbnJpY2htZW50LlIiKQoKCiMgUmVhZCBpbnRlZ3JhdGVkIG9taWNzIGZpbGUgCiMgcnAgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3NfZnVsbC5SRFMiKSAlPiUgYXMuZGF0YS50YWJsZSgpCnJwIDwtIHJlYWRSRFMoc25ha2VtYWtlQGlucHV0JHBhdGllbnRfb21pY3MpICU+JSBhcy5kYXRhLnRhYmxlKCkKCiMgU3Vic2V0IGNhc2VzIHdpdGggV0VTIGFuZCBSTkEtc2VxIGRhdGEgYXZhbGlhYmxlIApycCA8LSBycFtXRVNfYXZhbGlhYmxlID09IFQgJiBSTkFfc2VxX2F2YWxpYWJsZSA9PSBUXQpwYXN0ZSgiTnVtYmVyIG9mIHNhbXBsZXMgd2l0aCBXRVMgZXhwb3J0IGFuZCBSTkEtc2VxIGF2YWxpYWJsZToiLCB1bmlxdWVOKHJwJFNBTVBMRV9JRCkpCgoKI0tlZXAgb25seSBnZW5lcywgd2l0aCBib3RoIFJOQSBhbmQgcHJvdGVpbiBtZWFzdXJlZCAKcnAgPC0gcnBbIGdlbmVfZGV0ZWN0ZWQgPT0gIlJOQSBhbmQgcHJvdGVpbiBkZXRlY3RlZCJdCgojIEZpbHRlciBmb3IgdGhlIGdlbmVzLCBkZXRlY3RlZCBhcyBvdXRsaWVycyBhdCBsZWFzdCBvbmNlCm91dGxpZXJzIDwtIHVuaXF1ZShycFtvdXRsaWVyX2NsYXNzICE9ICJub25fb3V0bGllciJdJGdlbmVJRCkKcnAgPC0gcnBbZ2VuZUlEICVpbiUgb3V0bGllcnNdCgoKIyBBZGQgdXAtIGRvd24tIG91dGxpZXIgY2xhc3MKcnAgPC0gYWRkX3VwX2Rvd25fY2xhc3MocnAsIAogICAgICAgICAgICAgICAgICAgICAgICBQYWRqX3RocmVzaG9sZCA9ICBQQURKX1RIUkVTSE9MRCwKICAgICAgICAgICAgICAgICAgICAgICAgWnNjb3JlX3RocmVzaG9sZCA9IFpTQ09SRV9USFJFU0hPTEQsIAogICAgICAgICAgICAgICAgICAgICAgICBsMkZDX3RocmVzaG9sZCA9IExPRzJGQ19USFJFU0hPTEQpCgoKIyBBZGQgcGhlbm90eXBlIHNlbWFudGljIHNpbWlsbGFyaXR5IGNsYXNzCnJwWywgc3NfY2F0Oj0gU2VtYW50aWNfc2ltID4gMl0KcnBbaXMubmEoc3NfY2F0KSwgc3NfY2F0IDo9IEZdCgoKIyBBZGQgdmFyaWFudCB0eXBlIGFubm90YXRpb24KcnBbICwgdmFyX3R5cGUgOj0gIm5vIHJhcmUgdmFyaWFudCJdIApycFsgcmFyZSA9PSBUICwgdmFyX3R5cGUgOj0gInJhcmUiXSAKcnBbIHBvdGVudGlhbF9iaWFsbGVsaWMgPT0gVCAsIHZhcl90eXBlIDo9ICJwb3RlbnRpYWxfYmlhbGxlbGljIl0gCnJwW3BvdGVudGlhbF9iaWFsbGVsaWMgPT0gVCAmIHNzX2NhdCA9PSBULCAgdmFyX3R5cGU6PSAicG90ZW50aWFsIGJpYWxsZWxpYyBTZW1TaW0gPiAyIl0KCiMgU3Vic2V0IG5lY2Vzc2FyeSBjb2x1bW5zCnJwIDwtIHJwWyAsIGMoIlNBTVBMRV9JRCIsICJnZW5lSUQiLCAidmFyX3R5cGUiLCAidXBfZG93bl9vdXRsaWVyIikgXQoKCiMgQ2FsY3VsYXRlIHByb3BvcnRpb25zIG9mIG91dGxpZXJzCnByIDwtIHJwWywgLk4sIGJ5ID0gLih1cF9kb3duX291dGxpZXIsIHZhcl90eXBlKV0KcHJbLCB0b3RhbCA6PSBzdW0oTiksIGJ5ID0gLih1cF9kb3duX291dGxpZXIpXQpwclssIHByb3AgOj0gTi9zdW0oTiksIGJ5ID0gdXBfZG93bl9vdXRsaWVyXQpwclssIHR5cGUgOj0gInBiIl0KCiMgd3JpdGVfdHN2KHByLCAiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL3ZhcmlhbnRfdGFibGVzL3Byb3BvcnRpb25zX3JhcmVfYmlhbGxlbGljLnRzdiIpCndyaXRlX3Rzdihwciwgc25ha2VtYWtlQG91dHB1dCRwcm9wb3J0aW9uc19yYXJlX3BiKQoKcHJbLCB2YXJfdHlwZSA6PSBmYWN0b3IodmFyX3R5cGUsIGxldmVscyA9IGMoIm5vIHJhcmUgdmFyaWFudCIsICJyYXJlIiwgInBvdGVudGlhbF9iaWFsbGVsaWMiLCAicG90ZW50aWFsIGJpYWxsZWxpYyBTZW1TaW0gPiAyIikpXQpwclssIG91dGxpZXJfY2xhc3NfbGFiZWwgOj0gcGFzdGUwKHVwX2Rvd25fb3V0bGllciAsJ1xuJywgIihuID0gIiwgdG90YWwsICIpIikgXQoKCiMnICMjIyBVbmRlcmV4cHJlc3Npb24gb3V0bGllcnMgCiMnIFBlcmZvcm1lZCBvbiB0aGUgbm90IHJlcHJlc2VudGF0aXZlIHN1YnNldCBvZiB0aGUgZGF0YSwgdG8gaWxsdXRyYXRlIHRoZSBhbmFseXNpcyAKcHIgPC0gcHJbdXBfZG93bl9vdXRsaWVyICVpbiUgYygiUk5BX3VuZGVyZXhwcmVzc2lvbiIsICJQcm90ZWluX3VuZGVyZXhwcmVzc2lvbiIsICJSTkFfUHJvdGVpbl91bmRlcmV4cHJlc3Npb24iLCAibm9uX291dGxpZXIiKV0KCiMrIGZpZy53aWR0aD0xMywgZmlnLmhlaWdodD0zCmdncGxvdChwciwgYWVzKG91dGxpZXJfY2xhc3NfbGFiZWwsIHByb3ApKSArCiAgZ2VvbV9iYXIoc3RhdD0gJ2lkZW50aXR5JywgYWVzKGZpbGwgPSB2YXJfdHlwZSkpICsKICBzY2FsZV9maWxsX21hbnVhbCh2YWx1ZXMgPSB2YXJpYW50X2NvbG9yczIgKSArCiAgY29vcmRfZmxpcCh5bGltID0gYygwLDEpKSArCiAgc2NhbGVfeV9jb250aW51b3VzKGJyZWFrcz1zZXEoMCwxLCAwLjEpLCBsYWJlbHM9c2NhbGVzOjpwZXJjZW50KSArCiAgbGFicyggeSA9ICJQcm9wb3J0aW9uIG9mIG91dGxpZXJzIHdpdGggcmFyZSB2YXJpYW50cyIpKwogIHRoZW1lX2NsYXNzaWMoKSsKICB0aGVtZShsZWdlbmQucG9zaXRpb249InRvcCIsICBheGlzLnRpdGxlLnkgPSBlbGVtZW50X2JsYW5rKCkgLGxlZ2VuZC5kaXJlY3Rpb24gPSAiaG9yaXpvbnRhbCIsCiAgICAgICAgbGVnZW5kLnRpdGxlID0gZWxlbWVudF9ibGFuaygpLAogICAgICAgIGF4aXMudGV4dC55ID0gZWxlbWVudF90ZXh0KGZhY2U9ImJvbGQiLCBzaXplPTEyKSkgKwogIGd1aWRlcyhmaWxsID0gZ3VpZGVfbGVnZW5kKG5yb3cgPSAxKSkKCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("outlier_proportions.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-26" />
+
+<title>Aberrantly expressed HGNC mito groups PROTRIDER</title>
+
+<script src="libR/header-attrs-2.3/header-attrs.js"></script>
+<script src="libR/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+<script src="libR/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="libR/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libR/datatables-binding-0.15/datatables.js"></script>
+<link href="libR/dt-core-bootstrap-1.10.20/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="libR/dt-core-bootstrap-1.10.20/css/dataTables.bootstrap.extra.css" rel="stylesheet" />
+<script src="libR/dt-core-bootstrap-1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="libR/dt-core-bootstrap-1.10.20/js/dataTables.bootstrap.min.js"></script>
+<script src="libR/jszip-1.10.20/jszip.min.js"></script>
+<script src="libR/pdfmake-1.10.20/pdfmake.js"></script>
+<script src="libR/pdfmake-1.10.20/vfs_fonts.js"></script>
+<link href="libR/dt-ext-buttons-bootstrap-1.10.20/css/buttons.bootstrap.min.css" rel="stylesheet" />
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/dataTables.buttons.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.flash.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.html5.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.colVis.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.print.min.js"></script>
+<script src="libR/dt-ext-buttons-bootstrap-1.10.20/js/buttons.bootstrap.min.js"></script>
+<link href="libR/dt-ext-colreorder-bootstrap-1.10.20/css/colReorder.bootstrap.min.css" rel="stylesheet" />
+<script src="libR/dt-ext-colreorder-bootstrap-1.10.20/js/dataTables.colReorder.min.js"></script>
+<script src="libR/dt-ext-colreorder-bootstrap-1.10.20/js/colReorder.bootstrap.min.js"></script>
+<link href="libR/nouislider-7.0.10/jquery.nouislider.min.css" rel="stylesheet" />
+<script src="libR/nouislider-7.0.10/jquery.nouislider.min.js"></script>
+<link href="libR/selectize-0.12.0/selectize.bootstrap3.css" rel="stylesheet" />
+<script src="libR/selectize-0.12.0/selectize.min.js"></script>
+<link href="libR/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libR/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Aberrantly expressed HGNC mito groups PROTRIDER</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-26</h4>
+
+</div>
+
+
+<pre class="r"><code>source(snakemake@input$config)
+#load functions
+source(&quot;src/functions/LIMMA/limma_functions.R&quot;)
+
+
+# READ ANNOTATION
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+# Read protein outlier results
+prot &lt;- readRDS(snakemake@input$protrider) %&gt;% as.data.table()
+# prot &lt;- readRDS(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds&#39;) %&gt;% as.data.table()
+
+# Subset necessary columns 
+prot &lt;- prot[,  c(&quot;SAMPLE_ID&quot;, &quot;geneID&quot;,&quot;PROTEIN_LOG2FC&quot;)]
+
+# Read HGNC mito groups
+# compl &lt;- fread(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/datasets/HGNC_mito_groups.tsv&quot;)
+compl &lt;- fread(snakemake@input$mito_groups)
+
+setnames(compl, c(&quot;Group_name&quot;, &quot;COMPLEX&quot;), c(&quot;COMPLEX&quot;, &quot;COMPLEX2&quot;) )
+compl[, N_subunits := .N, by = COMPLEX]
+compl &lt;- compl[N_subunits &gt;1 ]
+
+paste(&quot;Number of unique Mito complexes/groups:&quot;, uniqueN(compl$COMPLEX) )</code></pre>
+<pre><code>## [1] &quot;Number of unique Mito complexes/groups: 43&quot;</code></pre>
+<pre class="r"><code># Keep only proteins with known PC
+paste( &quot;proteins analysed by AE&quot;, uniqueN(prot$geneID))</code></pre>
+<pre><code>## [1] &quot;proteins analysed by AE 7749&quot;</code></pre>
+<pre class="r"><code>prot &lt;- prot[geneID %in% unique(compl$geneID)]
+paste( &quot;proteins analysed by AE, detected in Mito complexes/groups&quot;, uniqueN(prot$geneID))</code></pre>
+<pre><code>## [1] &quot;proteins analysed by AE, detected in Mito complexes/groups 260&quot;</code></pre>
+<pre class="r"><code># Merge and remove duplicates
+prot_pc &lt;- merge(compl, prot, by = &quot;geneID&quot;, allow.cartesian=TRUE)
+prot_pc &lt;- prot_pc[ !duplicated(prot_pc) ]
+
+# Count subunits detected by proteomics
+prot_pc[, N_quantified_subunits:= .N, by = .(COMPLEX, SAMPLE_ID)]
+
+# Use complexes with at least two quantified subunits
+prot_pc &lt;- prot_pc[ N_quantified_subunits &gt;=2 ]
+
+# Use complexes with at least half of subunits detected
+prot_pc &lt;- prot_pc[ N_quantified_subunits &gt;= N_subunits/2 ]
+
+
+paste(&quot;Number of unique protein complexes after filterring:&quot;, uniqueN(prot_pc$COMPLEX) )</code></pre>
+<pre><code>## [1] &quot;Number of unique protein complexes after filterring: 35&quot;</code></pre>
+<pre class="r"><code>paste( &quot;Number of proteins in PC analysis&quot;, uniqueN(prot_pc$geneID))</code></pre>
+<pre><code>## [1] &quot;Number of proteins in PC analysis 251&quot;</code></pre>
+<pre class="r"><code># Compute mean FC per protein complex, per sample
+prot_pc[, mean_COMPLEX_LOG2FC:= mean(PROTEIN_LOG2FC, na.rm = T), by = .(SAMPLE_ID, COMPLEX)]
+
+
+complex &lt;- prot_pc[ , c(&quot;SAMPLE_ID&quot;, &quot;COMPLEX&quot;,&quot;COMPLEX2&quot;, &quot;N_subunits&quot;, &quot;N_quantified_subunits&quot;, &quot;mean_COMPLEX_LOG2FC&quot; )]
+complex &lt;- complex[ !duplicated(complex) ]
+
+# Mean fold change is normally distributed
+hist(complex$mean_COMPLEX_LOG2FC, breaks = 80)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code># Example distribution of mean fold change per complex
+hist(complex[COMPLEX == &quot;Mitochondrial complex III: ubiquinol-cytochrome c reductase complex subunits&quot; ]$mean_COMPLEX_LOG2FC)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>unique(complex$COMPLEX)</code></pre>
+<pre><code>##  [1] &quot;Aminoacyl tRNA synthetases, Class II&quot;                                        
+##  [2] &quot;Mitochondrial complex I assembly complex&quot;                                    
+##  [3] &quot;Mitochondrial contact site and cristae organizing system subunits&quot;           
+##  [4] &quot;Mitochondrial complex V: ATP synthase subunits&quot;                              
+##  [5] &quot;Small nucleolar RNA protein coding host genes&quot;                               
+##  [6] &quot;MicroRNA protein coding host genes&quot;                                          
+##  [7] &quot;Mitochondrial respiratory chain complex assembly factors&quot;                    
+##  [8] &quot;AAA ATPases&quot;                                                                 
+##  [9] &quot;Mitochondrial iron-sulfur assembly components&quot;                               
+## [10] &quot;Aminoacyl tRNA synthetases, Class I&quot;                                         
+## [11] &quot;Coiled-coil-helix-coiled-coil-helix domain containing proteins&quot;              
+## [12] &quot;Protein phosphatase 1 regulatory subunits&quot;                                   
+## [13] &quot;Mitochondrial complex III: ubiquinol-cytochrome c reductase complex subunits&quot;
+## [14] &quot;Mitochondrial ribosomal proteins&quot;                                            
+## [15] &quot;FASTK mitochondrial RNA binding family&quot;                                      
+## [16] &quot;Tetratricopeptide repeat domain containing&quot;                                  
+## [17] &quot;TIM23 complex&quot;                                                               
+## [18] &quot;Mitochondrial RNase P complex&quot;                                               
+## [19] &quot;Short chain dehydrogenase/reductase superfamily&quot;                             
+## [20] &quot;Pentatricopeptide repeat containing&quot;                                         
+## [21] &quot;LYR motif containing&quot;                                                        
+## [22] &quot;EF-hand domain containing&quot;                                                   
+## [23] &quot;Solute carriers&quot;                                                             
+## [24] &quot;SPOUT methyltransferase domain containing&quot;                                   
+## [25] &quot;Large subunit mitochondrial ribosomal proteins&quot;                              
+## [26] &quot;Small subunit mitochondrial ribosomal proteins&quot;                              
+## [27] &quot;NADH:ubiquinone oxidoreductase core subunits&quot;                                
+## [28] &quot;Metaxins&quot;                                                                    
+## [29] &quot;NADH:ubiquinone oxidoreductase supernumerary subunits&quot;                       
+## [30] &quot;Tim17 family&quot;                                                                
+## [31] &quot;Seven-beta-strand methyltransferase motif containing&quot;                        
+## [32] &quot;M16 metallopeptidases&quot;                                                       
+## [33] &quot;Mitochondrial complex II: succinate dehydrogenase subunits&quot;                  
+## [34] &quot;TIM22 complex&quot;                                                               
+## [35] &quot;Translocase of outer mitochondrial membrane complex&quot;</code></pre>
+<pre class="r"><code># Compute mean, standard deviation, FC, Z-score and p-values per complex by fitting normal distribution
+complex[ , MEAN := fitdistr(na.exclude(mean_COMPLEX_LOG2FC), &quot;normal&quot;)$estimate[1] , by = COMPLEX]
+complex[ , SD := fitdistr(na.exclude(mean_COMPLEX_LOG2FC), &quot;normal&quot;)$estimate[2] , by = COMPLEX ]
+complex[ , COMPLEX_LOG2FC := mean_COMPLEX_LOG2FC - MEAN ] 
+complex[ , COMPLEX_ZSCORE := COMPLEX_LOG2FC/SD ]
+complex[ , COMPLEX_FC := 2^COMPLEX_LOG2FC ] 
+complex[ , Pval := pnorm(mean_COMPLEX_LOG2FC , mean = MEAN, sd = SD ) ] 
+
+# convert to two-tailed p-values
+complex[ , COMPLEX_PVALUE := 2*pmin(Pval, 1-Pval) ] 
+hist(complex$COMPLEX_PVALUE)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
+<pre class="r"><code>complex$Pval &lt;- NULL
+
+# Define outliers by p-value or z-score
+complex[ , COMPLEX_PADJ := p.adjust(COMPLEX_PVALUE, method = &#39;BY&#39;), by = SAMPLE_ID ]
+complex[, COMPLEX_outlier :=  COMPLEX_PADJ &lt; 0.1 ]  
+complex[, COMPLEX_Z_outlier :=   abs(COMPLEX_ZSCORE) &gt;=3 ]  
+complex$mean_COMPLEX_LOG2FC &lt;- NULL</code></pre>
+<div id="number-of-samples-with-at-least-one-aberrant-complex" class="section level3">
+<h3>Number of samples with at least one aberrant complex</h3>
+<pre class="r"><code>paste(&quot;Total samples:&quot;, complex[, uniqueN(SAMPLE_ID)])</code></pre>
+<pre><code>## [1] &quot;Total samples: 147&quot;</code></pre>
+<pre class="r"><code>paste(&quot;Significance based:&quot;, complex[COMPLEX_outlier == T, uniqueN(SAMPLE_ID)])</code></pre>
+<pre><code>## [1] &quot;Significance based: 14&quot;</code></pre>
+<pre class="r"><code>paste(&quot;Z-score based:&quot;, complex[COMPLEX_Z_outlier == T, uniqueN(SAMPLE_ID)])</code></pre>
+<pre><code>## [1] &quot;Z-score based: 25&quot;</code></pre>
+</div>
+<div id="aberrant-complexes-per-sample" class="section level2">
+<h2>Aberrant complexes per sample</h2>
+<p>P-value &lt; 0.1</p>
+<pre class="r"><code>plotAberrantProteinPerSample(complex[ COMPLEX_outlier == T , .N, by = SAMPLE_ID])</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>|Z-score| &gt;= 3</p>
+<pre class="r"><code>plotAberrantProteinPerSample(complex[ COMPLEX_Z_outlier == T , .N, by = SAMPLE_ID])</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>complex &lt;- complex[order(SAMPLE_ID)]</code></pre>
+</div>
+<div id="results-for-aberrantly-expressed-hgnc-mito-groups" class="section level1">
+<h1>Results for aberrantly expressed HGNC mito groups</h1>
+<pre class="r"><code>DT::datatable(complex[ COMPLEX_outlier == T | COMPLEX_Z_outlier == T], 
+              caption = &quot;Aberrantly expressed HGNC mito groups&quot;, style = &#39;bootstrap&#39;, filter = &#39;top&#39;, escape = F,
+              extensions = c( &#39;Buttons&#39;, &#39;ColReorder&#39; ), 
+              options = list( colReorder = TRUE, dom = &#39;Bfrtip&#39;,
+                              buttons = c(&#39;copy&#39;, &#39;csv&#39;, &#39;excel&#39;, &#39;pdf&#39;, &#39;print&#39;)))  </code></pre>
+<div id="htmlwidget-df7b84d946451310eb1e" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-df7b84d946451310eb1e">{"x":{"style":"bootstrap","filter":"top","filterHTML":"<tr>\n  <td><\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"character\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"2\" data-max=\"78\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"integer\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"2\" data-max=\"71\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"-3.7743031e-08\" data-max=\"5.3450275e-08\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"0.072088514648233\" data-max=\"0.244537342921869\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"-1.88705002706225\" data-max=\"0.843454486849366\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"-7.71681741739208\" data-max=\"5.11798402035775\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"0.270359315697053\" data-max=\"1.79434149501982\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"1.1e-14\" data-max=\"0.00581876260197\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"number\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"display: none; position: absolute; width: 200px;\">\n      <div data-min=\"1.731e-12\" data-max=\"0.325562831815541\" data-scale=\"15\"><\/div>\n      <span style=\"float: left;\"><\/span>\n      <span style=\"float: right;\"><\/span>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n  <td data-type=\"logical\" style=\"vertical-align: top;\">\n    <div class=\"form-group has-feedback\" style=\"margin-bottom: auto;\">\n      <input type=\"search\" placeholder=\"All\" class=\"form-control\" style=\"width: 100%;\"/>\n      <span class=\"glyphicon glyphicon-remove-circle form-control-feedback\"><\/span>\n    <\/div>\n    <div style=\"width: 100%; display: none;\">\n      <select multiple=\"multiple\" style=\"width: 100%;\" data-options=\"[&quot;true&quot;,&quot;false&quot;]\"><\/select>\n    <\/div>\n  <\/td>\n<\/tr>","extensions":["Buttons","ColReorder"],"caption":"<caption>Aberrantly expressed HGNC mito groups<\/caption>","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53"],["OM03592","OM03592","OM03592","OM15187","OM18763","OM20680","OM21111","OM27390","OM28140","OM33917","OM33917","OM33981","OM36526","OM36526","OM36526","OM36760","OM37109","OM37109","OM37109","OM37109","OM38813","OM38813","OM40423","OM40423","OM40423","OM40565","OM49333","OM65117","OM65708","OM66072","OM72339","OM72339","OM77629","OM79535","OM85000","OM87369","OM87369","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786","OM91786"],["Mitochondrial ribosomal proteins","Large subunit mitochondrial ribosomal proteins","NADH:ubiquinone oxidoreductase core subunits","Seven-beta-strand methyltransferase motif containing","Aminoacyl tRNA synthetases, Class II","Small nucleolar RNA protein coding host genes","Mitochondrial iron-sulfur assembly components","Translocase of outer mitochondrial membrane complex","MicroRNA protein coding host genes","Short chain dehydrogenase/reductase superfamily","M16 metallopeptidases","Mitochondrial complex V: ATP synthase subunits","Small subunit mitochondrial ribosomal proteins","NADH:ubiquinone oxidoreductase supernumerary subunits","M16 metallopeptidases","Mitochondrial complex III: ubiquinol-cytochrome c reductase complex subunits","Aminoacyl tRNA synthetases, Class I","TIM23 complex","Tim17 family","TIM22 complex","Pentatricopeptide repeat containing","Tim17 family","Short chain dehydrogenase/reductase superfamily","NADH:ubiquinone oxidoreductase core subunits","NADH:ubiquinone oxidoreductase supernumerary subunits","Seven-beta-strand methyltransferase motif containing","MicroRNA protein coding host genes","SPOUT methyltransferase domain containing","Mitochondrial complex I assembly complex","Mitochondrial contact site and cristae organizing system subunits","Mitochondrial complex III: ubiquinol-cytochrome c reductase complex subunits","Tim17 family","Mitochondrial respiratory chain complex assembly factors","Mitochondrial RNase P complex","Coiled-coil-helix-coiled-coil-helix domain containing proteins","Mitochondrial complex I assembly complex","NADH:ubiquinone oxidoreductase supernumerary subunits","Mitochondrial contact site and cristae organizing system subunits","Small nucleolar RNA protein coding host genes","MicroRNA protein coding host genes","Aminoacyl tRNA synthetases, Class I","Protein phosphatase 1 regulatory subunits","Mitochondrial ribosomal proteins","FASTK mitochondrial RNA binding family","Mitochondrial RNase P complex","Short chain dehydrogenase/reductase superfamily","Pentatricopeptide repeat containing","LYR motif containing","Large subunit mitochondrial ribosomal proteins","Small subunit mitochondrial ribosomal proteins","NADH:ubiquinone oxidoreductase core subunits","NADH:ubiquinone oxidoreductase supernumerary subunits","M16 metallopeptidases"],[null,"mRibo","RCCI",null,null,null,"Iron-sulfur","TOMM",null,null,null,"RCCV","mRibo","RCCI",null,"RCCIII",null,null,null,null,null,null,null,"RCCI","RCCI",null,null,null,"RCCI_assembly","MIB","RCCIII",null,null,"PRORP",null,"RCCI_assembly","RCCI","MIB",null,null,null,null,null,"FASTK","PRORP",null,null,null,"mRibo","mRibo","RCCI","RCCI",null],[78,48,14,5,8,6,12,7,14,2,4,20,25,30,4,10,8,7,6,5,4,6,2,14,30,5,14,3,5,7,10,6,62,3,4,5,30,7,6,14,8,2,78,6,3,2,4,6,48,25,14,30,4],[71,43,8,4,8,4,11,4,11,2,4,15,24,28,4,6,7,6,6,4,3,6,2,8,27,4,11,2,3,5,6,5,37,2,3,4,21,5,4,11,8,2,67,4,2,2,3,4,41,21,8,28,4],[8.70067621086799e-09,1.26636207931512e-08,1.16031701263985e-08,3.19817436418969e-08,-1.74501344964959e-08,3.58337457182365e-08,-8.81490700761047e-09,4.25747411928291e-09,-1.37811691105118e-08,2.0273827665638e-10,-1.88798720814348e-08,1.66104993437986e-08,8.8871809746155e-09,1.63444184273609e-08,-1.88798720814348e-08,-3.68609740718919e-08,-2.99264696906969e-09,9.96170959294037e-09,3.56931812354478e-08,-1.73530599705571e-08,-3.5276218309091e-08,3.56931812354478e-08,2.0273827665638e-10,1.16031701263985e-08,1.63444184273609e-08,3.19817436418969e-08,-1.37811691105118e-08,2.94441009721178e-08,5.26344085342189e-08,3.87867504176019e-08,-3.68609740718919e-08,3.56931812354478e-08,-8.57191003194722e-09,-1.7638108177333e-08,3.71986101012709e-09,5.26344085342189e-08,1.63444184273609e-08,3.87867504176019e-08,3.58337457182365e-08,-1.37811691105118e-08,-2.99264696906969e-09,5.34502745538099e-08,8.70067621086799e-09,2.19405098077193e-08,-1.7638108177333e-08,2.0273827665638e-10,-3.5276218309091e-08,-3.77430309399459e-08,1.26636207931512e-08,8.8871809746155e-09,1.16031701263985e-08,1.63444184273609e-08,-1.88798720814348e-08],[0.130133705573775,0.14423362147695,0.220348879008586,0.184125641640429,0.107556901147232,0.116016661901045,0.0885946483274436,0.104308485271247,0.0804686941193912,0.143043112516981,0.101709537452021,0.109482684669634,0.136949914755427,0.218743285858184,0.101709537452021,0.189104091720647,0.103931401293909,0.0978024363478823,0.137266391012984,0.0999469690514043,0.139794539555678,0.137266391012984,0.143043112516981,0.220348879008586,0.218743285858184,0.184125641640429,0.0804686941193912,0.244537342921868,0.168519126298332,0.0887207436784725,0.189104091720647,0.137266391012984,0.0720885146482336,0.104546734675554,0.132994172911296,0.168519126298332,0.218743285858184,0.0887207436784725,0.116016661901045,0.0804686941193912,0.103931401293909,0.116891738327123,0.130133705573775,0.108830759347928,0.104546734675554,0.143043112516981,0.139794539555678,0.137615712741413,0.14423362147695,0.136949914755427,0.220348879008586,0.218743285858184,0.101709537452021],[-0.398149153322822,-0.674134459978206,-0.778098797572622,0.843454486849366,0.395846957764172,0.593771421704794,-0.297484234927738,0.355620948980791,-0.242610273377808,-0.433503257509313,-0.32856292981764,-0.336043164057624,-0.688360651291528,-0.731059991381164,-0.348447099947546,-0.585744194402087,-0.367966882901991,0.479905668351599,0.58482509249674,0.328103459718151,0.429093034614422,-0.416414386197001,-0.532033744662216,-0.815788133489654,-0.721148706642079,-1.11397468023947,-0.25151548599136,-1.88705002706225,-0.985137010093204,-0.303316031243581,-1.25176074380128,0.431693352822676,-0.226624524519455,-0.319855038326784,0.406429773526246,0.529684042012273,-0.662797048887652,-0.259914954940759,-0.551825744917541,-0.407755144533033,-0.286624449380487,-0.360067781761911,-0.916251674045063,-0.578193601481798,-0.312681516735217,-0.480853467858611,-0.420394849656198,-0.438014536049904,-0.912199793416061,-0.841717108746488,-1.0242392357569,-0.615544319972887,-0.311372547421157],[-3.05953904537901,-4.67390649333407,-3.53121287057831,4.58086380221017,3.68034922484712,5.11798402035775,-3.35781269573128,3.40931946289915,-3.0149647143254,-3.03057763412307,-3.23040432636549,-3.06937270557112,-5.02636786974891,-3.34209111156502,-3.42590388941567,-3.09746970080042,-3.54047841480952,4.90688868572332,4.2605119008441,3.28277548416102,3.06945490130194,-3.03362231004974,-3.71939435111954,-3.70225679005096,-3.2967809906157,-6.05007901297584,-3.12563151103443,-7.71681741739208,-5.84584688831818,-3.4187724163225,-6.61942707009449,3.14493117825062,-3.1436980720896,-3.05944551323776,3.05599685030806,3.14316869335392,-3.03002236748586,-2.92958494444886,-4.75643529020182,-5.06725191697591,-2.75782338939064,-3.08035269998514,-7.04084825683859,-5.31277742566632,-2.99083005993042,-3.36159818810939,-3.00723369448034,-3.18288171695158,-6.32446016452438,-6.14616745289457,-4.64826161297144,-2.81400326212507,-3.061389867868],[0.758831170515239,0.626708097955938,0.583134749725069,1.79434149501982,1.31571494553933,1.50918683642825,0.813670034078775,1.27953618671191,0.845214678101839,0.740461557620601,0.796329313361095,0.792211108370715,0.620558596386953,0.602461104922717,0.785429069711942,0.666305545327801,0.774873717999127,1.39465247301837,1.49985714061836,1.25536201359472,1.34638689049883,0.749284552496638,0.691579138268173,0.568098054122467,0.606614249780217,0.462019394740769,0.840013555326042,0.270359315697054,0.505177745164386,0.810387580044602,0.419935382680585,1.34881581087471,0.854632138312285,0.801150372954755,1.32540179054152,1.44361300187357,0.631652482380637,0.835137148262517,0.682156306317128,0.753795378735636,0.819817988203259,0.779127973235789,0.529883946888623,0.669801911569813,0.805143858162019,0.716553600650861,0.747220090465422,0.738149765485927,0.531374244060871,0.557979061913869,0.491669498867832,0.652683593574841,0.805874703440158],[0.00221677889628846,2.9552392195723e-06,0.00041365869814907,4.63059344757433e-06,0.000232914747402724,3.08818759897633e-07,0.000785618284326328,0.000651251673380759,0.00257009153830295,0.00244086427968949,0.00123615268417034,0.00214508798049281,4.99856603127203e-07,0.000831497622873004,0.000612757163698979,0.00195180347597682,0.000399402304768381,9.25325134959465e-07,2.03959221123373e-05,0.0010279049610602,0.00214449780688475,0.00241636738313569,0.000199701055398545,0.000213690171322606,0.000977997308423569,1.44774810484322e-09,0.00177423718394498,1.19270312830921e-14,5.03997468529503e-09,0.000629043153687659,3.60593687902501e-11,0.00166125905415315,0.00166827470563162,0.00221747119848443,0.00224313612289095,0.00167129491500351,0.00244535628011148,0.00339415029752659,1.97041360183607e-06,4.03599994438437e-07,0.00581876260196915,0.00206755596114911,1.91073004950341e-12,1.07966877881987e-07,0.00278220278506599,0.000774927995898589,0.00263637004043037,0.00145817169429858,2.54119395740709e-10,7.93774845024487e-10,3.34744189610452e-06,0.00489287318485858,0.00220312023421789],[0.10724580460064,0.00042891558795653,0.0300186635577372,0.000672072060359786,0.0338046291360617,4.48211363385567e-05,0.114022555635951,0.0878736106587623,0.100497767585941,0.177130286223771,0.177130286223771,0.300353373556097,7.2547862590727e-05,0.0402271204123421,0.0402271204123421,0.283279583571363,0.0193227306548037,0.000134299237666971,0.00148010503968522,0.0372968504390973,0.16916884106287,0.16916884106287,0.0149603569728128,0.0149603569728128,0.0456461139100251,2.02712444106469e-07,0.248427164075628,1.73105770980657e-12,7.31488568205388e-07,0.0880780811978858,4.86550294331847e-09,0.1120771257064,0.242128969289516,0.32183789270781,0.325562831815541,0.111435041479468,0.111435041479468,0.0351869984678345,4.76634346525862e-05,1.17154867035683e-05,0.052782486398941,0.0290686392535471,2.77318295311327e-10,3.91750662686502e-06,0.0310616568043616,0.0140588744382986,0.0310616568043616,0.0235150194519865,1.84411077982139e-08,3.84021257460229e-08,6.9405549280024e-05,0.047342576420014,0.0290686392535471],[false,true,true,true,true,true,false,true,false,false,false,false,true,true,true,false,true,true,true,true,false,false,true,true,true,true,false,true,true,true,true,false,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true],[true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,true,true,false,true,true,true,false,true,true,true,true,true,true,false,true]],"container":"<table class=\"table table-striped table-hover\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>SAMPLE_ID<\/th>\n      <th>COMPLEX<\/th>\n      <th>COMPLEX2<\/th>\n      <th>N_subunits<\/th>\n      <th>N_quantified_subunits<\/th>\n      <th>MEAN<\/th>\n      <th>SD<\/th>\n      <th>COMPLEX_LOG2FC<\/th>\n      <th>COMPLEX_ZSCORE<\/th>\n      <th>COMPLEX_FC<\/th>\n      <th>COMPLEX_PVALUE<\/th>\n      <th>COMPLEX_PADJ<\/th>\n      <th>COMPLEX_outlier<\/th>\n      <th>COMPLEX_Z_outlier<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"colReorder":true,"dom":"Bfrtip","buttons":["copy","csv","excel","pdf","print"],"columnDefs":[{"className":"dt-right","targets":[4,5,6,7,8,9,10,11,12]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"orderCellsTop":true}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="plots-per-case" class="section level1">
+<h1>Plots per case</h1>
+<p>Nominal p-values inicated in the figures</p>
+<pre class="r"><code>sax &lt;- sa[!is.na(KNOWN_MUTATION) &amp; !is.na(CATEGORY)]
+sax &lt;- sax[order(CATEGORY)]
+complexX &lt;- complex[COMPLEX2 %in% c(&quot;mRibo&quot;, &quot;RCCI_assembly&quot;, &quot;RCCI&quot;, &quot;RCCII&quot;, &quot;RCCIII&quot;, &quot;RCCIV&quot;, &quot;RCCV&quot;)]
+sax &lt;- sax[SAMPLE_ID %in% unique(complexX$SAMPLE_ID)]</code></pre>
+<pre class="r"><code>for (i in unique(sax$SAMPLE_ID)){
+  complexX[ , case := F]
+  complexX[ SAMPLE_ID == i, case := T]
+  complexX[ , Pval := round(COMPLEX_PVALUE,  3)]
+  print(paste(&quot;Sample ID:&quot;, i, &quot;Causal gene:&quot;, sax[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+  
+  plot_compl &lt;- ggplot(complexX, aes(COMPLEX2,  COMPLEX_ZSCORE ))+
+    geom_hline(yintercept = 0, color = &quot;grey50&quot;) +
+    geom_quasirandom(data = complexX[case == F ] , aes(COMPLEX2,  COMPLEX_ZSCORE),color = &quot;grey80&quot; , size=0.5) +
+    stat_summary(fun.data = mean_sdl, fun.args = list(mult=1), geom=&quot;errorbar&quot;, color=&quot;black&quot;, width=0.2) +
+    stat_summary(fun = mean, geom=&quot;point&quot;, color=&quot;black&quot;) +
+    ylab(&quot;Protein complex zScore&quot;) + 
+    geom_point( data = complexX[case == T ], aes(COMPLEX2,  COMPLEX_ZSCORE), colour = &quot;darkorange&quot; , size = 2) +
+    geom_text_repel( data = complexX[case == T ], aes(COMPLEX2,  COMPLEX_ZSCORE, label = Pval) ) +
+    theme_classic()+
+    theme( legend.title = element_blank(),
+           axis.title.x = element_blank(),
+           plot.title = element_text(face=&quot;bold&quot;,  size=14, hjust = 0.5),
+           axis.title.y = element_text(face=&quot;bold&quot;,  size=10),
+           axis.text.x = element_text(face=&quot;bold&quot;,  size=9, angle = 45, hjust = 1),
+           axis.text.y = element_text(face=&quot;bold&quot;,  size=9),
+           legend.position = &quot;none&quot;)
+  print(plot_compl)
+  
+}</code></pre>
+<pre><code>## [1] &quot;Sample ID: OM46241 Causal gene: SSBP1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-1.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM73953 Causal gene: GNAO1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-2.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM58230 Causal gene: VPS33B&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-3.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM42562 Causal gene: ADPRHL2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-4.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM71746 Causal gene: MDH2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-5.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM37109 Causal gene: YME1L1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-6.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM51049 Causal gene: UQCRFS1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-7.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM48652 Causal gene: NBAS&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-8.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM88146 Causal gene: NBAS&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-9.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM73546 Causal gene: TIMMDC1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-10.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM75219_1 Causal gene: ELAC2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-11.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM33917 Causal gene: FOXRED1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-12.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM01282 Causal gene: TSFM&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-13.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM65728 Causal gene: ACAD9&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-14.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM88728 Causal gene: STIM1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-15.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM57274 Causal gene: TRMU&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-16.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM20680 Causal gene: BCS1L&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-17.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM32691 Causal gene: MT-ND5&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-18.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM72361 Causal gene: MT-ND6&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-19.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM73896 Causal gene: MT-TL1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-20.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM27424 Causal gene: MT-ND5&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-21.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM06865 Causal gene: EPG5&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-22.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM91786 Causal gene: LIG3&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-23.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM87369 Causal gene: NDUFB11&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-24.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM27390 Causal gene: MORC2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-25.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM34814 Causal gene: RDH11&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-26.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM57837 Causal gene: MRPL38&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-27.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM38813 Causal gene: TIMMDC1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-28.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM21111 Causal gene: NFU1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-29.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM75740 Causal gene: DARS2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-30.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM03592 Causal gene: MRPL44&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-31.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM56706 Causal gene: GMPPB&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-32.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM36526 Causal gene: MRPS25&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-33.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM23417 Causal gene: FDXR&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-34.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM65708 Causal gene: ACAD9&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-35.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM43933 Causal gene: DNAJC30&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-36.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM02364 Causal gene: SLC25A4&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-37.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM72697 Causal gene: DNAJC30&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-38.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM70698 Causal gene: TXNIP&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-39.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM50946 Causal gene: NDUFB11&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-40.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM27175 Causal gene: FH&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-41.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM26649 Causal gene: AARS2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-42.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM77629 Causal gene: ETFDH&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-43.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM61355 Causal gene: YARS&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-44.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM05252 Causal gene: EARS2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-45.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM88470 Causal gene: PC&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-46.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM20348 Causal gene: SUCLA2&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-47.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM94976 Causal gene: DNAJC30&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-48.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM00762 Causal gene: MRPL53&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-49.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM59244 Causal gene: TRMT5&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-50.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM25068 Causal gene: SLC25A4&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-51.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM66072 Causal gene: C19ORF70&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-52.png" width="768" /></p>
+<pre><code>## [1] &quot;Sample ID: OM30476 Causal gene: TASP1&quot;</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Protein_complexes_AE_MITO_groups_Protrider_files/figure-html/unnamed-chunk-7-53.png" width="768" /></p>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IEFiZXJyYW50bHkgZXhwcmVzc2VkIEhHTkMgbWl0byBncm91cHMgUFJPVFJJREVSCiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDoKIycgIC0gY29uZmlnOiAnc3JjL2NvbmZpZy5SJwojJyAgLSBwcm90cmlkZXI6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvcHJvdHJpZGVyL1BST1RSSURFUl9yZXN1bHRzLnJkcyJgJwojJyAgLSBzYW1wbGVfYW5ub3RhdGlvbjogJ2BzbSBjb25maWdbIkFOTk9UQVRJT04iXWAnCiMnICAtIG1pdG9fZ3JvdXBzOiAnYHNtIGNvbmZpZ1siREFUQVNFVFMiXSArICIvSEdOQ19taXRvX2dyb3Vwcy50c3YiYCcKIycgIG91dHB1dDoKIycgb3V0cHV0OgojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgpzb3VyY2Uoc25ha2VtYWtlQGlucHV0JGNvbmZpZykKI2xvYWQgZnVuY3Rpb25zCnNvdXJjZSgic3JjL2Z1bmN0aW9ucy9MSU1NQS9saW1tYV9mdW5jdGlvbnMuUiIpCgoKIyBSRUFEIEFOTk9UQVRJT04KIyBzYSA8LSBmcmVhZCgnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Jhd19kYXRhL3Byb3Rlb21pY3NfYW5ub3RhdGlvbi50c3YnKQpzYSA8LSBmcmVhZChzbmFrZW1ha2VAaW5wdXQkc2FtcGxlX2Fubm90YXRpb24pCnNhIDwtIHNhW1VTRV9GT1JfUFJPVEVPTUlDU19QQVBFUiA9PSBUXQoKIyBSZWFkIHByb3RlaW4gb3V0bGllciByZXN1bHRzCnByb3QgPC0gcmVhZFJEUyhzbmFrZW1ha2VAaW5wdXQkcHJvdHJpZGVyKSAlPiUgYXMuZGF0YS50YWJsZSgpCiMgcHJvdCA8LSByZWFkUkRTKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcHJvY2Vzc2VkX2RhdGEvcHJvdHJpZGVyL1BST1RSSURFUl9yZXN1bHRzLnJkcycpICU+JSBhcy5kYXRhLnRhYmxlKCkKCiMgU3Vic2V0IG5lY2Vzc2FyeSBjb2x1bW5zIApwcm90IDwtIHByb3RbLCAgYygiU0FNUExFX0lEIiwgImdlbmVJRCIsIlBST1RFSU5fTE9HMkZDIildCgojIFJlYWQgSEdOQyBtaXRvIGdyb3VwcwojIGNvbXBsIDwtIGZyZWFkKCIvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vZGF0YXNldHMvSEdOQ19taXRvX2dyb3Vwcy50c3YiKQpjb21wbCA8LSBmcmVhZChzbmFrZW1ha2VAaW5wdXQkbWl0b19ncm91cHMpCgpzZXRuYW1lcyhjb21wbCwgYygiR3JvdXBfbmFtZSIsICJDT01QTEVYIiksIGMoIkNPTVBMRVgiLCAiQ09NUExFWDIiKSApCmNvbXBsWywgTl9zdWJ1bml0cyA6PSAuTiwgYnkgPSBDT01QTEVYXQpjb21wbCA8LSBjb21wbFtOX3N1YnVuaXRzID4xIF0KCnBhc3RlKCJOdW1iZXIgb2YgdW5pcXVlIE1pdG8gY29tcGxleGVzL2dyb3VwczoiLCB1bmlxdWVOKGNvbXBsJENPTVBMRVgpICkKIyBLZWVwIG9ubHkgcHJvdGVpbnMgd2l0aCBrbm93biBQQwpwYXN0ZSggInByb3RlaW5zIGFuYWx5c2VkIGJ5IEFFIiwgdW5pcXVlTihwcm90JGdlbmVJRCkpCnByb3QgPC0gcHJvdFtnZW5lSUQgJWluJSB1bmlxdWUoY29tcGwkZ2VuZUlEKV0KcGFzdGUoICJwcm90ZWlucyBhbmFseXNlZCBieSBBRSwgZGV0ZWN0ZWQgaW4gTWl0byBjb21wbGV4ZXMvZ3JvdXBzIiwgdW5pcXVlTihwcm90JGdlbmVJRCkpCgojIE1lcmdlIGFuZCByZW1vdmUgZHVwbGljYXRlcwpwcm90X3BjIDwtIG1lcmdlKGNvbXBsLCBwcm90LCBieSA9ICJnZW5lSUQiLCBhbGxvdy5jYXJ0ZXNpYW49VFJVRSkKcHJvdF9wYyA8LSBwcm90X3BjWyAhZHVwbGljYXRlZChwcm90X3BjKSBdCgojIENvdW50IHN1YnVuaXRzIGRldGVjdGVkIGJ5IHByb3Rlb21pY3MKcHJvdF9wY1ssIE5fcXVhbnRpZmllZF9zdWJ1bml0czo9IC5OLCBieSA9IC4oQ09NUExFWCwgU0FNUExFX0lEKV0KCiMgVXNlIGNvbXBsZXhlcyB3aXRoIGF0IGxlYXN0IHR3byBxdWFudGlmaWVkIHN1YnVuaXRzCnByb3RfcGMgPC0gcHJvdF9wY1sgTl9xdWFudGlmaWVkX3N1YnVuaXRzID49MiBdCgojIFVzZSBjb21wbGV4ZXMgd2l0aCBhdCBsZWFzdCBoYWxmIG9mIHN1YnVuaXRzIGRldGVjdGVkCnByb3RfcGMgPC0gcHJvdF9wY1sgTl9xdWFudGlmaWVkX3N1YnVuaXRzID49IE5fc3VidW5pdHMvMiBdCgoKcGFzdGUoIk51bWJlciBvZiB1bmlxdWUgcHJvdGVpbiBjb21wbGV4ZXMgYWZ0ZXIgZmlsdGVycmluZzoiLCB1bmlxdWVOKHByb3RfcGMkQ09NUExFWCkgKQpwYXN0ZSggIk51bWJlciBvZiBwcm90ZWlucyBpbiBQQyBhbmFseXNpcyIsIHVuaXF1ZU4ocHJvdF9wYyRnZW5lSUQpKQoKCiMgQ29tcHV0ZSBtZWFuIEZDIHBlciBwcm90ZWluIGNvbXBsZXgsIHBlciBzYW1wbGUKcHJvdF9wY1ssIG1lYW5fQ09NUExFWF9MT0cyRkM6PSBtZWFuKFBST1RFSU5fTE9HMkZDLCBuYS5ybSA9IFQpLCBieSA9IC4oU0FNUExFX0lELCBDT01QTEVYKV0KCgpjb21wbGV4IDwtIHByb3RfcGNbICwgYygiU0FNUExFX0lEIiwgIkNPTVBMRVgiLCJDT01QTEVYMiIsICJOX3N1YnVuaXRzIiwgIk5fcXVhbnRpZmllZF9zdWJ1bml0cyIsICJtZWFuX0NPTVBMRVhfTE9HMkZDIiApXQpjb21wbGV4IDwtIGNvbXBsZXhbICFkdXBsaWNhdGVkKGNvbXBsZXgpIF0KCiMgTWVhbiBmb2xkIGNoYW5nZSBpcyBub3JtYWxseSBkaXN0cmlidXRlZApoaXN0KGNvbXBsZXgkbWVhbl9DT01QTEVYX0xPRzJGQywgYnJlYWtzID0gODApCgojIEV4YW1wbGUgZGlzdHJpYnV0aW9uIG9mIG1lYW4gZm9sZCBjaGFuZ2UgcGVyIGNvbXBsZXgKaGlzdChjb21wbGV4W0NPTVBMRVggPT0gIk1pdG9jaG9uZHJpYWwgY29tcGxleCBJSUk6IHViaXF1aW5vbC1jeXRvY2hyb21lIGMgcmVkdWN0YXNlIGNvbXBsZXggc3VidW5pdHMiIF0kbWVhbl9DT01QTEVYX0xPRzJGQykKdW5pcXVlKGNvbXBsZXgkQ09NUExFWCkKCiMgQ29tcHV0ZSBtZWFuLCBzdGFuZGFyZCBkZXZpYXRpb24sIEZDLCBaLXNjb3JlIGFuZCBwLXZhbHVlcyBwZXIgY29tcGxleCBieSBmaXR0aW5nIG5vcm1hbCBkaXN0cmlidXRpb24KY29tcGxleFsgLCBNRUFOIDo9IGZpdGRpc3RyKG5hLmV4Y2x1ZGUobWVhbl9DT01QTEVYX0xPRzJGQyksICJub3JtYWwiKSRlc3RpbWF0ZVsxXSAsIGJ5ID0gQ09NUExFWF0KY29tcGxleFsgLCBTRCA6PSBmaXRkaXN0cihuYS5leGNsdWRlKG1lYW5fQ09NUExFWF9MT0cyRkMpLCAibm9ybWFsIikkZXN0aW1hdGVbMl0gLCBieSA9IENPTVBMRVggXQpjb21wbGV4WyAsIENPTVBMRVhfTE9HMkZDIDo9IG1lYW5fQ09NUExFWF9MT0cyRkMgLSBNRUFOIF0gCmNvbXBsZXhbICwgQ09NUExFWF9aU0NPUkUgOj0gQ09NUExFWF9MT0cyRkMvU0QgXQpjb21wbGV4WyAsIENPTVBMRVhfRkMgOj0gMl5DT01QTEVYX0xPRzJGQyBdIApjb21wbGV4WyAsIFB2YWwgOj0gcG5vcm0obWVhbl9DT01QTEVYX0xPRzJGQyAsIG1lYW4gPSBNRUFOLCBzZCA9IFNEICkgXSAKCiMgY29udmVydCB0byB0d28tdGFpbGVkIHAtdmFsdWVzCmNvbXBsZXhbICwgQ09NUExFWF9QVkFMVUUgOj0gMipwbWluKFB2YWwsIDEtUHZhbCkgXSAKaGlzdChjb21wbGV4JENPTVBMRVhfUFZBTFVFKQpjb21wbGV4JFB2YWwgPC0gTlVMTAoKIyBEZWZpbmUgb3V0bGllcnMgYnkgcC12YWx1ZSBvciB6LXNjb3JlCmNvbXBsZXhbICwgQ09NUExFWF9QQURKIDo9IHAuYWRqdXN0KENPTVBMRVhfUFZBTFVFLCBtZXRob2QgPSAnQlknKSwgYnkgPSBTQU1QTEVfSUQgXQpjb21wbGV4WywgQ09NUExFWF9vdXRsaWVyIDo9ICBDT01QTEVYX1BBREogPCAwLjEgXSAgCmNvbXBsZXhbLCBDT01QTEVYX1pfb3V0bGllciA6PSAgIGFicyhDT01QTEVYX1pTQ09SRSkgPj0zIF0gIApjb21wbGV4JG1lYW5fQ09NUExFWF9MT0cyRkMgPC0gTlVMTAoKCgojJyAjIyMgTnVtYmVyIG9mIHNhbXBsZXMgd2l0aCBhdCBsZWFzdCBvbmUgYWJlcnJhbnQgY29tcGxleCAKcGFzdGUoIlRvdGFsIHNhbXBsZXM6IiwgY29tcGxleFssIHVuaXF1ZU4oU0FNUExFX0lEKV0pCnBhc3RlKCJTaWduaWZpY2FuY2UgYmFzZWQ6IiwgY29tcGxleFtDT01QTEVYX291dGxpZXIgPT0gVCwgdW5pcXVlTihTQU1QTEVfSUQpXSkKcGFzdGUoIlotc2NvcmUgYmFzZWQ6IiwgY29tcGxleFtDT01QTEVYX1pfb3V0bGllciA9PSBULCB1bmlxdWVOKFNBTVBMRV9JRCldKQoKCgojJyAjIyBBYmVycmFudCBjb21wbGV4ZXMgcGVyIHNhbXBsZQojJyAgUC12YWx1ZSA8IDAuMQpwbG90QWJlcnJhbnRQcm90ZWluUGVyU2FtcGxlKGNvbXBsZXhbIENPTVBMRVhfb3V0bGllciA9PSBUICwgLk4sIGJ5ID0gU0FNUExFX0lEXSkKIycgfFotc2NvcmV8ID49IDMKcGxvdEFiZXJyYW50UHJvdGVpblBlclNhbXBsZShjb21wbGV4WyBDT01QTEVYX1pfb3V0bGllciA9PSBUICwgLk4sIGJ5ID0gU0FNUExFX0lEXSkKCgpjb21wbGV4IDwtIGNvbXBsZXhbb3JkZXIoU0FNUExFX0lEKV0KCgojJyAjIFJlc3VsdHMgZm9yIGFiZXJyYW50bHkgZXhwcmVzc2VkIEhHTkMgbWl0byBncm91cHMKRFQ6OmRhdGF0YWJsZShjb21wbGV4WyBDT01QTEVYX291dGxpZXIgPT0gVCB8IENPTVBMRVhfWl9vdXRsaWVyID09IFRdLCAKICAgICAgICAgICAgICBjYXB0aW9uID0gIkFiZXJyYW50bHkgZXhwcmVzc2VkIEhHTkMgbWl0byBncm91cHMiLCBzdHlsZSA9ICdib290c3RyYXAnLCBmaWx0ZXIgPSAndG9wJywgZXNjYXBlID0gRiwKICAgICAgICAgICAgICBleHRlbnNpb25zID0gYyggJ0J1dHRvbnMnLCAnQ29sUmVvcmRlcicgKSwgCiAgICAgICAgICAgICAgb3B0aW9ucyA9IGxpc3QoIGNvbFJlb3JkZXIgPSBUUlVFLCBkb20gPSAnQmZydGlwJywKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnV0dG9ucyA9IGMoJ2NvcHknLCAnY3N2JywgJ2V4Y2VsJywgJ3BkZicsICdwcmludCcpKSkgIAoKCgojJyAjIFBsb3RzIHBlciBjYXNlIAojJyBOb21pbmFsIHAtdmFsdWVzIGluaWNhdGVkIGluIHRoZSBmaWd1cmVzCnNheCA8LSBzYVshaXMubmEoS05PV05fTVVUQVRJT04pICYgIWlzLm5hKENBVEVHT1JZKV0Kc2F4IDwtIHNheFtvcmRlcihDQVRFR09SWSldCmNvbXBsZXhYIDwtIGNvbXBsZXhbQ09NUExFWDIgJWluJSBjKCJtUmlibyIsICJSQ0NJX2Fzc2VtYmx5IiwgIlJDQ0kiLCAiUkNDSUkiLCAiUkNDSUlJIiwgIlJDQ0lWIiwgIlJDQ1YiKV0Kc2F4IDwtIHNheFtTQU1QTEVfSUQgJWluJSB1bmlxdWUoY29tcGxleFgkU0FNUExFX0lEKV0KCiMrIGZpZy53aWR0aD04LCBmaWcuaGVpZ2h0PTUKZm9yIChpIGluIHVuaXF1ZShzYXgkU0FNUExFX0lEKSl7CiAgY29tcGxleFhbICwgY2FzZSA6PSBGXQogIGNvbXBsZXhYWyBTQU1QTEVfSUQgPT0gaSwgY2FzZSA6PSBUXQogIGNvbXBsZXhYWyAsIFB2YWwgOj0gcm91bmQoQ09NUExFWF9QVkFMVUUsICAzKV0KICBwcmludChwYXN0ZSgiU2FtcGxlIElEOiIsIGksICJDYXVzYWwgZ2VuZToiLCBzYXhbU0FNUExFX0lEID09IGldJEtOT1dOX01VVEFUSU9OICkgKQogIAogIHBsb3RfY29tcGwgPC0gZ2dwbG90KGNvbXBsZXhYLCBhZXMoQ09NUExFWDIsICBDT01QTEVYX1pTQ09SRSApKSsKICAgIGdlb21faGxpbmUoeWludGVyY2VwdCA9IDAsIGNvbG9yID0gImdyZXk1MCIpICsKICAgIGdlb21fcXVhc2lyYW5kb20oZGF0YSA9IGNvbXBsZXhYW2Nhc2UgPT0gRiBdICwgYWVzKENPTVBMRVgyLCAgQ09NUExFWF9aU0NPUkUpLGNvbG9yID0gImdyZXk4MCIgLCBzaXplPTAuNSkgKwogICAgc3RhdF9zdW1tYXJ5KGZ1bi5kYXRhID0gbWVhbl9zZGwsIGZ1bi5hcmdzID0gbGlzdChtdWx0PTEpLCBnZW9tPSJlcnJvcmJhciIsIGNvbG9yPSJibGFjayIsIHdpZHRoPTAuMikgKwogICAgc3RhdF9zdW1tYXJ5KGZ1biA9IG1lYW4sIGdlb209InBvaW50IiwgY29sb3I9ImJsYWNrIikgKwogICAgeWxhYigiUHJvdGVpbiBjb21wbGV4IHpTY29yZSIpICsgCiAgICBnZW9tX3BvaW50KCBkYXRhID0gY29tcGxleFhbY2FzZSA9PSBUIF0sIGFlcyhDT01QTEVYMiwgIENPTVBMRVhfWlNDT1JFKSwgY29sb3VyID0gImRhcmtvcmFuZ2UiICwgc2l6ZSA9IDIpICsKICAgIGdlb21fdGV4dF9yZXBlbCggZGF0YSA9IGNvbXBsZXhYW2Nhc2UgPT0gVCBdLCBhZXMoQ09NUExFWDIsICBDT01QTEVYX1pTQ09SRSwgbGFiZWwgPSBQdmFsKSApICsKICAgIHRoZW1lX2NsYXNzaWMoKSsKICAgIHRoZW1lKCBsZWdlbmQudGl0bGUgPSBlbGVtZW50X2JsYW5rKCksCiAgICAgICAgICAgYXhpcy50aXRsZS54ID0gZWxlbWVudF9ibGFuaygpLAogICAgICAgICAgIHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQoZmFjZT0iYm9sZCIsICBzaXplPTE0LCBoanVzdCA9IDAuNSksCiAgICAgICAgICAgYXhpcy50aXRsZS55ID0gZWxlbWVudF90ZXh0KGZhY2U9ImJvbGQiLCAgc2l6ZT0xMCksCiAgICAgICAgICAgYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoZmFjZT0iYm9sZCIsICBzaXplPTksIGFuZ2xlID0gNDUsIGhqdXN0ID0gMSksCiAgICAgICAgICAgYXhpcy50ZXh0LnkgPSBlbGVtZW50X3RleHQoZmFjZT0iYm9sZCIsICBzaXplPTkpLAogICAgICAgICAgIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikKICBwcmludChwbG90X2NvbXBsKQogIAp9CgoKCgoKCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("AE_MITO_groups_Protrider.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

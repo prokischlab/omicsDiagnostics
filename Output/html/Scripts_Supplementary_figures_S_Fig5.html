@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="scheller, loipfinger" />
+
+<meta name="date" content="2021-02-03" />
+
+<title>PROTRIDER comparison to limma-based approach</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">PROTRIDER comparison to limma-based approach</h1>
+<h4 class="author">scheller, loipfinger</h4>
+<h4 class="date">2021-02-03</h4>
+
+</div>
+
+
+<pre class="r"><code>############################################
+### plot limma - protrider benchmark
+
+source(&#39;src/config.R&#39;)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(ggplot2)
+library(ggpubr)
+
+############################################
+### read in protrider results
+protrider_filename &lt;- snakemake@input$protrider_results
+protrider_pval_list &lt;- as.data.table(readRDS(protrider_filename))
+protrider_pval_list$sample_prot = paste0(protrider_pval_list$SAMPLE_ID,&quot;_&quot;, protrider_pval_list$geneID)
+
+### read in limma results
+limma_filename &lt;- snakemake@input$limma_results
+limma_pval_list &lt;- as.data.table(readRDS(limma_filename))
+limma_pval_list$sample_prot = paste0(limma_pval_list$SAMPLE_ID,&quot;_&quot;,limma_pval_list$geneID)
+
+### keep only samples in both analyses, only if all whole limma list is considered
+only_identical_samples &lt;- intersect(limma_pval_list$sample_prot, protrider_pval_list$sample_prot)
+pval_ae_pre &lt;- subset(protrider_pval_list, sample_prot %in% only_identical_samples)
+pval_limma_pre &lt;- subset(limma_pval_list, sample_prot %in% only_identical_samples)
+
+
+############################################
+### get sample annotation
+sa_prot &lt;- fread(snakemake@input$sample_annotation)
+sa_prot &lt;- sa_prot[USE_FOR_PROTEOMICS_PAPER == T]
+sa_prot$KNOWN_MUTATION &lt;- toupper(sa_prot$KNOWN_MUTATION)
+etp_m &lt;- sa_prot[, c(&#39;SAMPLE_ID&#39;, &#39;KNOWN_MUTATION&#39;,&#39;CATEGORY&#39;)]
+
+# sa = subset(etp_m, CATEGORY==&quot;I&quot;)[,1:2]   ### for only confirmed ones
+# sa = subset(etp_m, CATEGORY %in% c(&quot;I&quot;, &quot;IIa&quot;, &quot;III&quot;))[,1:2]   ### for only confirmed ones
+sa = subset(etp_m, CATEGORY %in% c(&quot;I&quot;, &quot;IIa&quot;))[,1:2] ### only cases with previous candidate
+sa$confirmed_out = !is.na(sa$KNOWN_MUTATION)
+sa$sample_prot = paste0(sa$SAMPLE_ID,&quot;_&quot;,sa$KNOWN_MUTATION)
+
+### merge known mutation to result lists
+pval_ae_solved = join(pval_ae_pre,sa)
+pval_ae_solved[is.na(confirmed_out), confirmed_out:=FALSE]
+pval_ae_solved = pval_ae_solved[order(pval_ae_solved$PROTEIN_PVALUE),]
+pval_ae_solved[, num_out_called:=cumsum(confirmed_out)]
+
+pval_limma_solved = join(pval_limma_pre,sa)
+pval_limma_solved$confirmed_out[is.na(pval_limma_solved$confirmed_out)] = FALSE
+pval_limma_solved = pval_limma_solved[order(pval_limma_solved$PROTEIN_PVALUE),]
+pval_limma_solved$num_out_called = cumsum(pval_limma_solved$confirmed_out)
+
+
+############################################
+### plotting
+padj_cutoff = 0.1 #0.05 
+ae_plot = subset(pval_ae_solved, PROTEIN_PADJ &lt;= padj_cutoff)
+ae_plot$pvalue = log10(ae_plot$PROTEIN_PVALUE)
+limma_plot = subset(pval_limma_solved, PROTEIN_PADJ &lt;= padj_cutoff)
+limma_plot$pvalue = log10(limma_plot$PROTEIN_PVALUE)
+
+# # Recall plot from Stefan L.
+# plot(1:nrow(ae_plot),ae_plot$num_out_called, &#39;l&#39;,  lwd=2,
+#      col=&#39;orange&#39;, xlim=c(0,nrow(limma_plot)),
+#      ylim=c(0,max(max(ae_plot$num_out_called), max(limma_plot$num_out_called)) +2),
+#      ylab=&#39;recall (#detected confirmed cases)&#39;, xlab=&quot;p value rank&quot;, main=paste0(&#39;adj_pval: &#39;,padj_cutoff,&#39; outlier called&#39;) )
+# lines(1:nrow(limma_plot),limma_plot$num_out_called, col=&#39;blue&#39;, lwd=2)
+# legend(&#39;bottomright&#39;,
+#        legend=c(paste0(&#39;PROTRIDER [&#39;,max(ae_plot$num_out_called), &#39; in &#39;,which.max(ae_plot$num_out_called),&#39; / &#39; ,nrow(ae_plot),&#39;]&#39;) ,
+#                 paste0(&#39;limma [&#39;,max(limma_plot$num_out_called), &#39; in &#39;,which.max(limma_plot$num_out_called),&#39; / &#39; ,nrow(limma_plot),&#39;]&#39;) ),
+#        col=c(&#39;orange&#39;,&#39;blue&#39;), lty=1, lwd=10, title=&quot;method [confirmed cases]&quot;)
+
+### same plot but as ggplot
+ae_plot[, rank:=frank(PROTEIN_PVALUE, ties.method=&quot;min&quot;)]
+ae_plot[, total:=.N]
+ae_plot[, method:=&quot;PROTRIDER&quot;]
+limma_plot[, rank:=frank(PROTEIN_PVALUE, ties.method=&quot;min&quot;)]
+limma_plot[, total:=.N]
+limma_plot[, method:=&quot;limma-based approach&quot;]
+
+ae_limma_plot &lt;- rbind(ae_plot[,.(pvalue, num_out_called, rank, total, method)], 
+                       limma_plot[,.(pvalue, num_out_called, rank, total, method)])
+g &lt;- ggplot(ae_limma_plot, aes(x=rank, y=num_out_called, col=method)) +
+    geom_line() +
+    scale_y_continuous(limits=c(0, nrow(sa)), breaks=seq(0, nrow(sa), by=10),
+                       minor_breaks=seq(0, nrow(sa)-5, by=10)+5) +
+    xlab(&quot;p value rank&quot;) + ylab(&quot;recall (#detected confirmed cases)&quot;) + 
+    #ggtitle(paste0(&quot;adj_pval &lt;= &quot;, padj_cutoff)) +
+    scale_color_manual(values=c(&quot;#E69F00&quot;, &quot;#0072B2&quot;)) +
+    theme_bw() +
+    theme(text=element_text(size=14), title=element_text(size=14),
+          legend.title=element_blank(), legend.position=&quot;bottom&quot;,  # c(0.8, 0.15)
+          plot.title = element_text(hjust = 0.5), legend.text=element_text(size=14))
+# colors: orange, blue: &quot;#E69F00&quot;, &quot;#0072B2&quot;
+# g
+
+#### precision recall plot
+ae_plot[, `:=`(precision=num_out_called/rank, recall=num_out_called/nrow(sa))]
+limma_plot[, `:=`(precision=num_out_called/rank, recall=num_out_called/nrow(sa))]
+
+plot_dt &lt;- rbind(ae_plot[,.(precision, recall, method)], limma_plot[,.(precision, recall, method)])
+
+
+g_pr &lt;- ggplot(plot_dt, aes(x=recall, y=precision, col=method)) + geom_line() + 
+    scale_x_continuous(limits=c(0,1)) + scale_y_continuous(limits=c(0,0.55)) +
+    scale_color_manual(values=c(&quot;#E69F00&quot;, &quot;#0072B2&quot;)) +
+    theme_bw() +
+    theme(text=element_text(size=14), title=element_text(size=14),
+          legend.position=c(0.8, 0.85))
+# g_pr
+
+
+### nominal p value cutoff
+pval_cutoff = 0.05#0.1#0.05 #0.05 #1 #0.5#1# 0.05
+ae_plot = subset(pval_ae_solved, PROTEIN_PVALUE &lt;= pval_cutoff)
+ae_plot$pvalue = log10(ae_plot$PROTEIN_PVALUE)
+limma_plot = subset(pval_limma_solved, PROTEIN_PVALUE &lt;= pval_cutoff)
+limma_plot$pvalue = log10(limma_plot$PROTEIN_PVALUE)
+
+ae_plot[, rank:=frank(PROTEIN_PVALUE, ties.method=&quot;min&quot;)]
+ae_plot[, total:=.N]
+ae_plot[, method:=&quot;PROTRIDER&quot;]
+limma_plot[, rank:=frank(PROTEIN_PVALUE, ties.method=&quot;min&quot;)]
+limma_plot[, total:=.N]
+limma_plot[, method:=&quot;limma-based approach&quot;]
+
+ae_limma_plot &lt;- rbind(ae_plot[,.(pvalue, num_out_called, rank, total, method)], 
+                       limma_plot[,.(pvalue, num_out_called, rank, total, method)])
+g_nominal &lt;- ggplot(ae_limma_plot, aes(x=rank, y=num_out_called, col=method)) +
+    geom_line() +
+    scale_y_continuous(limits=c(0, nrow(sa)), breaks=seq(0, nrow(sa), by=10),
+                       minor_breaks=seq(0, nrow(sa)-5, by=10)+5) +
+    xlab(&quot;p value rank&quot;) + ylab(&quot;recall (#detected confirmed cases)&quot;) + 
+    #ggtitle(paste0(&quot;nominal pvalue &lt;= &quot;, pval_cutoff)) +
+    scale_color_manual(values=c(&quot;#E69F00&quot;, &quot;#0072B2&quot;)) +
+    theme_bw() +
+    theme(text=element_text(size=14), title=element_text(size=14), 
+          legend.title=element_blank(), legend.position=&quot;bottom&quot;,
+          plot.title=element_text(hjust = 0.5), legend.text=element_text(size=14))
+# g_nominal
+
+# ### combine into one Figure: panel a) recall for pvals with padj &lt; 0.1; panel b) recall for all nominal pval &lt; 0.05
+# g_fig &lt;- ggarrange(g, g_nominal, ncol=2, common.legend=TRUE, legend=&quot;bottom&quot;, labels=letters[3:4])
+# common_title &lt;- paste0(&quot;Recall of cases with pathogenic variants and validated VUS (n=&quot;, nrow(sa), &quot;)&quot;)
+# g_fig &lt;- annotate_figure(g_fig, top = text_grob(common_title, face = &quot;bold&quot;, size = 16))
+# g_fig
+# 
+# figure_file &lt;- snakemake@output$fig
+# ggsave(figure_file, g_fig, width=15, height=5)
+# saveRDS(list(&quot;g_padj&quot;=g, &quot;g_nominal&quot;=g_nominal), file.path(dirname(figure_file), &quot;protrider_limma_figS5.rds&quot;))
+
+
+
+#### precision recall plot (nominal pvalue cutoff)
+ae_plot[, `:=`(precision=num_out_called/rank, recall=num_out_called/nrow(sa))]
+limma_plot[, `:=`(precision=num_out_called/rank, recall=num_out_called/nrow(sa))]
+
+plot_dt &lt;- rbind(ae_plot[,.(precision, recall, method)], limma_plot[,.(precision, recall, method)])
+
+
+g_pr_nom &lt;- ggplot(plot_dt, aes(x=recall, y=precision, col=method)) + geom_line() + 
+    scale_x_continuous(limits=c(0,1)) + scale_y_continuous(limits=c(0,0.55)) +
+    scale_color_manual(values=c(&quot;#E69F00&quot;, &quot;#0072B2&quot;)) +
+    theme_bw() +
+    theme(text=element_text(size=14), title=element_text(size=14), 
+          legend.title=element_blank(), legend.position=&quot;bottom&quot;,
+          plot.title=element_text(hjust = 0.5), legend.text=element_text(size=14))
+# g_pr_nom
+
+# TODO only one plot needed, add the different pvalue cutoffs as shapes
+g_pr_fig &lt;- ggarrange(g_pr, g_pr_nom, ncol=2, common.legend=TRUE, legend=&quot;bottom&quot;, labels=letters[3:4])
+pr_common_title &lt;- paste0(&quot;Precision-recall curve for cases with pathogenic variants and validated VUS (n=&quot;, nrow(sa), &quot;)&quot;)
+g_pr_fig &lt;- annotate_figure(g_pr_fig, top = text_grob(pr_common_title, face = &quot;bold&quot;, size = 16))
+g_pr_fig</code></pre>
+<p><img src="Scripts_Supplementary_figures_S_Fig5_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>#### plot with both pvalue and z-score cutoffs
+pval_cutoff &lt;- 0.05 
+zscore_cutoff &lt;-  2
+ae_plot_pval &lt;- subset(pval_ae_solved, PROTEIN_PVALUE &lt;= pval_cutoff)
+ae_plot_pval$score &lt;- log10(ae_plot_pval$PROTEIN_PVALUE)
+ae_plot_pval[,method:=&quot;PROTRIDER&quot;]
+ae_plot_pval[,rankedBy:=&quot;p value&quot;]
+ae_plot_z &lt;- subset(pval_ae_solved, abs(PROTEIN_ZSCORE) &gt;= zscore_cutoff)
+ae_plot_z$score &lt;- -abs(ae_plot_z$PROTEIN_ZSCORE)
+ae_plot_z = ae_plot_z[order(-abs(ae_plot_z$PROTEIN_ZSCORE)),]
+ae_plot_z[, num_out_called:=cumsum(confirmed_out)]
+ae_plot_z[,method:=&quot;PROTRIDER&quot;]
+ae_plot_z[,rankedBy:=&quot;|z score|&quot;]
+limma_plot_pval &lt;- subset(pval_limma_solved, PROTEIN_PVALUE &lt;= pval_cutoff)
+limma_plot_pval$score &lt;- log10(limma_plot_pval$PROTEIN_PVALUE)
+limma_plot_pval[,method:=&quot;limma-based approach&quot;]
+limma_plot_pval[,rankedBy:=&quot;p value&quot;]
+limma_plot_z &lt;- subset(pval_limma_solved, abs(PROTEIN_ZSCORE) &gt;= zscore_cutoff)
+limma_plot_z$score &lt;- -abs(limma_plot_z$PROTEIN_ZSCORE)
+limma_plot_z = limma_plot_z[order(-abs(limma_plot_z$PROTEIN_ZSCORE)),]
+limma_plot_z[, num_out_called:=cumsum(confirmed_out)]
+limma_plot_z[,method:=&quot;limma-based approach&quot;]
+limma_plot_z[,rankedBy:=&quot;|z score|&quot;]
+
+plot_dt &lt;- rbind(ae_plot_pval[,.(score, num_out_called, method, rankedBy)], 
+                 ae_plot_z[,.(score, num_out_called, method, rankedBy)], 
+                 limma_plot_pval[,.(score, num_out_called, method, rankedBy)], 
+                 limma_plot_z[,.(score, num_out_called, method, rankedBy)])
+
+plot_dt[, rank:=frank(score, ties.method=&quot;min&quot;), by=&quot;method,rankedBy&quot;]
+plot_dt[, total:=.N, by=&quot;method,rankedBy&quot;]
+
+plot_dt[,rankedBy:=factor(rankedBy, levels=c(&quot;p value&quot;, &quot;|z score|&quot;))]
+
+# additional fig: recall for all nominal pval &lt; 0.05 + |z-score| &gt; 2
+log &lt;- FALSE
+# log &lt;- TRUE
+g_z &lt;- ggplot(plot_dt, aes(x=rank, y=num_out_called, col=method, linetype=rankedBy)) +
+    geom_line() +
+    scale_y_continuous(limits=c(0, nrow(sa)), breaks=seq(0, nrow(sa), by=10),
+                       minor_breaks=seq(0, nrow(sa)-5, by=10)+5) +
+    xlab(&quot;rank&quot;) + ylab(&quot;recall (#detected confirmed cases)&quot;) + 
+    ggtitle(paste0(&quot;Recall of cases with pathogenic variants and validated VUS (n=&quot;, nrow(sa), &quot;)&quot;)) +
+    scale_color_manual(values=c(&quot;#E69F00&quot;, &quot;#0072B2&quot;)) +
+    theme_bw() +
+    theme(text=element_text(size=14), title=element_text(size=14), 
+          legend.position=&quot;bottom&quot;, legend.box=&quot;horizontal&quot;, legend.direction=&quot;vertical&quot;,
+          plot.title=element_text(hjust = 0.5), legend.text=element_text(size=14)) +
+    guides(color = guide_legend(title.position=&quot;left&quot;, order=1, title.theme=element_blank()),
+           linetype=guide_legend(&quot;ranked by:&quot;, title.position=&quot;left&quot;, order=2))
+if(log) g_z &lt;- g_z + scale_x_log10()
+g_z</code></pre>
+<p><img src="Scripts_Supplementary_figures_S_Fig5_files/figure-html/unnamed-chunk-1-2.png" width="672" /></p>
+<pre class="r"><code>#### PROTRIDER global qq-plot
+# code slightly adjusted from https://github.com/gagneurlab/OUTRIDER-analysis/blob/master/Scripts/PaperPlots/Figure3_global_qq_res.R 
+getQQPlottingData &lt;- function(pval_list, method_name, conf.alpha=0.05){
+    qqPlotDT &lt;- data.table(observedPvalue=pval_list[,PROTEIN_PVALUE],
+                           aberrant=pval_list[,PROTEIN_outlier],
+                           Method=method_name)
+    qqPlotDT &lt;- qqPlotDT[order(observedPvalue)]
+    
+    qqPlotDT[,expectedPvalue:= ppoints(observedPvalue), by=Method]
+    
+    # set confidence
+    qqPlotDT[,nlupper:=-log10(qbeta(  conf.alpha/2, 1:.N, .N:1)), by=Method]
+    qqPlotDT[,nllower:=-log10(qbeta(1-conf.alpha/2, 1:.N, .N:1)), by=Method]
+    
+    ## sample to avoid plotting problems.
+    qqPlotDTSampled &lt;- qqPlotDT[
+        observedPvalue &lt;  1E-3 |
+            observedPvalue &lt;  1E-2 &amp; sample(c(TRUE, FALSE), nrow(qqPlotDT), prob = c(0.1,  0.9),  replace = TRUE)|
+            observedPvalue &gt;= 1E-2 &amp; sample(c(TRUE, FALSE), nrow(qqPlotDT), prob = c(0.01, 0.99), replace = TRUE)]
+    qqPlotDTSampled[,neglog10expectedPvalue := -log10(expectedPvalue)]
+    qqPlotDTSampled[,neglog10observedPvalue := -log10(observedPvalue)]
+    
+    return(qqPlotDTSampled)
+}
+
+zoomtheme &lt;- theme(legend.position=&quot;none&quot;, axis.title.x=element_blank(),
+                   axis.title.y=element_blank(), title = element_blank(),
+                   panel.grid.major = element_blank(), panel.grid.minor = element_blank(), 
+                   panel.background = element_rect(color=&#39;white&#39;, fill=&quot;white&quot;),
+                   plot.background = element_rect(color=&#39;white&#39;, fill = &quot;white&quot;),
+                   plot.margin = unit(c(0,0,-6,-6),&quot;mm&quot;))
+
+plotFigureQQ &lt;- function(dt, dataset, withInlet=TRUE, range=c(0.5, 3.5, 17, 37)){
+    sdt &lt;- dt[, .(nle=neglog10expectedPvalue, nlo=neglog10observedPvalue, Method=Method, nllow=nllower, nlup=nlupper)]
+    ggp &lt;- ggplot(sdt, aes(nle, nlo, col=Method)) + 
+        geom_point(size=0.8) + 
+        scale_color_brewer(palette=&#39;Dark2&#39;) + 
+        geom_abline(intercept = 0, slope = 1) + 
+        labs(title = paste(dataset),  
+             x=expression(paste(-log[10], &quot; (expected &quot;, italic(P), &quot;-value)&quot;)),
+             y=expression(paste(-log[10], &quot; (obs. &quot;, italic(P), &quot;-value)&quot;))) + 
+        geom_ribbon(data=sdt[Method==&#39;PROTRIDER&#39;], col=alpha(&#39;gray&#39;, 0.2), fill=alpha(&#39;gray&#39;, 0.5),
+                    aes(x=nle, ymin = nllow, ymax = nlup))
+    
+    if(isTRUE(withInlet)){
+        ggZoom &lt;- ggplotGrob(
+            ggp + coord_cartesian(xlim=c(2, 3.5), ylim=c(2, 7)) + zoomtheme)
+        ggp &lt;- ggp + annotation_custom(grob=ggZoom, xmin=range[1], xmax=range[2],
+                                       ymin=range[3], ymax=range[4])
+    }
+    ggp
+}
+
+# global qq plot for PROTRIDER
+plotdt &lt;- getQQPlottingData(protrider_pval_list, method_name=&#39;PROTRIDER&#39;)
+# ggQQ &lt;- plotFigureQQ(plotdt, &#39;&#39;, withInlet=FALSE) + theme_bw() + 
+#     scale_color_manual(values=c(&quot;#0072B2&quot;)) +
+#     theme(text=element_text(size=14), title=element_text(size=14), 
+#         legend.title=element_blank(), legend.position=c(0.2, 0.9),
+#         legend.text=element_text(size=14))
+# ggQQ
+
+# global qq plot for both PROTRIDER and limma
+plotdt_limma &lt;- getQQPlottingData(limma_pval_list, method_name=&#39;limma-based approach&#39;)
+plotdt_both &lt;- rbind(plotdt, plotdt_limma)
+ggQQ_both &lt;- plotFigureQQ(plotdt_both, &#39;&#39;, withInlet=FALSE) + 
+    scale_color_manual(values=c(&quot;#E69F00&quot;, &quot;#0072B2&quot;)) +
+    theme_bw() + 
+    theme(text=element_text(size=14), title=element_text(size=14), 
+        legend.title=element_blank(), legend.position=&quot;none&quot;,
+        legend.text=element_text(size=14))
+# ggQQ_both
+
+# heatscatter expected vs observed
+se &lt;- readRDS(snakemake@input$protrider_object)
+heatscatter_dt &lt;- data.table(observed=c(assays(se)$X), expected=c(assays(se)$X_pred), pval=c(assays(se)$X_pval), padj=c(assays(se)$X_pval_adj))
+heatscatter_dt &lt;- heatscatter_dt[!is.na(pval)]
+heatscatter_dt[,outlier:=padj &lt; 0.05]
+
+g_heatscatter &lt;- ggplot(data=heatscatter_dt, aes(x=expected, y=observed))
+g_heatscatter &lt;- g_heatscatter + geom_hex(aes(fill=stat(log(count))), binwidth = 0.05, 
+                  show.legend = FALSE) + 
+    scale_fill_gradientn(colors = colorpalette(&#39;heat&#39;, 30))
+g_heatscatter &lt;- g_heatscatter + # geom_smooth(method=&#39;lm&#39;) + 
+    geom_abline(intercept=0, slope=1, col=&quot;black&quot;, linetype=&quot;dashed&quot;) + 
+    labs(x=&quot;expected log intensities&quot;, y=&quot;observed log intensities&quot;) +
+    theme_bw() + theme(text=element_text(size=14), title=element_text(size=14))
+# g_heatscatter
+
+g_expVsObs &lt;- ggplot(data=heatscatter_dt, aes(x=expected, y=observed))
+g_expVsObs &lt;- g_expVsObs + geom_point(aes(color=outlier), size=1) + 
+    scale_color_brewer(palette=&quot;Dark2&quot;)
+# g_expVsObs &lt;- g_expVsObs + geom_point(aes(color=pointdens), size=1, show.legend=FALSE) + 
+# scale_color_gradientn(colors = colorpalette(&#39;heat&#39;, 30))
+g_expVsObs &lt;- g_expVsObs + # geom_smooth(method=&#39;lm&#39;) + 
+    geom_abline(intercept=0, slope=1, col=&quot;black&quot;, linetype=&quot;dashed&quot;) + 
+    labs(x=&quot;expected log intensities&quot;, y=&quot;observed log intensities&quot;) +
+    theme_bw()
+g_expVsObs</code></pre>
+<p><img src="Scripts_Supplementary_figures_S_Fig5_files/figure-html/unnamed-chunk-1-3.png" width="672" /></p>
+<pre class="r"><code>### combine into one Figure: panel c) recall for pvals with padj &lt; 0.1; panel d) recall for all nominal pval &lt; 0.05
+### panel e) global qq-plot f) heatscatter observed vs predicted</code></pre>
+<pre class="r"><code>g_fig_cd &lt;- ggarrange(g, g_nominal, ncol=2, common.legend=TRUE, legend=&quot;bottom&quot;, labels=letters[3:4])
+g_fig_ef &lt;- ggarrange(ggQQ_both, g_heatscatter, ncol=2, labels=letters[5:6])
+g_fig &lt;- ggarrange(g_fig_cd, g_fig_ef, nrow=2)
+g_fig</code></pre>
+<p><img src="Scripts_Supplementary_figures_S_Fig5_files/figure-html/unnamed-chunk-2-1.png" width="1440" /></p>
+<pre class="r"><code>figure_file &lt;- snakemake@output$fig
+ggsave(figure_file, g_fig, width=15, height=10)</code></pre>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFBST1RSSURFUiBjb21wYXJpc29uIHRvIGxpbW1hLWJhc2VkIGFwcHJvYWNoICAgCiMnIGF1dGhvcjogc2NoZWxsZXIsIGxvaXBmaW5nZXIKIycgd2I6CiMnICBpbnB1dDoKIycgIC0gcHJvdHJpZGVyX3Jlc3VsdHM6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvcHJvdHJpZGVyL1BST1RSSURFUl9yZXN1bHRzLnJkcyJgJwojJyAgLSBwcm90cmlkZXJfb2JqZWN0OiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL3Byb3RyaWRlci9wcm90cmlkZXJfb2JqLnJkcyJgJwojJyAgLSBsaW1tYV9yZXN1bHRzOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL2xpbW1hL0xJTU1BX3Jlc3VsdHMucmRzImAnCiMnICAtIHNhbXBsZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siQU5OT1RBVElPTiJdYCcKIycgIG91dHB1dDoKIycgIC0gZmlnOiAnYHNtIGNvbmZpZ1siRklHVVJFX0RJUiJdICsgIi9TdXBwbGVtZW50YXJ5X2ZpZ3VyZXMvU19GaWc1X2NkZWYucGRmImAnCiMnIG91dHB1dDogCiMnICAgaHRtbF9kb2N1bWVudDoKIycgICAgY29kZV9mb2xkaW5nOiBoaWRlCiMnICAgIGNvZGVfZG93bmxvYWQ6IFRSVUUKIyctLS0KCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMjIyBwbG90IGxpbW1hIC0gcHJvdHJpZGVyIGJlbmNobWFyawoKc291cmNlKCdzcmMvY29uZmlnLlInKQpsaWJyYXJ5KHBseXIpCmxpYnJhcnkoZHBseXIpCmxpYnJhcnkoZGF0YS50YWJsZSkKbGlicmFyeShnZ3Bsb3QyKQpsaWJyYXJ5KGdncHVicikKCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMjIyByZWFkIGluIHByb3RyaWRlciByZXN1bHRzCnByb3RyaWRlcl9maWxlbmFtZSA8LSBzbmFrZW1ha2VAaW5wdXQkcHJvdHJpZGVyX3Jlc3VsdHMKcHJvdHJpZGVyX3B2YWxfbGlzdCA8LSBhcy5kYXRhLnRhYmxlKHJlYWRSRFMocHJvdHJpZGVyX2ZpbGVuYW1lKSkKcHJvdHJpZGVyX3B2YWxfbGlzdCRzYW1wbGVfcHJvdCA9IHBhc3RlMChwcm90cmlkZXJfcHZhbF9saXN0JFNBTVBMRV9JRCwiXyIsIHByb3RyaWRlcl9wdmFsX2xpc3QkZ2VuZUlEKQoKIyMjIHJlYWQgaW4gbGltbWEgcmVzdWx0cwpsaW1tYV9maWxlbmFtZSA8LSBzbmFrZW1ha2VAaW5wdXQkbGltbWFfcmVzdWx0cwpsaW1tYV9wdmFsX2xpc3QgPC0gYXMuZGF0YS50YWJsZShyZWFkUkRTKGxpbW1hX2ZpbGVuYW1lKSkKbGltbWFfcHZhbF9saXN0JHNhbXBsZV9wcm90ID0gcGFzdGUwKGxpbW1hX3B2YWxfbGlzdCRTQU1QTEVfSUQsIl8iLGxpbW1hX3B2YWxfbGlzdCRnZW5lSUQpCgojIyMga2VlcCBvbmx5IHNhbXBsZXMgaW4gYm90aCBhbmFseXNlcywgb25seSBpZiBhbGwgd2hvbGUgbGltbWEgbGlzdCBpcyBjb25zaWRlcmVkCm9ubHlfaWRlbnRpY2FsX3NhbXBsZXMgPC0gaW50ZXJzZWN0KGxpbW1hX3B2YWxfbGlzdCRzYW1wbGVfcHJvdCwgcHJvdHJpZGVyX3B2YWxfbGlzdCRzYW1wbGVfcHJvdCkKcHZhbF9hZV9wcmUgPC0gc3Vic2V0KHByb3RyaWRlcl9wdmFsX2xpc3QsIHNhbXBsZV9wcm90ICVpbiUgb25seV9pZGVudGljYWxfc2FtcGxlcykKcHZhbF9saW1tYV9wcmUgPC0gc3Vic2V0KGxpbW1hX3B2YWxfbGlzdCwgc2FtcGxlX3Byb3QgJWluJSBvbmx5X2lkZW50aWNhbF9zYW1wbGVzKQoKCiMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjCiMjIyBnZXQgc2FtcGxlIGFubm90YXRpb24Kc2FfcHJvdCA8LSBmcmVhZChzbmFrZW1ha2VAaW5wdXQkc2FtcGxlX2Fubm90YXRpb24pCnNhX3Byb3QgPC0gc2FfcHJvdFtVU0VfRk9SX1BST1RFT01JQ1NfUEFQRVIgPT0gVF0Kc2FfcHJvdCRLTk9XTl9NVVRBVElPTiA8LSB0b3VwcGVyKHNhX3Byb3QkS05PV05fTVVUQVRJT04pCmV0cF9tIDwtIHNhX3Byb3RbLCBjKCdTQU1QTEVfSUQnLCAnS05PV05fTVVUQVRJT04nLCdDQVRFR09SWScpXQoKIyBzYSA9IHN1YnNldChldHBfbSwgQ0FURUdPUlk9PSJJIilbLDE6Ml0gICAjIyMgZm9yIG9ubHkgY29uZmlybWVkIG9uZXMKIyBzYSA9IHN1YnNldChldHBfbSwgQ0FURUdPUlkgJWluJSBjKCJJIiwgIklJYSIsICJJSUkiKSlbLDE6Ml0gICAjIyMgZm9yIG9ubHkgY29uZmlybWVkIG9uZXMKc2EgPSBzdWJzZXQoZXRwX20sIENBVEVHT1JZICVpbiUgYygiSSIsICJJSWEiKSlbLDE6Ml0gIyMjIG9ubHkgY2FzZXMgd2l0aCBwcmV2aW91cyBjYW5kaWRhdGUKc2EkY29uZmlybWVkX291dCA9ICFpcy5uYShzYSRLTk9XTl9NVVRBVElPTikKc2Ekc2FtcGxlX3Byb3QgPSBwYXN0ZTAoc2EkU0FNUExFX0lELCJfIixzYSRLTk9XTl9NVVRBVElPTikKCiMjIyBtZXJnZSBrbm93biBtdXRhdGlvbiB0byByZXN1bHQgbGlzdHMKcHZhbF9hZV9zb2x2ZWQgPSBqb2luKHB2YWxfYWVfcHJlLHNhKQpwdmFsX2FlX3NvbHZlZFtpcy5uYShjb25maXJtZWRfb3V0KSwgY29uZmlybWVkX291dDo9RkFMU0VdCnB2YWxfYWVfc29sdmVkID0gcHZhbF9hZV9zb2x2ZWRbb3JkZXIocHZhbF9hZV9zb2x2ZWQkUFJPVEVJTl9QVkFMVUUpLF0KcHZhbF9hZV9zb2x2ZWRbLCBudW1fb3V0X2NhbGxlZDo9Y3Vtc3VtKGNvbmZpcm1lZF9vdXQpXQoKcHZhbF9saW1tYV9zb2x2ZWQgPSBqb2luKHB2YWxfbGltbWFfcHJlLHNhKQpwdmFsX2xpbW1hX3NvbHZlZCRjb25maXJtZWRfb3V0W2lzLm5hKHB2YWxfbGltbWFfc29sdmVkJGNvbmZpcm1lZF9vdXQpXSA9IEZBTFNFCnB2YWxfbGltbWFfc29sdmVkID0gcHZhbF9saW1tYV9zb2x2ZWRbb3JkZXIocHZhbF9saW1tYV9zb2x2ZWQkUFJPVEVJTl9QVkFMVUUpLF0KcHZhbF9saW1tYV9zb2x2ZWQkbnVtX291dF9jYWxsZWQgPSBjdW1zdW0ocHZhbF9saW1tYV9zb2x2ZWQkY29uZmlybWVkX291dCkKCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwojIyMgcGxvdHRpbmcKcGFkal9jdXRvZmYgPSAwLjEgIzAuMDUgCmFlX3Bsb3QgPSBzdWJzZXQocHZhbF9hZV9zb2x2ZWQsIFBST1RFSU5fUEFESiA8PSBwYWRqX2N1dG9mZikKYWVfcGxvdCRwdmFsdWUgPSBsb2cxMChhZV9wbG90JFBST1RFSU5fUFZBTFVFKQpsaW1tYV9wbG90ID0gc3Vic2V0KHB2YWxfbGltbWFfc29sdmVkLCBQUk9URUlOX1BBREogPD0gcGFkal9jdXRvZmYpCmxpbW1hX3Bsb3QkcHZhbHVlID0gbG9nMTAobGltbWFfcGxvdCRQUk9URUlOX1BWQUxVRSkKCiMgIyBSZWNhbGwgcGxvdCBmcm9tIFN0ZWZhbiBMLgojIHBsb3QoMTpucm93KGFlX3Bsb3QpLGFlX3Bsb3QkbnVtX291dF9jYWxsZWQsICdsJywgIGx3ZD0yLAojICAgICAgY29sPSdvcmFuZ2UnLCB4bGltPWMoMCxucm93KGxpbW1hX3Bsb3QpKSwKIyAgICAgIHlsaW09YygwLG1heChtYXgoYWVfcGxvdCRudW1fb3V0X2NhbGxlZCksIG1heChsaW1tYV9wbG90JG51bV9vdXRfY2FsbGVkKSkgKzIpLAojICAgICAgeWxhYj0ncmVjYWxsICgjZGV0ZWN0ZWQgY29uZmlybWVkIGNhc2VzKScsIHhsYWI9InAgdmFsdWUgcmFuayIsIG1haW49cGFzdGUwKCdhZGpfcHZhbDogJyxwYWRqX2N1dG9mZiwnIG91dGxpZXIgY2FsbGVkJykgKQojIGxpbmVzKDE6bnJvdyhsaW1tYV9wbG90KSxsaW1tYV9wbG90JG51bV9vdXRfY2FsbGVkLCBjb2w9J2JsdWUnLCBsd2Q9MikKIyBsZWdlbmQoJ2JvdHRvbXJpZ2h0JywKIyAgICAgICAgbGVnZW5kPWMocGFzdGUwKCdQUk9UUklERVIgWycsbWF4KGFlX3Bsb3QkbnVtX291dF9jYWxsZWQpLCAnIGluICcsd2hpY2gubWF4KGFlX3Bsb3QkbnVtX291dF9jYWxsZWQpLCcgLyAnICxucm93KGFlX3Bsb3QpLCddJykgLAojICAgICAgICAgICAgICAgICBwYXN0ZTAoJ2xpbW1hIFsnLG1heChsaW1tYV9wbG90JG51bV9vdXRfY2FsbGVkKSwgJyBpbiAnLHdoaWNoLm1heChsaW1tYV9wbG90JG51bV9vdXRfY2FsbGVkKSwnIC8gJyAsbnJvdyhsaW1tYV9wbG90KSwnXScpICksCiMgICAgICAgIGNvbD1jKCdvcmFuZ2UnLCdibHVlJyksIGx0eT0xLCBsd2Q9MTAsIHRpdGxlPSJtZXRob2QgW2NvbmZpcm1lZCBjYXNlc10iKQoKIyMjIHNhbWUgcGxvdCBidXQgYXMgZ2dwbG90CmFlX3Bsb3RbLCByYW5rOj1mcmFuayhQUk9URUlOX1BWQUxVRSwgdGllcy5tZXRob2Q9Im1pbiIpXQphZV9wbG90WywgdG90YWw6PS5OXQphZV9wbG90WywgbWV0aG9kOj0iUFJPVFJJREVSIl0KbGltbWFfcGxvdFssIHJhbms6PWZyYW5rKFBST1RFSU5fUFZBTFVFLCB0aWVzLm1ldGhvZD0ibWluIildCmxpbW1hX3Bsb3RbLCB0b3RhbDo9Lk5dCmxpbW1hX3Bsb3RbLCBtZXRob2Q6PSJsaW1tYS1iYXNlZCBhcHByb2FjaCJdCgphZV9saW1tYV9wbG90IDwtIHJiaW5kKGFlX3Bsb3RbLC4ocHZhbHVlLCBudW1fb3V0X2NhbGxlZCwgcmFuaywgdG90YWwsIG1ldGhvZCldLCAKICAgICAgICAgICAgICAgICAgICAgICBsaW1tYV9wbG90WywuKHB2YWx1ZSwgbnVtX291dF9jYWxsZWQsIHJhbmssIHRvdGFsLCBtZXRob2QpXSkKZyA8LSBnZ3Bsb3QoYWVfbGltbWFfcGxvdCwgYWVzKHg9cmFuaywgeT1udW1fb3V0X2NhbGxlZCwgY29sPW1ldGhvZCkpICsKICAgIGdlb21fbGluZSgpICsKICAgIHNjYWxlX3lfY29udGludW91cyhsaW1pdHM9YygwLCBucm93KHNhKSksIGJyZWFrcz1zZXEoMCwgbnJvdyhzYSksIGJ5PTEwKSwKICAgICAgICAgICAgICAgICAgICAgICBtaW5vcl9icmVha3M9c2VxKDAsIG5yb3coc2EpLTUsIGJ5PTEwKSs1KSArCiAgICB4bGFiKCJwIHZhbHVlIHJhbmsiKSArIHlsYWIoInJlY2FsbCAoI2RldGVjdGVkIGNvbmZpcm1lZCBjYXNlcykiKSArIAogICAgI2dndGl0bGUocGFzdGUwKCJhZGpfcHZhbCA8PSAiLCBwYWRqX2N1dG9mZikpICsKICAgIHNjYWxlX2NvbG9yX21hbnVhbCh2YWx1ZXM9YygiI0U2OUYwMCIsICIjMDA3MkIyIikpICsKICAgIHRoZW1lX2J3KCkgKwogICAgdGhlbWUodGV4dD1lbGVtZW50X3RleHQoc2l6ZT0xNCksIHRpdGxlPWVsZW1lbnRfdGV4dChzaXplPTE0KSwKICAgICAgICAgIGxlZ2VuZC50aXRsZT1lbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbj0iYm90dG9tIiwgICMgYygwLjgsIDAuMTUpCiAgICAgICAgICBwbG90LnRpdGxlID0gZWxlbWVudF90ZXh0KGhqdXN0ID0gMC41KSwgbGVnZW5kLnRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpKQojIGNvbG9yczogb3JhbmdlLCBibHVlOiAiI0U2OUYwMCIsICIjMDA3MkIyIgojIGcKCiMjIyMgcHJlY2lzaW9uIHJlY2FsbCBwbG90CmFlX3Bsb3RbLCBgOj1gKHByZWNpc2lvbj1udW1fb3V0X2NhbGxlZC9yYW5rLCByZWNhbGw9bnVtX291dF9jYWxsZWQvbnJvdyhzYSkpXQpsaW1tYV9wbG90WywgYDo9YChwcmVjaXNpb249bnVtX291dF9jYWxsZWQvcmFuaywgcmVjYWxsPW51bV9vdXRfY2FsbGVkL25yb3coc2EpKV0KCnBsb3RfZHQgPC0gcmJpbmQoYWVfcGxvdFssLihwcmVjaXNpb24sIHJlY2FsbCwgbWV0aG9kKV0sIGxpbW1hX3Bsb3RbLC4ocHJlY2lzaW9uLCByZWNhbGwsIG1ldGhvZCldKQoKCmdfcHIgPC0gZ2dwbG90KHBsb3RfZHQsIGFlcyh4PXJlY2FsbCwgeT1wcmVjaXNpb24sIGNvbD1tZXRob2QpKSArIGdlb21fbGluZSgpICsgCiAgICBzY2FsZV94X2NvbnRpbnVvdXMobGltaXRzPWMoMCwxKSkgKyBzY2FsZV95X2NvbnRpbnVvdXMobGltaXRzPWMoMCwwLjU1KSkgKwogICAgc2NhbGVfY29sb3JfbWFudWFsKHZhbHVlcz1jKCIjRTY5RjAwIiwgIiMwMDcyQjIiKSkgKwogICAgdGhlbWVfYncoKSArCiAgICB0aGVtZSh0ZXh0PWVsZW1lbnRfdGV4dChzaXplPTE0KSwgdGl0bGU9ZWxlbWVudF90ZXh0KHNpemU9MTQpLAogICAgICAgICAgbGVnZW5kLnBvc2l0aW9uPWMoMC44LCAwLjg1KSkKIyBnX3ByCgoKIyMjIG5vbWluYWwgcCB2YWx1ZSBjdXRvZmYKcHZhbF9jdXRvZmYgPSAwLjA1IzAuMSMwLjA1ICMwLjA1ICMxICMwLjUjMSMgMC4wNQphZV9wbG90ID0gc3Vic2V0KHB2YWxfYWVfc29sdmVkLCBQUk9URUlOX1BWQUxVRSA8PSBwdmFsX2N1dG9mZikKYWVfcGxvdCRwdmFsdWUgPSBsb2cxMChhZV9wbG90JFBST1RFSU5fUFZBTFVFKQpsaW1tYV9wbG90ID0gc3Vic2V0KHB2YWxfbGltbWFfc29sdmVkLCBQUk9URUlOX1BWQUxVRSA8PSBwdmFsX2N1dG9mZikKbGltbWFfcGxvdCRwdmFsdWUgPSBsb2cxMChsaW1tYV9wbG90JFBST1RFSU5fUFZBTFVFKQoKYWVfcGxvdFssIHJhbms6PWZyYW5rKFBST1RFSU5fUFZBTFVFLCB0aWVzLm1ldGhvZD0ibWluIildCmFlX3Bsb3RbLCB0b3RhbDo9Lk5dCmFlX3Bsb3RbLCBtZXRob2Q6PSJQUk9UUklERVIiXQpsaW1tYV9wbG90WywgcmFuazo9ZnJhbmsoUFJPVEVJTl9QVkFMVUUsIHRpZXMubWV0aG9kPSJtaW4iKV0KbGltbWFfcGxvdFssIHRvdGFsOj0uTl0KbGltbWFfcGxvdFssIG1ldGhvZDo9ImxpbW1hLWJhc2VkIGFwcHJvYWNoIl0KCmFlX2xpbW1hX3Bsb3QgPC0gcmJpbmQoYWVfcGxvdFssLihwdmFsdWUsIG51bV9vdXRfY2FsbGVkLCByYW5rLCB0b3RhbCwgbWV0aG9kKV0sIAogICAgICAgICAgICAgICAgICAgICAgIGxpbW1hX3Bsb3RbLC4ocHZhbHVlLCBudW1fb3V0X2NhbGxlZCwgcmFuaywgdG90YWwsIG1ldGhvZCldKQpnX25vbWluYWwgPC0gZ2dwbG90KGFlX2xpbW1hX3Bsb3QsIGFlcyh4PXJhbmssIHk9bnVtX291dF9jYWxsZWQsIGNvbD1tZXRob2QpKSArCiAgICBnZW9tX2xpbmUoKSArCiAgICBzY2FsZV95X2NvbnRpbnVvdXMobGltaXRzPWMoMCwgbnJvdyhzYSkpLCBicmVha3M9c2VxKDAsIG5yb3coc2EpLCBieT0xMCksCiAgICAgICAgICAgICAgICAgICAgICAgbWlub3JfYnJlYWtzPXNlcSgwLCBucm93KHNhKS01LCBieT0xMCkrNSkgKwogICAgeGxhYigicCB2YWx1ZSByYW5rIikgKyB5bGFiKCJyZWNhbGwgKCNkZXRlY3RlZCBjb25maXJtZWQgY2FzZXMpIikgKyAKICAgICNnZ3RpdGxlKHBhc3RlMCgibm9taW5hbCBwdmFsdWUgPD0gIiwgcHZhbF9jdXRvZmYpKSArCiAgICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzPWMoIiNFNjlGMDAiLCAiIzAwNzJCMiIpKSArCiAgICB0aGVtZV9idygpICsKICAgIHRoZW1lKHRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpLCB0aXRsZT1lbGVtZW50X3RleHQoc2l6ZT0xNCksIAogICAgICAgICAgbGVnZW5kLnRpdGxlPWVsZW1lbnRfYmxhbmsoKSwgbGVnZW5kLnBvc2l0aW9uPSJib3R0b20iLAogICAgICAgICAgcGxvdC50aXRsZT1lbGVtZW50X3RleHQoaGp1c3QgPSAwLjUpLCBsZWdlbmQudGV4dD1lbGVtZW50X3RleHQoc2l6ZT0xNCkpCiMgZ19ub21pbmFsCgojICMjIyBjb21iaW5lIGludG8gb25lIEZpZ3VyZTogcGFuZWwgYSkgcmVjYWxsIGZvciBwdmFscyB3aXRoIHBhZGogPCAwLjE7IHBhbmVsIGIpIHJlY2FsbCBmb3IgYWxsIG5vbWluYWwgcHZhbCA8IDAuMDUKIyBnX2ZpZyA8LSBnZ2FycmFuZ2UoZywgZ19ub21pbmFsLCBuY29sPTIsIGNvbW1vbi5sZWdlbmQ9VFJVRSwgbGVnZW5kPSJib3R0b20iLCBsYWJlbHM9bGV0dGVyc1szOjRdKQojIGNvbW1vbl90aXRsZSA8LSBwYXN0ZTAoIlJlY2FsbCBvZiBjYXNlcyB3aXRoIHBhdGhvZ2VuaWMgdmFyaWFudHMgYW5kIHZhbGlkYXRlZCBWVVMgKG49IiwgbnJvdyhzYSksICIpIikKIyBnX2ZpZyA8LSBhbm5vdGF0ZV9maWd1cmUoZ19maWcsIHRvcCA9IHRleHRfZ3JvYihjb21tb25fdGl0bGUsIGZhY2UgPSAiYm9sZCIsIHNpemUgPSAxNikpCiMgZ19maWcKIyAKIyBmaWd1cmVfZmlsZSA8LSBzbmFrZW1ha2VAb3V0cHV0JGZpZwojIGdnc2F2ZShmaWd1cmVfZmlsZSwgZ19maWcsIHdpZHRoPTE1LCBoZWlnaHQ9NSkKIyBzYXZlUkRTKGxpc3QoImdfcGFkaiI9ZywgImdfbm9taW5hbCI9Z19ub21pbmFsKSwgZmlsZS5wYXRoKGRpcm5hbWUoZmlndXJlX2ZpbGUpLCAicHJvdHJpZGVyX2xpbW1hX2ZpZ1M1LnJkcyIpKQoKCgojIyMjIHByZWNpc2lvbiByZWNhbGwgcGxvdCAobm9taW5hbCBwdmFsdWUgY3V0b2ZmKQphZV9wbG90WywgYDo9YChwcmVjaXNpb249bnVtX291dF9jYWxsZWQvcmFuaywgcmVjYWxsPW51bV9vdXRfY2FsbGVkL25yb3coc2EpKV0KbGltbWFfcGxvdFssIGA6PWAocHJlY2lzaW9uPW51bV9vdXRfY2FsbGVkL3JhbmssIHJlY2FsbD1udW1fb3V0X2NhbGxlZC9ucm93KHNhKSldCgpwbG90X2R0IDwtIHJiaW5kKGFlX3Bsb3RbLC4ocHJlY2lzaW9uLCByZWNhbGwsIG1ldGhvZCldLCBsaW1tYV9wbG90WywuKHByZWNpc2lvbiwgcmVjYWxsLCBtZXRob2QpXSkKCgpnX3ByX25vbSA8LSBnZ3Bsb3QocGxvdF9kdCwgYWVzKHg9cmVjYWxsLCB5PXByZWNpc2lvbiwgY29sPW1ldGhvZCkpICsgZ2VvbV9saW5lKCkgKyAKICAgIHNjYWxlX3hfY29udGludW91cyhsaW1pdHM9YygwLDEpKSArIHNjYWxlX3lfY29udGludW91cyhsaW1pdHM9YygwLDAuNTUpKSArCiAgICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzPWMoIiNFNjlGMDAiLCAiIzAwNzJCMiIpKSArCiAgICB0aGVtZV9idygpICsKICAgIHRoZW1lKHRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpLCB0aXRsZT1lbGVtZW50X3RleHQoc2l6ZT0xNCksIAogICAgICAgICAgbGVnZW5kLnRpdGxlPWVsZW1lbnRfYmxhbmsoKSwgbGVnZW5kLnBvc2l0aW9uPSJib3R0b20iLAogICAgICAgICAgcGxvdC50aXRsZT1lbGVtZW50X3RleHQoaGp1c3QgPSAwLjUpLCBsZWdlbmQudGV4dD1lbGVtZW50X3RleHQoc2l6ZT0xNCkpCiMgZ19wcl9ub20KCiMgVE9ETyBvbmx5IG9uZSBwbG90IG5lZWRlZCwgYWRkIHRoZSBkaWZmZXJlbnQgcHZhbHVlIGN1dG9mZnMgYXMgc2hhcGVzCmdfcHJfZmlnIDwtIGdnYXJyYW5nZShnX3ByLCBnX3ByX25vbSwgbmNvbD0yLCBjb21tb24ubGVnZW5kPVRSVUUsIGxlZ2VuZD0iYm90dG9tIiwgbGFiZWxzPWxldHRlcnNbMzo0XSkKcHJfY29tbW9uX3RpdGxlIDwtIHBhc3RlMCgiUHJlY2lzaW9uLXJlY2FsbCBjdXJ2ZSBmb3IgY2FzZXMgd2l0aCBwYXRob2dlbmljIHZhcmlhbnRzIGFuZCB2YWxpZGF0ZWQgVlVTIChuPSIsIG5yb3coc2EpLCAiKSIpCmdfcHJfZmlnIDwtIGFubm90YXRlX2ZpZ3VyZShnX3ByX2ZpZywgdG9wID0gdGV4dF9ncm9iKHByX2NvbW1vbl90aXRsZSwgZmFjZSA9ICJib2xkIiwgc2l6ZSA9IDE2KSkKZ19wcl9maWcKCgojIyMjIHBsb3Qgd2l0aCBib3RoIHB2YWx1ZSBhbmQgei1zY29yZSBjdXRvZmZzCnB2YWxfY3V0b2ZmIDwtIDAuMDUgCnpzY29yZV9jdXRvZmYgPC0gIDIKYWVfcGxvdF9wdmFsIDwtIHN1YnNldChwdmFsX2FlX3NvbHZlZCwgUFJPVEVJTl9QVkFMVUUgPD0gcHZhbF9jdXRvZmYpCmFlX3Bsb3RfcHZhbCRzY29yZSA8LSBsb2cxMChhZV9wbG90X3B2YWwkUFJPVEVJTl9QVkFMVUUpCmFlX3Bsb3RfcHZhbFssbWV0aG9kOj0iUFJPVFJJREVSIl0KYWVfcGxvdF9wdmFsWyxyYW5rZWRCeTo9InAgdmFsdWUiXQphZV9wbG90X3ogPC0gc3Vic2V0KHB2YWxfYWVfc29sdmVkLCBhYnMoUFJPVEVJTl9aU0NPUkUpID49IHpzY29yZV9jdXRvZmYpCmFlX3Bsb3RfeiRzY29yZSA8LSAtYWJzKGFlX3Bsb3RfeiRQUk9URUlOX1pTQ09SRSkKYWVfcGxvdF96ID0gYWVfcGxvdF96W29yZGVyKC1hYnMoYWVfcGxvdF96JFBST1RFSU5fWlNDT1JFKSksXQphZV9wbG90X3pbLCBudW1fb3V0X2NhbGxlZDo9Y3Vtc3VtKGNvbmZpcm1lZF9vdXQpXQphZV9wbG90X3pbLG1ldGhvZDo9IlBST1RSSURFUiJdCmFlX3Bsb3RfelsscmFua2VkQnk6PSJ8eiBzY29yZXwiXQpsaW1tYV9wbG90X3B2YWwgPC0gc3Vic2V0KHB2YWxfbGltbWFfc29sdmVkLCBQUk9URUlOX1BWQUxVRSA8PSBwdmFsX2N1dG9mZikKbGltbWFfcGxvdF9wdmFsJHNjb3JlIDwtIGxvZzEwKGxpbW1hX3Bsb3RfcHZhbCRQUk9URUlOX1BWQUxVRSkKbGltbWFfcGxvdF9wdmFsWyxtZXRob2Q6PSJsaW1tYS1iYXNlZCBhcHByb2FjaCJdCmxpbW1hX3Bsb3RfcHZhbFsscmFua2VkQnk6PSJwIHZhbHVlIl0KbGltbWFfcGxvdF96IDwtIHN1YnNldChwdmFsX2xpbW1hX3NvbHZlZCwgYWJzKFBST1RFSU5fWlNDT1JFKSA+PSB6c2NvcmVfY3V0b2ZmKQpsaW1tYV9wbG90X3okc2NvcmUgPC0gLWFicyhsaW1tYV9wbG90X3okUFJPVEVJTl9aU0NPUkUpCmxpbW1hX3Bsb3RfeiA9IGxpbW1hX3Bsb3RfeltvcmRlcigtYWJzKGxpbW1hX3Bsb3RfeiRQUk9URUlOX1pTQ09SRSkpLF0KbGltbWFfcGxvdF96WywgbnVtX291dF9jYWxsZWQ6PWN1bXN1bShjb25maXJtZWRfb3V0KV0KbGltbWFfcGxvdF96WyxtZXRob2Q6PSJsaW1tYS1iYXNlZCBhcHByb2FjaCJdCmxpbW1hX3Bsb3RfelsscmFua2VkQnk6PSJ8eiBzY29yZXwiXQoKcGxvdF9kdCA8LSByYmluZChhZV9wbG90X3B2YWxbLC4oc2NvcmUsIG51bV9vdXRfY2FsbGVkLCBtZXRob2QsIHJhbmtlZEJ5KV0sIAogICAgICAgICAgICAgICAgIGFlX3Bsb3RfelssLihzY29yZSwgbnVtX291dF9jYWxsZWQsIG1ldGhvZCwgcmFua2VkQnkpXSwgCiAgICAgICAgICAgICAgICAgbGltbWFfcGxvdF9wdmFsWywuKHNjb3JlLCBudW1fb3V0X2NhbGxlZCwgbWV0aG9kLCByYW5rZWRCeSldLCAKICAgICAgICAgICAgICAgICBsaW1tYV9wbG90X3pbLC4oc2NvcmUsIG51bV9vdXRfY2FsbGVkLCBtZXRob2QsIHJhbmtlZEJ5KV0pCgpwbG90X2R0WywgcmFuazo9ZnJhbmsoc2NvcmUsIHRpZXMubWV0aG9kPSJtaW4iKSwgYnk9Im1ldGhvZCxyYW5rZWRCeSJdCnBsb3RfZHRbLCB0b3RhbDo9Lk4sIGJ5PSJtZXRob2QscmFua2VkQnkiXQoKcGxvdF9kdFsscmFua2VkQnk6PWZhY3RvcihyYW5rZWRCeSwgbGV2ZWxzPWMoInAgdmFsdWUiLCAifHogc2NvcmV8IikpXQoKIyBhZGRpdGlvbmFsIGZpZzogcmVjYWxsIGZvciBhbGwgbm9taW5hbCBwdmFsIDwgMC4wNSArIHx6LXNjb3JlfCA+IDIKbG9nIDwtIEZBTFNFCiMgbG9nIDwtIFRSVUUKZ196IDwtIGdncGxvdChwbG90X2R0LCBhZXMoeD1yYW5rLCB5PW51bV9vdXRfY2FsbGVkLCBjb2w9bWV0aG9kLCBsaW5ldHlwZT1yYW5rZWRCeSkpICsKICAgIGdlb21fbGluZSgpICsKICAgIHNjYWxlX3lfY29udGludW91cyhsaW1pdHM9YygwLCBucm93KHNhKSksIGJyZWFrcz1zZXEoMCwgbnJvdyhzYSksIGJ5PTEwKSwKICAgICAgICAgICAgICAgICAgICAgICBtaW5vcl9icmVha3M9c2VxKDAsIG5yb3coc2EpLTUsIGJ5PTEwKSs1KSArCiAgICB4bGFiKCJyYW5rIikgKyB5bGFiKCJyZWNhbGwgKCNkZXRlY3RlZCBjb25maXJtZWQgY2FzZXMpIikgKyAKICAgIGdndGl0bGUocGFzdGUwKCJSZWNhbGwgb2YgY2FzZXMgd2l0aCBwYXRob2dlbmljIHZhcmlhbnRzIGFuZCB2YWxpZGF0ZWQgVlVTIChuPSIsIG5yb3coc2EpLCAiKSIpKSArCiAgICBzY2FsZV9jb2xvcl9tYW51YWwodmFsdWVzPWMoIiNFNjlGMDAiLCAiIzAwNzJCMiIpKSArCiAgICB0aGVtZV9idygpICsKICAgIHRoZW1lKHRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpLCB0aXRsZT1lbGVtZW50X3RleHQoc2l6ZT0xNCksIAogICAgICAgICAgbGVnZW5kLnBvc2l0aW9uPSJib3R0b20iLCBsZWdlbmQuYm94PSJob3Jpem9udGFsIiwgbGVnZW5kLmRpcmVjdGlvbj0idmVydGljYWwiLAogICAgICAgICAgcGxvdC50aXRsZT1lbGVtZW50X3RleHQoaGp1c3QgPSAwLjUpLCBsZWdlbmQudGV4dD1lbGVtZW50X3RleHQoc2l6ZT0xNCkpICsKICAgIGd1aWRlcyhjb2xvciA9IGd1aWRlX2xlZ2VuZCh0aXRsZS5wb3NpdGlvbj0ibGVmdCIsIG9yZGVyPTEsIHRpdGxlLnRoZW1lPWVsZW1lbnRfYmxhbmsoKSksCiAgICAgICAgICAgbGluZXR5cGU9Z3VpZGVfbGVnZW5kKCJyYW5rZWQgYnk6IiwgdGl0bGUucG9zaXRpb249ImxlZnQiLCBvcmRlcj0yKSkKaWYobG9nKSBnX3ogPC0gZ196ICsgc2NhbGVfeF9sb2cxMCgpCmdfegoKCgojIyMjIFBST1RSSURFUiBnbG9iYWwgcXEtcGxvdAojIGNvZGUgc2xpZ2h0bHkgYWRqdXN0ZWQgZnJvbSBodHRwczovL2dpdGh1Yi5jb20vZ2FnbmV1cmxhYi9PVVRSSURFUi1hbmFseXNpcy9ibG9iL21hc3Rlci9TY3JpcHRzL1BhcGVyUGxvdHMvRmlndXJlM19nbG9iYWxfcXFfcmVzLlIgCmdldFFRUGxvdHRpbmdEYXRhIDwtIGZ1bmN0aW9uKHB2YWxfbGlzdCwgbWV0aG9kX25hbWUsIGNvbmYuYWxwaGE9MC4wNSl7CiAgICBxcVBsb3REVCA8LSBkYXRhLnRhYmxlKG9ic2VydmVkUHZhbHVlPXB2YWxfbGlzdFssUFJPVEVJTl9QVkFMVUVdLAogICAgICAgICAgICAgICAgICAgICAgICAgICBhYmVycmFudD1wdmFsX2xpc3RbLFBST1RFSU5fb3V0bGllcl0sCiAgICAgICAgICAgICAgICAgICAgICAgICAgIE1ldGhvZD1tZXRob2RfbmFtZSkKICAgIHFxUGxvdERUIDwtIHFxUGxvdERUW29yZGVyKG9ic2VydmVkUHZhbHVlKV0KICAgIAogICAgcXFQbG90RFRbLGV4cGVjdGVkUHZhbHVlOj0gcHBvaW50cyhvYnNlcnZlZFB2YWx1ZSksIGJ5PU1ldGhvZF0KICAgIAogICAgIyBzZXQgY29uZmlkZW5jZQogICAgcXFQbG90RFRbLG5sdXBwZXI6PS1sb2cxMChxYmV0YSggIGNvbmYuYWxwaGEvMiwgMTouTiwgLk46MSkpLCBieT1NZXRob2RdCiAgICBxcVBsb3REVFssbmxsb3dlcjo9LWxvZzEwKHFiZXRhKDEtY29uZi5hbHBoYS8yLCAxOi5OLCAuTjoxKSksIGJ5PU1ldGhvZF0KICAgIAogICAgIyMgc2FtcGxlIHRvIGF2b2lkIHBsb3R0aW5nIHByb2JsZW1zLgogICAgcXFQbG90RFRTYW1wbGVkIDwtIHFxUGxvdERUWwogICAgICAgIG9ic2VydmVkUHZhbHVlIDwgIDFFLTMgfAogICAgICAgICAgICBvYnNlcnZlZFB2YWx1ZSA8ICAxRS0yICYgc2FtcGxlKGMoVFJVRSwgRkFMU0UpLCBucm93KHFxUGxvdERUKSwgcHJvYiA9IGMoMC4xLCAgMC45KSwgIHJlcGxhY2UgPSBUUlVFKXwKICAgICAgICAgICAgb2JzZXJ2ZWRQdmFsdWUgPj0gMUUtMiAmIHNhbXBsZShjKFRSVUUsIEZBTFNFKSwgbnJvdyhxcVBsb3REVCksIHByb2IgPSBjKDAuMDEsIDAuOTkpLCByZXBsYWNlID0gVFJVRSldCiAgICBxcVBsb3REVFNhbXBsZWRbLG5lZ2xvZzEwZXhwZWN0ZWRQdmFsdWUgOj0gLWxvZzEwKGV4cGVjdGVkUHZhbHVlKV0KICAgIHFxUGxvdERUU2FtcGxlZFssbmVnbG9nMTBvYnNlcnZlZFB2YWx1ZSA6PSAtbG9nMTAob2JzZXJ2ZWRQdmFsdWUpXQogICAgCiAgICByZXR1cm4ocXFQbG90RFRTYW1wbGVkKQp9Cgp6b29tdGhlbWUgPC0gdGhlbWUobGVnZW5kLnBvc2l0aW9uPSJub25lIiwgYXhpcy50aXRsZS54PWVsZW1lbnRfYmxhbmsoKSwKICAgICAgICAgICAgICAgICAgIGF4aXMudGl0bGUueT1lbGVtZW50X2JsYW5rKCksIHRpdGxlID0gZWxlbWVudF9ibGFuaygpLAogICAgICAgICAgICAgICAgICAgcGFuZWwuZ3JpZC5tYWpvciA9IGVsZW1lbnRfYmxhbmsoKSwgcGFuZWwuZ3JpZC5taW5vciA9IGVsZW1lbnRfYmxhbmsoKSwgCiAgICAgICAgICAgICAgICAgICBwYW5lbC5iYWNrZ3JvdW5kID0gZWxlbWVudF9yZWN0KGNvbG9yPSd3aGl0ZScsIGZpbGw9IndoaXRlIiksCiAgICAgICAgICAgICAgICAgICBwbG90LmJhY2tncm91bmQgPSBlbGVtZW50X3JlY3QoY29sb3I9J3doaXRlJywgZmlsbCA9ICJ3aGl0ZSIpLAogICAgICAgICAgICAgICAgICAgcGxvdC5tYXJnaW4gPSB1bml0KGMoMCwwLC02LC02KSwibW0iKSkKCnBsb3RGaWd1cmVRUSA8LSBmdW5jdGlvbihkdCwgZGF0YXNldCwgd2l0aElubGV0PVRSVUUsIHJhbmdlPWMoMC41LCAzLjUsIDE3LCAzNykpewogICAgc2R0IDwtIGR0WywgLihubGU9bmVnbG9nMTBleHBlY3RlZFB2YWx1ZSwgbmxvPW5lZ2xvZzEwb2JzZXJ2ZWRQdmFsdWUsIE1ldGhvZD1NZXRob2QsIG5sbG93PW5sbG93ZXIsIG5sdXA9bmx1cHBlcildCiAgICBnZ3AgPC0gZ2dwbG90KHNkdCwgYWVzKG5sZSwgbmxvLCBjb2w9TWV0aG9kKSkgKyAKICAgICAgICBnZW9tX3BvaW50KHNpemU9MC44KSArIAogICAgICAgIHNjYWxlX2NvbG9yX2JyZXdlcihwYWxldHRlPSdEYXJrMicpICsgCiAgICAgICAgZ2VvbV9hYmxpbmUoaW50ZXJjZXB0ID0gMCwgc2xvcGUgPSAxKSArIAogICAgICAgIGxhYnModGl0bGUgPSBwYXN0ZShkYXRhc2V0KSwgIAogICAgICAgICAgICAgeD1leHByZXNzaW9uKHBhc3RlKC1sb2dbMTBdLCAiIChleHBlY3RlZCAiLCBpdGFsaWMoUCksICItdmFsdWUpIikpLAogICAgICAgICAgICAgeT1leHByZXNzaW9uKHBhc3RlKC1sb2dbMTBdLCAiIChvYnMuICIsIGl0YWxpYyhQKSwgIi12YWx1ZSkiKSkpICsgCiAgICAgICAgZ2VvbV9yaWJib24oZGF0YT1zZHRbTWV0aG9kPT0nUFJPVFJJREVSJ10sIGNvbD1hbHBoYSgnZ3JheScsIDAuMiksIGZpbGw9YWxwaGEoJ2dyYXknLCAwLjUpLAogICAgICAgICAgICAgICAgICAgIGFlcyh4PW5sZSwgeW1pbiA9IG5sbG93LCB5bWF4ID0gbmx1cCkpCiAgICAKICAgIGlmKGlzVFJVRSh3aXRoSW5sZXQpKXsKICAgICAgICBnZ1pvb20gPC0gZ2dwbG90R3JvYigKICAgICAgICAgICAgZ2dwICsgY29vcmRfY2FydGVzaWFuKHhsaW09YygyLCAzLjUpLCB5bGltPWMoMiwgNykpICsgem9vbXRoZW1lKQogICAgICAgIGdncCA8LSBnZ3AgKyBhbm5vdGF0aW9uX2N1c3RvbShncm9iPWdnWm9vbSwgeG1pbj1yYW5nZVsxXSwgeG1heD1yYW5nZVsyXSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgeW1pbj1yYW5nZVszXSwgeW1heD1yYW5nZVs0XSkKICAgIH0KICAgIGdncAp9CgojIGdsb2JhbCBxcSBwbG90IGZvciBQUk9UUklERVIKcGxvdGR0IDwtIGdldFFRUGxvdHRpbmdEYXRhKHByb3RyaWRlcl9wdmFsX2xpc3QsIG1ldGhvZF9uYW1lPSdQUk9UUklERVInKQojIGdnUVEgPC0gcGxvdEZpZ3VyZVFRKHBsb3RkdCwgJycsIHdpdGhJbmxldD1GQUxTRSkgKyB0aGVtZV9idygpICsgCiMgICAgIHNjYWxlX2NvbG9yX21hbnVhbCh2YWx1ZXM9YygiIzAwNzJCMiIpKSArCiMgICAgIHRoZW1lKHRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpLCB0aXRsZT1lbGVtZW50X3RleHQoc2l6ZT0xNCksIAojICAgICAgICAgbGVnZW5kLnRpdGxlPWVsZW1lbnRfYmxhbmsoKSwgbGVnZW5kLnBvc2l0aW9uPWMoMC4yLCAwLjkpLAojICAgICAgICAgbGVnZW5kLnRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpKQojIGdnUVEKCiMgZ2xvYmFsIHFxIHBsb3QgZm9yIGJvdGggUFJPVFJJREVSIGFuZCBsaW1tYQpwbG90ZHRfbGltbWEgPC0gZ2V0UVFQbG90dGluZ0RhdGEobGltbWFfcHZhbF9saXN0LCBtZXRob2RfbmFtZT0nbGltbWEtYmFzZWQgYXBwcm9hY2gnKQpwbG90ZHRfYm90aCA8LSByYmluZChwbG90ZHQsIHBsb3RkdF9saW1tYSkKZ2dRUV9ib3RoIDwtIHBsb3RGaWd1cmVRUShwbG90ZHRfYm90aCwgJycsIHdpdGhJbmxldD1GQUxTRSkgKyAKICAgIHNjYWxlX2NvbG9yX21hbnVhbCh2YWx1ZXM9YygiI0U2OUYwMCIsICIjMDA3MkIyIikpICsKICAgIHRoZW1lX2J3KCkgKyAKICAgIHRoZW1lKHRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpLCB0aXRsZT1lbGVtZW50X3RleHQoc2l6ZT0xNCksIAogICAgICAgIGxlZ2VuZC50aXRsZT1lbGVtZW50X2JsYW5rKCksIGxlZ2VuZC5wb3NpdGlvbj0ibm9uZSIsCiAgICAgICAgbGVnZW5kLnRleHQ9ZWxlbWVudF90ZXh0KHNpemU9MTQpKQojIGdnUVFfYm90aAoKIyBoZWF0c2NhdHRlciBleHBlY3RlZCB2cyBvYnNlcnZlZApzZSA8LSByZWFkUkRTKHNuYWtlbWFrZUBpbnB1dCRwcm90cmlkZXJfb2JqZWN0KQpoZWF0c2NhdHRlcl9kdCA8LSBkYXRhLnRhYmxlKG9ic2VydmVkPWMoYXNzYXlzKHNlKSRYKSwgZXhwZWN0ZWQ9Yyhhc3NheXMoc2UpJFhfcHJlZCksIHB2YWw9Yyhhc3NheXMoc2UpJFhfcHZhbCksIHBhZGo9Yyhhc3NheXMoc2UpJFhfcHZhbF9hZGopKQpoZWF0c2NhdHRlcl9kdCA8LSBoZWF0c2NhdHRlcl9kdFshaXMubmEocHZhbCldCmhlYXRzY2F0dGVyX2R0WyxvdXRsaWVyOj1wYWRqIDwgMC4wNV0KCmdfaGVhdHNjYXR0ZXIgPC0gZ2dwbG90KGRhdGE9aGVhdHNjYXR0ZXJfZHQsIGFlcyh4PWV4cGVjdGVkLCB5PW9ic2VydmVkKSkKZ19oZWF0c2NhdHRlciA8LSBnX2hlYXRzY2F0dGVyICsgZ2VvbV9oZXgoYWVzKGZpbGw9c3RhdChsb2coY291bnQpKSksIGJpbndpZHRoID0gMC4wNSwgCiAgICAgICAgICAgICAgICAgIHNob3cubGVnZW5kID0gRkFMU0UpICsgCiAgICBzY2FsZV9maWxsX2dyYWRpZW50bihjb2xvcnMgPSBjb2xvcnBhbGV0dGUoJ2hlYXQnLCAzMCkpCmdfaGVhdHNjYXR0ZXIgPC0gZ19oZWF0c2NhdHRlciArICMgZ2VvbV9zbW9vdGgobWV0aG9kPSdsbScpICsgCiAgICBnZW9tX2FibGluZShpbnRlcmNlcHQ9MCwgc2xvcGU9MSwgY29sPSJibGFjayIsIGxpbmV0eXBlPSJkYXNoZWQiKSArIAogICAgbGFicyh4PSJleHBlY3RlZCBsb2cgaW50ZW5zaXRpZXMiLCB5PSJvYnNlcnZlZCBsb2cgaW50ZW5zaXRpZXMiKSArCiAgICB0aGVtZV9idygpICsgdGhlbWUodGV4dD1lbGVtZW50X3RleHQoc2l6ZT0xNCksIHRpdGxlPWVsZW1lbnRfdGV4dChzaXplPTE0KSkKIyBnX2hlYXRzY2F0dGVyCgpnX2V4cFZzT2JzIDwtIGdncGxvdChkYXRhPWhlYXRzY2F0dGVyX2R0LCBhZXMoeD1leHBlY3RlZCwgeT1vYnNlcnZlZCkpCmdfZXhwVnNPYnMgPC0gZ19leHBWc09icyArIGdlb21fcG9pbnQoYWVzKGNvbG9yPW91dGxpZXIpLCBzaXplPTEpICsgCiAgICBzY2FsZV9jb2xvcl9icmV3ZXIocGFsZXR0ZT0iRGFyazIiKQojIGdfZXhwVnNPYnMgPC0gZ19leHBWc09icyArIGdlb21fcG9pbnQoYWVzKGNvbG9yPXBvaW50ZGVucyksIHNpemU9MSwgc2hvdy5sZWdlbmQ9RkFMU0UpICsgCiMgc2NhbGVfY29sb3JfZ3JhZGllbnRuKGNvbG9ycyA9IGNvbG9ycGFsZXR0ZSgnaGVhdCcsIDMwKSkKZ19leHBWc09icyA8LSBnX2V4cFZzT2JzICsgIyBnZW9tX3Ntb290aChtZXRob2Q9J2xtJykgKyAKICAgIGdlb21fYWJsaW5lKGludGVyY2VwdD0wLCBzbG9wZT0xLCBjb2w9ImJsYWNrIiwgbGluZXR5cGU9ImRhc2hlZCIpICsgCiAgICBsYWJzKHg9ImV4cGVjdGVkIGxvZyBpbnRlbnNpdGllcyIsIHk9Im9ic2VydmVkIGxvZyBpbnRlbnNpdGllcyIpICsKICAgIHRoZW1lX2J3KCkKZ19leHBWc09icwoKCiMjIyBjb21iaW5lIGludG8gb25lIEZpZ3VyZTogcGFuZWwgYykgcmVjYWxsIGZvciBwdmFscyB3aXRoIHBhZGogPCAwLjE7IHBhbmVsIGQpIHJlY2FsbCBmb3IgYWxsIG5vbWluYWwgcHZhbCA8IDAuMDUKIyMjIHBhbmVsIGUpIGdsb2JhbCBxcS1wbG90IGYpIGhlYXRzY2F0dGVyIG9ic2VydmVkIHZzIHByZWRpY3RlZAojKyBmaWcud2lkdGg9MTUsIGZpZy5oZWlnaHQ9MTAKZ19maWdfY2QgPC0gZ2dhcnJhbmdlKGcsIGdfbm9taW5hbCwgbmNvbD0yLCBjb21tb24ubGVnZW5kPVRSVUUsIGxlZ2VuZD0iYm90dG9tIiwgbGFiZWxzPWxldHRlcnNbMzo0XSkKZ19maWdfZWYgPC0gZ2dhcnJhbmdlKGdnUVFfYm90aCwgZ19oZWF0c2NhdHRlciwgbmNvbD0yLCBsYWJlbHM9bGV0dGVyc1s1OjZdKQpnX2ZpZyA8LSBnZ2FycmFuZ2UoZ19maWdfY2QsIGdfZmlnX2VmLCBucm93PTIpCmdfZmlnCgpmaWd1cmVfZmlsZSA8LSBzbmFrZW1ha2VAb3V0cHV0JGZpZwpnZ3NhdmUoZmlndXJlX2ZpbGUsIGdfZmlnLCB3aWR0aD0xNSwgaGVpZ2h0PTEwKQo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("S_Fig5.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

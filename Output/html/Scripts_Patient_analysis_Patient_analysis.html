@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-03-04" />
+
+<title>Patient analysis</title>
+
+<script src="libR/header-attrs-2.3/header-attrs.js"></script>
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Patient analysis</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-03-04</h4>
+
+</div>
+
+
+<pre class="r"><code># Load config
+source(&quot;src/config.R&quot;)
+
+# Load plotting functions
+source(&quot;src/functions/plots.R&quot;)
+
+# Load sample annotation
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+# Subset diagnosed cases and candidates
+sa &lt;- sa[ !is.na(KNOWN_MUTATION)]
+
+
+# Read integrated omics file 
+# rp &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS&quot;) %&gt;% as.data.table()
+rp &lt;- readRDS(snakemake@input$patient_omics) %&gt;% as.data.table()
+# Subset diagnosed cases and candidates
+rp &lt;- rp[SAMPLE_ID %in% sa$SAMPLE_ID]
+rpx &lt;- rp
+# Subset only outliers or causal/candidate genes
+rp &lt;- rp[ outlier_class != &#39;non_outlier&#39; | causal_gene == T]
+
+
+
+# complexes &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/Complex_outliers_LIMMA.rds&quot;) %&gt;% as.data.table()
+complexes &lt;- readRDS(snakemake@input$complex_results) %&gt;% as.data.table()
+# Subset diagnosed cases and candidates
+complexes &lt;- complexes[SAMPLE_ID %in% sa$SAMPLE_ID]
+
+
+
+# Load patient&#39;s HPO 
+pat_hpo &lt;- fread(snakemake@input$patient_hpo)
+# pat_hpo &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/Patient_HPO_phenotypes.tsv&#39;)
+
+# Subset diagnosed cases and candidates
+pat_hpo &lt;- pat_hpo[SAMPLE_ID %in% sa$SAMPLE_ID, c(&quot;SAMPLE_ID&quot;, &quot;HPO_term&quot;)]
+pat_hpo &lt;-pat_hpo[!duplicated(pat_hpo ),]
+
+# Load patient&#39;s affected organ systems
+patients &lt;- fread(snakemake@input$patient_organ_syst)
+# patients &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_affected_organs.tsv&#39;)
+# Subset diagnosed cases and candidates
+patients &lt;- patients[SAMPLE_ID %in% sa$SAMPLE_ID]
+
+# i &lt;- &quot;OM94976&quot; # for tests</code></pre>
+<div id="category-i---known-pathogenic-variants" class="section level2">
+<h2>Category I - Known pathogenic variants</h2>
+<pre class="r"><code>for (i in unique(sa[ CATEGORY == &quot;I&quot; ]$SAMPLE_ID)){
+  print(paste(&quot;Sample ID:&quot;, i, &quot;Causal gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+  
+  plot_org &lt;- gganatogram(data=  patients[SAMPLE_ID == i], 
+                          fillOutline=&#39;white&#39;, 
+                          organism=&#39;human&#39;, 
+                          sex= unique(sa[SAMPLE_ID == i]$gender), 
+                          fill=&quot;colour&quot;)+ 
+    theme_void() + ggtitle(paste0(&quot;individual #&quot;, i )) +
+    theme(plot.title = element_text(margin = NULL,face=&quot;bold&quot;, size = 9, hjust = 0.5),
+          plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;))
+  
+  phenotypes &lt;- pat_hpo[SAMPLE_ID == i,  c( &quot;HPO_term&quot;) ]
+  phenotypes &lt;- gridExtra::tableGrob(phenotypes)
+  plot_org &lt;-  plot_org  | phenotypes 
+  
+  if (nrow(rp[SAMPLE_ID == i ]) == 0){
+    print(&quot;No RNA-seq avaliable&quot;)
+    # fig &lt;- protein_volcanoZ(rpx, sample = i)
+    plot_sample &lt;- plot_org
+
+  }else{
+    plot_sample &lt;- plot_patient_all(rp, sample = i) 
+    plot_sample &lt;- plot_org | plot_sample
+  }
+  
+  volcano_rna &lt;- rna_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;) + ggtitle(&quot;Aberrant RNA expression&quot;)
+  volcano_protein &lt;- protein_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;)  + ggtitle(&quot;Aberrant protein expression&quot;)
+  volcano_complex &lt;- complex_volcanoF(complexes, i)  + ggtitle(&quot;Aberrant protein complex expression&quot;)
+  
+  volcanos &lt;- volcano_rna | volcano_protein | volcano_complex
+  
+  plot_sample &lt;- plot_sample / volcanos
+  print(plot_sample)
+}</code></pre>
+<pre><code>## [1] &quot;Sample ID: OM46241 Causal gene: SSBP1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-1.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM73953 Causal gene: GNAO1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-2.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM58230 Causal gene: VPS33B&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-3.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM42562 Causal gene: ADPRHL2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-4.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM71746 Causal gene: MDH2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-5.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM37109 Causal gene: YME1L1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-6.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM51049 Causal gene: UQCRFS1&quot;
+## [1] &quot;No RNA-seq avaliable&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-7.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM48652 Causal gene: NBAS&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-8.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM88146 Causal gene: NBAS&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-9.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM73546 Causal gene: TIMMDC1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-10.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM75219_1 Causal gene: ELAC2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-11.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM33917 Causal gene: FOXRED1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-12.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM01282 Causal gene: TSFM&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-13.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM65728 Causal gene: ACAD9&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-14.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM88728 Causal gene: STIM1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-15.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM57274 Causal gene: TRMU&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-16.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM20680 Causal gene: BCS1L&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-2-17.png" width="1728" /></p>
+</div>
+<div id="category-ii---vus" class="section level2">
+<h2>Category II - VUS</h2>
+<div id="category-iia---vus-validated" class="section level3">
+<h3>Category IIa - VUS validated</h3>
+<pre class="r"><code>for (i in unique(sa[ CATEGORY == &quot;IIa&quot; ]$SAMPLE_ID)){
+  print(paste(&quot;Sample ID:&quot;, i, &quot;Causal gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+  
+  plot_org &lt;- gganatogram(data=  patients[SAMPLE_ID == i], 
+                          fillOutline=&#39;white&#39;, 
+                          organism=&#39;human&#39;, 
+                          sex= unique(sa[SAMPLE_ID == i]$gender), 
+                          fill=&quot;colour&quot;)+ 
+    theme_void() + ggtitle(paste0(&quot;individual #&quot;, i )) +
+    theme(plot.title = element_text(margin = NULL,face=&quot;bold&quot;, size = 9, hjust = 0.5),
+          plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;))
+  
+  phenotypes &lt;- pat_hpo[SAMPLE_ID == i,  c( &quot;HPO_term&quot;) ]
+  phenotypes &lt;- gridExtra::tableGrob(phenotypes)
+  plot_org &lt;-  plot_org  | phenotypes 
+  
+  if (nrow(rp[SAMPLE_ID == i ]) == 0){
+    print(&quot;No outliers detected&quot;)
+    plot_sample &lt;- plot_org
+  }else{
+    plot_sample &lt;- plot_patient_all(rp, sample = i) 
+    plot_sample &lt;- plot_org | plot_sample
+  }
+  
+  
+  volcano_rna &lt;- rna_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;) + ggtitle(&quot;Aberrant RNA expression&quot;)
+  volcano_protein &lt;- protein_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;)  + ggtitle(&quot;Aberrant protein expression&quot;)
+  volcano_complex &lt;- complex_volcanoF(complexes, i)  + ggtitle(&quot;Aberrant protein complex expression&quot;)
+  
+  volcanos &lt;- volcano_rna | volcano_protein | volcano_complex
+  
+  plot_sample &lt;- plot_sample / volcanos
+  
+  print(plot_sample)
+}</code></pre>
+<pre><code>## [1] &quot;Sample ID: OM23417 Causal gene: FDXR&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-1.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM65708 Causal gene: ACAD9&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-2.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM43933 Causal gene: DNAJC30&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-3.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM02364 Causal gene: SLC25A4&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-4.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM72697 Causal gene: DNAJC30&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-5.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM70698 Causal gene: TXNIP&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-6.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM50946 Causal gene: NDUFB11&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-7.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM27175 Causal gene: FH&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-8.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM26649 Causal gene: AARS2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-9.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM77629 Causal gene: ETFDH&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-10.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM61355 Causal gene: YARS&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-11.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM05252 Causal gene: EARS2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-12.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM88470 Causal gene: PC&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-13.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM20348 Causal gene: SUCLA2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-3-14.png" width="1728" /></p>
+</div>
+<div id="category-iib---vus-not-validated" class="section level3">
+<h3>Category IIb - VUS not validated</h3>
+<pre class="r"><code>for (i in unique(sa[ CATEGORY == &quot;IIb&quot; ]$SAMPLE_ID)){
+  print(paste(&quot;Sample ID:&quot;, i, &quot;Causal gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+  
+  plot_org &lt;- gganatogram(data=  patients[SAMPLE_ID == i], 
+                          fillOutline=&#39;white&#39;, 
+                          organism=&#39;human&#39;, 
+                          sex= unique(sa[SAMPLE_ID == i]$gender), 
+                          fill=&quot;colour&quot;)+ 
+    theme_void() + ggtitle(paste0(&quot;individual #&quot;, i )) +
+    theme(plot.title = element_text(margin = NULL,face=&quot;bold&quot;, size = 9, hjust = 0.5),
+          plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;))
+  
+  phenotypes &lt;- pat_hpo[SAMPLE_ID == i,  c( &quot;HPO_term&quot;) ]
+  phenotypes &lt;- gridExtra::tableGrob(phenotypes)
+  plot_org &lt;-  plot_org  | phenotypes 
+  
+  if (nrow(rp[SAMPLE_ID == i ]) == 0){
+    print(&quot;No outliers detected&quot;)
+    plot_sample &lt;- plot_org
+    
+  }else{
+    plot_sample &lt;- plot_patient_all(rp, sample = i) 
+    plot_sample &lt;- plot_org | plot_sample
+  }
+  
+  
+  volcano_rna &lt;- rna_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;) + ggtitle(&quot;Aberrant RNA expression&quot;)
+  volcano_protein &lt;- protein_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;)  + ggtitle(&quot;Aberrant protein expression&quot;)
+  volcano_complex &lt;- complex_volcanoF(complexes, i)  + ggtitle(&quot;Aberrant protein complex expression&quot;)
+  
+  volcanos &lt;- volcano_rna | volcano_protein | volcano_complex
+  
+  plot_sample &lt;- plot_sample / volcanos
+  
+  print(plot_sample)
+}</code></pre>
+<pre><code>## [1] &quot;Sample ID: OM94976 Causal gene: DNAJC30&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-4-1.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM00762 Causal gene: MRPL53&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-4-2.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM59244 Causal gene: TRMT5&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-4-3.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM25068 Causal gene: SLC25A4&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-4-4.png" width="1728" /></p>
+</div>
+<div id="category-iic---vus-not-detected" class="section level3">
+<h3>Category IIc - VUS not detected</h3>
+<pre class="r"><code>for (i in unique(sa[ CATEGORY == &quot;IIc&quot; ]$SAMPLE_ID)){
+  print(paste(&quot;Sample ID:&quot;, i, &quot;Causal gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+  
+  plot_org &lt;- gganatogram(data=  patients[SAMPLE_ID == i], 
+                          fillOutline=&#39;white&#39;, 
+                          organism=&#39;human&#39;, 
+                          sex= unique(sa[SAMPLE_ID == i]$gender), 
+                          fill=&quot;colour&quot;)+ 
+    theme_void() + ggtitle(paste0(&quot;individual #&quot;, i )) +
+    theme(plot.title = element_text(margin = NULL,face=&quot;bold&quot;, size = 9, hjust = 0.5),
+          plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;))
+  
+  phenotypes &lt;- pat_hpo[SAMPLE_ID == i,  c( &quot;HPO_term&quot;) ]
+  phenotypes &lt;- gridExtra::tableGrob(phenotypes)
+  plot_org &lt;-  plot_org  | phenotypes 
+  
+  if (nrow(rp[SAMPLE_ID == i ]) == 0){
+    print(&quot;No outliers detected&quot;)
+    plot_sample &lt;- plot_org
+    
+  }else{
+    plot_sample &lt;- plot_patient_all(rp, sample = i) 
+    plot_sample &lt;- plot_org | plot_sample
+  }
+  
+  
+  volcano_rna &lt;- rna_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;) + ggtitle(&quot;Aberrant RNA expression&quot;)
+  volcano_protein &lt;- protein_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;)  + ggtitle(&quot;Aberrant protein expression&quot;)
+  volcano_complex &lt;- complex_volcanoF(complexes, i)  + ggtitle(&quot;Aberrant protein complex expression&quot;)
+  
+  volcanos &lt;- volcano_rna | volcano_protein | volcano_complex
+  
+  plot_sample &lt;- plot_sample / volcanos
+  
+  print(plot_sample)
+}</code></pre>
+<pre><code>## [1] &quot;Sample ID: OM66072 Causal gene: C19ORF70&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-5-1.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM30476 Causal gene: TASP1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-5-2.png" width="1728" /></p>
+</div>
+</div>
+<div id="category-iii-new-discoveries" class="section level2">
+<h2>Category III New discoveries</h2>
+<pre class="r"><code>for (i in unique(sa[ CATEGORY == &quot;III&quot; ]$SAMPLE_ID)){
+  print(paste(&quot;Sample ID:&quot;, i, &quot;Causal gene:&quot;, sa[SAMPLE_ID == i]$KNOWN_MUTATION ) )
+  
+  plot_org &lt;- gganatogram(data=  patients[SAMPLE_ID == i], 
+                          fillOutline=&#39;white&#39;, 
+                          organism=&#39;human&#39;, 
+                          sex= unique(sa[SAMPLE_ID == i]$gender), 
+                          fill=&quot;colour&quot;)+ 
+    theme_void() + ggtitle(paste0(&quot;individual #&quot;, i )) +
+    theme(plot.title = element_text(margin = NULL,face=&quot;bold&quot;, size = 9, hjust = 0.5),
+          plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;))
+  
+  phenotypes &lt;- pat_hpo[SAMPLE_ID == i,  c( &quot;HPO_term&quot;) ]
+  phenotypes &lt;- gridExtra::tableGrob(phenotypes)
+  plot_org &lt;-  plot_org  | phenotypes 
+  
+  if (nrow(rp[SAMPLE_ID == i ]) == 0){
+    print(&quot;No outliers detected&quot;)
+    plot_sample &lt;- plot_org
+    
+  }else{
+    plot_sample &lt;- plot_patient_all(rp, sample = i) 
+    plot_sample &lt;- plot_org | plot_sample
+  }
+  
+  
+  volcano_rna &lt;- rna_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;) + ggtitle(&quot;Aberrant RNA expression&quot;)
+  volcano_protein &lt;- protein_volcanoF(rpx, i) + theme( legend.position = &quot;none&quot;)  + ggtitle(&quot;Aberrant protein expression&quot;)
+  volcano_complex &lt;- complex_volcanoF(complexes, i)  + ggtitle(&quot;Aberrant protein complex expression&quot;)
+  
+  volcanos &lt;- volcano_rna | volcano_protein | volcano_complex
+  
+  plot_sample &lt;- plot_sample / volcanos
+  
+  print(plot_sample)
+}</code></pre>
+<pre><code>## [1] &quot;Sample ID: OM06865 Causal gene: EPG5&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-1.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM91786 Causal gene: LIG3&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-2.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM87369 Causal gene: NDUFB11&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-3.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM27390 Causal gene: MORC2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-4.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM34814 Causal gene: RDH11&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-5.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM57837 Causal gene: MRPL38&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-6.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM38813 Causal gene: TIMMDC1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-7.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM21111 Causal gene: NFU1&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-8.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM75740 Causal gene: DARS2&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-9.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM03592 Causal gene: MRPL44&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-10.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM56706 Causal gene: GMPPB&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-11.png" width="1728" /></p>
+<pre><code>## [1] &quot;Sample ID: OM36526 Causal gene: MRPS25&quot;</code></pre>
+<p><img src="Scripts_Patient_analysis_Patient_analysis_files/figure-html/unnamed-chunk-6-12.png" width="1728" /></p>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFBhdGllbnQgYW5hbHlzaXMgCiMnIGF1dGhvcjogc21pcm5vdmQKIycgd2I6CiMnICBpbnB1dDoKIycgIC0gc2FtcGxlX2Fubm90YXRpb246ICdgc20gY29uZmlnWyJBTk5PVEFUSU9OIl1gJwojJyAgLSBwYXRpZW50X29taWNzOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3NfZnVsbC5SRFMiYCcKIycgIC0gcGF0aWVudF9ocG86ICdgc20gY29uZmlnWyJSQVdfSFBPIl1gJwojJyAgLSBwYXRpZW50X29yZ2FuX3N5c3Q6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvSFBPL1BhdGllbnRzX2FmZmVjdGVkX29yZ2Fucy50c3YiYCcKIycgIC0gY29tcGxleF9yZXN1bHRzOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL0NvbXBsZXhlcy9Db21wbGV4X291dGxpZXJzX0xJTU1BLnJkcyJgJwojJyAgb3V0cHV0OgojJyBvdXRwdXQ6IAojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgojIExvYWQgY29uZmlnCnNvdXJjZSgic3JjL2NvbmZpZy5SIikKCiMgTG9hZCBwbG90dGluZyBmdW5jdGlvbnMKc291cmNlKCJzcmMvZnVuY3Rpb25zL3Bsb3RzLlIiKQoKIyBMb2FkIHNhbXBsZSBhbm5vdGF0aW9uCiMgc2EgPC0gZnJlYWQoJy9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9yYXdfZGF0YS9wcm90ZW9taWNzX2Fubm90YXRpb24udHN2JykKc2EgPC0gZnJlYWQoc25ha2VtYWtlQGlucHV0JHNhbXBsZV9hbm5vdGF0aW9uKQpzYSA8LSBzYVtVU0VfRk9SX1BST1RFT01JQ1NfUEFQRVIgPT0gVF0KIyBTdWJzZXQgZGlhZ25vc2VkIGNhc2VzIGFuZCBjYW5kaWRhdGVzCnNhIDwtIHNhWyAhaXMubmEoS05PV05fTVVUQVRJT04pXQoKCiMgUmVhZCBpbnRlZ3JhdGVkIG9taWNzIGZpbGUgCiMgcnAgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL3BhdGllbnRfb21pY3NfZnVsbC5SRFMiKSAlPiUgYXMuZGF0YS50YWJsZSgpCnJwIDwtIHJlYWRSRFMoc25ha2VtYWtlQGlucHV0JHBhdGllbnRfb21pY3MpICU+JSBhcy5kYXRhLnRhYmxlKCkKIyBTdWJzZXQgZGlhZ25vc2VkIGNhc2VzIGFuZCBjYW5kaWRhdGVzCnJwIDwtIHJwW1NBTVBMRV9JRCAlaW4lIHNhJFNBTVBMRV9JRF0KcnB4IDwtIHJwCiMgU3Vic2V0IG9ubHkgb3V0bGllcnMgb3IgY2F1c2FsL2NhbmRpZGF0ZSBnZW5lcwpycCA8LSBycFsgb3V0bGllcl9jbGFzcyAhPSAnbm9uX291dGxpZXInIHwgY2F1c2FsX2dlbmUgPT0gVF0KCgoKIyBjb21wbGV4ZXMgPC0gcmVhZFJEUygiL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL0NvbXBsZXhlcy9Db21wbGV4X291dGxpZXJzX0xJTU1BLnJkcyIpICU+JSBhcy5kYXRhLnRhYmxlKCkKY29tcGxleGVzIDwtIHJlYWRSRFMoc25ha2VtYWtlQGlucHV0JGNvbXBsZXhfcmVzdWx0cykgJT4lIGFzLmRhdGEudGFibGUoKQojIFN1YnNldCBkaWFnbm9zZWQgY2FzZXMgYW5kIGNhbmRpZGF0ZXMKY29tcGxleGVzIDwtIGNvbXBsZXhlc1tTQU1QTEVfSUQgJWluJSBzYSRTQU1QTEVfSURdCgoKCiMgTG9hZCBwYXRpZW50J3MgSFBPIApwYXRfaHBvIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRwYXRpZW50X2hwbykKIyBwYXRfaHBvIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvUGF0aWVudF9IUE9fcGhlbm90eXBlcy50c3YnKQoKIyBTdWJzZXQgZGlhZ25vc2VkIGNhc2VzIGFuZCBjYW5kaWRhdGVzCnBhdF9ocG8gPC0gcGF0X2hwb1tTQU1QTEVfSUQgJWluJSBzYSRTQU1QTEVfSUQsIGMoIlNBTVBMRV9JRCIsICJIUE9fdGVybSIpXQpwYXRfaHBvIDwtcGF0X2hwb1shZHVwbGljYXRlZChwYXRfaHBvICksXQoKIyBMb2FkIHBhdGllbnQncyBhZmZlY3RlZCBvcmdhbiBzeXN0ZW1zCnBhdGllbnRzIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRwYXRpZW50X29yZ2FuX3N5c3QpCiMgcGF0aWVudHMgPC0gZnJlYWQoJy9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9wcm9jZXNzZWRfZGF0YS9IUE8vUGF0aWVudHNfYWZmZWN0ZWRfb3JnYW5zLnRzdicpCiMgU3Vic2V0IGRpYWdub3NlZCBjYXNlcyBhbmQgY2FuZGlkYXRlcwpwYXRpZW50cyA8LSBwYXRpZW50c1tTQU1QTEVfSUQgJWluJSBzYSRTQU1QTEVfSURdCgojIGkgPC0gIk9NOTQ5NzYiICMgZm9yIHRlc3RzCgojJyAjIyBDYXRlZ29yeSBJIC0gS25vd24gcGF0aG9nZW5pYyB2YXJpYW50cwojKyBmaWcud2lkdGg9MTgsIGZpZy5oZWlnaHQ9MTIKZm9yIChpIGluIHVuaXF1ZShzYVsgQ0FURUdPUlkgPT0gIkkiIF0kU0FNUExFX0lEKSl7CiAgcHJpbnQocGFzdGUoIlNhbXBsZSBJRDoiLCBpLCAiQ2F1c2FsIGdlbmU6Iiwgc2FbU0FNUExFX0lEID09IGldJEtOT1dOX01VVEFUSU9OICkgKQogIAogIHBsb3Rfb3JnIDwtIGdnYW5hdG9ncmFtKGRhdGE9ICBwYXRpZW50c1tTQU1QTEVfSUQgPT0gaV0sIAogICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGxPdXRsaW5lPSd3aGl0ZScsIAogICAgICAgICAgICAgICAgICAgICAgICAgIG9yZ2FuaXNtPSdodW1hbicsIAogICAgICAgICAgICAgICAgICAgICAgICAgIHNleD0gdW5pcXVlKHNhW1NBTVBMRV9JRCA9PSBpXSRnZW5kZXIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxsPSJjb2xvdXIiKSsgCiAgICB0aGVtZV92b2lkKCkgKyBnZ3RpdGxlKHBhc3RlMCgiaW5kaXZpZHVhbCAjIiwgaSApKSArCiAgICB0aGVtZShwbG90LnRpdGxlID0gZWxlbWVudF90ZXh0KG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIsIHNpemUgPSA5LCBoanVzdCA9IDAuNSksCiAgICAgICAgICBwbG90Lm1hcmdpbiA9IG1hcmdpbigwLCAwLCAwLCAwLCAiY20iKSkKICAKICBwaGVub3R5cGVzIDwtIHBhdF9ocG9bU0FNUExFX0lEID09IGksICBjKCAiSFBPX3Rlcm0iKSBdCiAgcGhlbm90eXBlcyA8LSBncmlkRXh0cmE6OnRhYmxlR3JvYihwaGVub3R5cGVzKQogIHBsb3Rfb3JnIDwtICBwbG90X29yZyAgfCBwaGVub3R5cGVzIAogIAogIGlmIChucm93KHJwW1NBTVBMRV9JRCA9PSBpIF0pID09IDApewogICAgcHJpbnQoIk5vIFJOQS1zZXEgYXZhbGlhYmxlIikKICAgICMgZmlnIDwtIHByb3RlaW5fdm9sY2Fub1oocnB4LCBzYW1wbGUgPSBpKQogICAgcGxvdF9zYW1wbGUgPC0gcGxvdF9vcmcKCiAgfWVsc2V7CiAgICBwbG90X3NhbXBsZSA8LSBwbG90X3BhdGllbnRfYWxsKHJwLCBzYW1wbGUgPSBpKSAKICAgIHBsb3Rfc2FtcGxlIDwtIHBsb3Rfb3JnIHwgcGxvdF9zYW1wbGUKICB9CiAgCiAgdm9sY2Fub19ybmEgPC0gcm5hX3ZvbGNhbm9GKHJweCwgaSkgKyB0aGVtZSggbGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKSArIGdndGl0bGUoIkFiZXJyYW50IFJOQSBleHByZXNzaW9uIikKICB2b2xjYW5vX3Byb3RlaW4gPC0gcHJvdGVpbl92b2xjYW5vRihycHgsIGkpICsgdGhlbWUoIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgICsgZ2d0aXRsZSgiQWJlcnJhbnQgcHJvdGVpbiBleHByZXNzaW9uIikKICB2b2xjYW5vX2NvbXBsZXggPC0gY29tcGxleF92b2xjYW5vRihjb21wbGV4ZXMsIGkpICArIGdndGl0bGUoIkFiZXJyYW50IHByb3RlaW4gY29tcGxleCBleHByZXNzaW9uIikKICAKICB2b2xjYW5vcyA8LSB2b2xjYW5vX3JuYSB8IHZvbGNhbm9fcHJvdGVpbiB8IHZvbGNhbm9fY29tcGxleAogIAogIHBsb3Rfc2FtcGxlIDwtIHBsb3Rfc2FtcGxlIC8gdm9sY2Fub3MKICBwcmludChwbG90X3NhbXBsZSkKfQoKCgoKIycgIyMgQ2F0ZWdvcnkgSUkgLSBWVVMKCiMnICMjIyBDYXRlZ29yeSBJSWEgLSBWVVMgdmFsaWRhdGVkCiMrIGZpZy53aWR0aD0xOCwgZmlnLmhlaWdodD0xMgpmb3IgKGkgaW4gdW5pcXVlKHNhWyBDQVRFR09SWSA9PSAiSUlhIiBdJFNBTVBMRV9JRCkpewogIHByaW50KHBhc3RlKCJTYW1wbGUgSUQ6IiwgaSwgIkNhdXNhbCBnZW5lOiIsIHNhW1NBTVBMRV9JRCA9PSBpXSRLTk9XTl9NVVRBVElPTiApICkKICAKICBwbG90X29yZyA8LSBnZ2FuYXRvZ3JhbShkYXRhPSAgcGF0aWVudHNbU0FNUExFX0lEID09IGldLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxsT3V0bGluZT0nd2hpdGUnLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBvcmdhbmlzbT0naHVtYW4nLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBzZXg9IHVuaXF1ZShzYVtTQU1QTEVfSUQgPT0gaV0kZ2VuZGVyKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbD0iY29sb3VyIikrIAogICAgdGhlbWVfdm9pZCgpICsgZ2d0aXRsZShwYXN0ZTAoImluZGl2aWR1YWwgIyIsIGkgKSkgKwogICAgdGhlbWUocGxvdC50aXRsZSA9IGVsZW1lbnRfdGV4dChtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiLCBzaXplID0gOSwgaGp1c3QgPSAwLjUpLAogICAgICAgICAgcGxvdC5tYXJnaW4gPSBtYXJnaW4oMCwgMCwgMCwgMCwgImNtIikpCiAgCiAgcGhlbm90eXBlcyA8LSBwYXRfaHBvW1NBTVBMRV9JRCA9PSBpLCAgYyggIkhQT190ZXJtIikgXQogIHBoZW5vdHlwZXMgPC0gZ3JpZEV4dHJhOjp0YWJsZUdyb2IocGhlbm90eXBlcykKICBwbG90X29yZyA8LSAgcGxvdF9vcmcgIHwgcGhlbm90eXBlcyAKICAKICBpZiAobnJvdyhycFtTQU1QTEVfSUQgPT0gaSBdKSA9PSAwKXsKICAgIHByaW50KCJObyBvdXRsaWVycyBkZXRlY3RlZCIpCiAgICBwbG90X3NhbXBsZSA8LSBwbG90X29yZwogIH1lbHNlewogICAgcGxvdF9zYW1wbGUgPC0gcGxvdF9wYXRpZW50X2FsbChycCwgc2FtcGxlID0gaSkgCiAgICBwbG90X3NhbXBsZSA8LSBwbG90X29yZyB8IHBsb3Rfc2FtcGxlCiAgfQogIAogIAogIHZvbGNhbm9fcm5hIDwtIHJuYV92b2xjYW5vRihycHgsIGkpICsgdGhlbWUoIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgKyBnZ3RpdGxlKCJBYmVycmFudCBSTkEgZXhwcmVzc2lvbiIpCiAgdm9sY2Fub19wcm90ZWluIDwtIHByb3RlaW5fdm9sY2Fub0YocnB4LCBpKSArIHRoZW1lKCBsZWdlbmQucG9zaXRpb24gPSAibm9uZSIpICArIGdndGl0bGUoIkFiZXJyYW50IHByb3RlaW4gZXhwcmVzc2lvbiIpCiAgdm9sY2Fub19jb21wbGV4IDwtIGNvbXBsZXhfdm9sY2Fub0YoY29tcGxleGVzLCBpKSAgKyBnZ3RpdGxlKCJBYmVycmFudCBwcm90ZWluIGNvbXBsZXggZXhwcmVzc2lvbiIpCiAgCiAgdm9sY2Fub3MgPC0gdm9sY2Fub19ybmEgfCB2b2xjYW5vX3Byb3RlaW4gfCB2b2xjYW5vX2NvbXBsZXgKICAKICBwbG90X3NhbXBsZSA8LSBwbG90X3NhbXBsZSAvIHZvbGNhbm9zCiAgCiAgcHJpbnQocGxvdF9zYW1wbGUpCn0KCgojJyAjIyMgQ2F0ZWdvcnkgSUliIC0gVlVTIG5vdCB2YWxpZGF0ZWQKIysgZmlnLndpZHRoPTE4LCBmaWcuaGVpZ2h0PTEyCmZvciAoaSBpbiB1bmlxdWUoc2FbIENBVEVHT1JZID09ICJJSWIiIF0kU0FNUExFX0lEKSl7CiAgcHJpbnQocGFzdGUoIlNhbXBsZSBJRDoiLCBpLCAiQ2F1c2FsIGdlbmU6Iiwgc2FbU0FNUExFX0lEID09IGldJEtOT1dOX01VVEFUSU9OICkgKQogIAogIHBsb3Rfb3JnIDwtIGdnYW5hdG9ncmFtKGRhdGE9ICBwYXRpZW50c1tTQU1QTEVfSUQgPT0gaV0sIAogICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGxPdXRsaW5lPSd3aGl0ZScsIAogICAgICAgICAgICAgICAgICAgICAgICAgIG9yZ2FuaXNtPSdodW1hbicsIAogICAgICAgICAgICAgICAgICAgICAgICAgIHNleD0gdW5pcXVlKHNhW1NBTVBMRV9JRCA9PSBpXSRnZW5kZXIpLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxsPSJjb2xvdXIiKSsgCiAgICB0aGVtZV92b2lkKCkgKyBnZ3RpdGxlKHBhc3RlMCgiaW5kaXZpZHVhbCAjIiwgaSApKSArCiAgICB0aGVtZShwbG90LnRpdGxlID0gZWxlbWVudF90ZXh0KG1hcmdpbiA9IE5VTEwsZmFjZT0iYm9sZCIsIHNpemUgPSA5LCBoanVzdCA9IDAuNSksCiAgICAgICAgICBwbG90Lm1hcmdpbiA9IG1hcmdpbigwLCAwLCAwLCAwLCAiY20iKSkKICAKICBwaGVub3R5cGVzIDwtIHBhdF9ocG9bU0FNUExFX0lEID09IGksICBjKCAiSFBPX3Rlcm0iKSBdCiAgcGhlbm90eXBlcyA8LSBncmlkRXh0cmE6OnRhYmxlR3JvYihwaGVub3R5cGVzKQogIHBsb3Rfb3JnIDwtICBwbG90X29yZyAgfCBwaGVub3R5cGVzIAogIAogIGlmIChucm93KHJwW1NBTVBMRV9JRCA9PSBpIF0pID09IDApewogICAgcHJpbnQoIk5vIG91dGxpZXJzIGRldGVjdGVkIikKICAgIHBsb3Rfc2FtcGxlIDwtIHBsb3Rfb3JnCiAgICAKICB9ZWxzZXsKICAgIHBsb3Rfc2FtcGxlIDwtIHBsb3RfcGF0aWVudF9hbGwocnAsIHNhbXBsZSA9IGkpIAogICAgcGxvdF9zYW1wbGUgPC0gcGxvdF9vcmcgfCBwbG90X3NhbXBsZQogIH0KICAKICAKICB2b2xjYW5vX3JuYSA8LSBybmFfdm9sY2Fub0YocnB4LCBpKSArIHRoZW1lKCBsZWdlbmQucG9zaXRpb24gPSAibm9uZSIpICsgZ2d0aXRsZSgiQWJlcnJhbnQgUk5BIGV4cHJlc3Npb24iKQogIHZvbGNhbm9fcHJvdGVpbiA8LSBwcm90ZWluX3ZvbGNhbm9GKHJweCwgaSkgKyB0aGVtZSggbGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKSAgKyBnZ3RpdGxlKCJBYmVycmFudCBwcm90ZWluIGV4cHJlc3Npb24iKQogIHZvbGNhbm9fY29tcGxleCA8LSBjb21wbGV4X3ZvbGNhbm9GKGNvbXBsZXhlcywgaSkgICsgZ2d0aXRsZSgiQWJlcnJhbnQgcHJvdGVpbiBjb21wbGV4IGV4cHJlc3Npb24iKQogIAogIHZvbGNhbm9zIDwtIHZvbGNhbm9fcm5hIHwgdm9sY2Fub19wcm90ZWluIHwgdm9sY2Fub19jb21wbGV4CiAgCiAgcGxvdF9zYW1wbGUgPC0gcGxvdF9zYW1wbGUgLyB2b2xjYW5vcwogIAogIHByaW50KHBsb3Rfc2FtcGxlKQp9CgoKCgojJyAjIyMgQ2F0ZWdvcnkgSUljIC0gVlVTIG5vdCBkZXRlY3RlZAojKyBmaWcud2lkdGg9MTgsIGZpZy5oZWlnaHQ9MTIKZm9yIChpIGluIHVuaXF1ZShzYVsgQ0FURUdPUlkgPT0gIklJYyIgXSRTQU1QTEVfSUQpKXsKICBwcmludChwYXN0ZSgiU2FtcGxlIElEOiIsIGksICJDYXVzYWwgZ2VuZToiLCBzYVtTQU1QTEVfSUQgPT0gaV0kS05PV05fTVVUQVRJT04gKSApCiAgCiAgcGxvdF9vcmcgPC0gZ2dhbmF0b2dyYW0oZGF0YT0gIHBhdGllbnRzW1NBTVBMRV9JRCA9PSBpXSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbE91dGxpbmU9J3doaXRlJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgb3JnYW5pc209J2h1bWFuJywgCiAgICAgICAgICAgICAgICAgICAgICAgICAgc2V4PSB1bmlxdWUoc2FbU0FNUExFX0lEID09IGldJGdlbmRlciksIAogICAgICAgICAgICAgICAgICAgICAgICAgIGZpbGw9ImNvbG91ciIpKyAKICAgIHRoZW1lX3ZvaWQoKSArIGdndGl0bGUocGFzdGUwKCJpbmRpdmlkdWFsICMiLCBpICkpICsKICAgIHRoZW1lKHBsb3QudGl0bGUgPSBlbGVtZW50X3RleHQobWFyZ2luID0gTlVMTCxmYWNlPSJib2xkIiwgc2l6ZSA9IDksIGhqdXN0ID0gMC41KSwKICAgICAgICAgIHBsb3QubWFyZ2luID0gbWFyZ2luKDAsIDAsIDAsIDAsICJjbSIpKQogIAogIHBoZW5vdHlwZXMgPC0gcGF0X2hwb1tTQU1QTEVfSUQgPT0gaSwgIGMoICJIUE9fdGVybSIpIF0KICBwaGVub3R5cGVzIDwtIGdyaWRFeHRyYTo6dGFibGVHcm9iKHBoZW5vdHlwZXMpCiAgcGxvdF9vcmcgPC0gIHBsb3Rfb3JnICB8IHBoZW5vdHlwZXMgCiAgCiAgaWYgKG5yb3cocnBbU0FNUExFX0lEID09IGkgXSkgPT0gMCl7CiAgICBwcmludCgiTm8gb3V0bGllcnMgZGV0ZWN0ZWQiKQogICAgcGxvdF9zYW1wbGUgPC0gcGxvdF9vcmcKICAgIAogIH1lbHNlewogICAgcGxvdF9zYW1wbGUgPC0gcGxvdF9wYXRpZW50X2FsbChycCwgc2FtcGxlID0gaSkgCiAgICBwbG90X3NhbXBsZSA8LSBwbG90X29yZyB8IHBsb3Rfc2FtcGxlCiAgfQogIAogIAogIHZvbGNhbm9fcm5hIDwtIHJuYV92b2xjYW5vRihycHgsIGkpICsgdGhlbWUoIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgKyBnZ3RpdGxlKCJBYmVycmFudCBSTkEgZXhwcmVzc2lvbiIpCiAgdm9sY2Fub19wcm90ZWluIDwtIHByb3RlaW5fdm9sY2Fub0YocnB4LCBpKSArIHRoZW1lKCBsZWdlbmQucG9zaXRpb24gPSAibm9uZSIpICArIGdndGl0bGUoIkFiZXJyYW50IHByb3RlaW4gZXhwcmVzc2lvbiIpCiAgdm9sY2Fub19jb21wbGV4IDwtIGNvbXBsZXhfdm9sY2Fub0YoY29tcGxleGVzLCBpKSAgKyBnZ3RpdGxlKCJBYmVycmFudCBwcm90ZWluIGNvbXBsZXggZXhwcmVzc2lvbiIpCiAgCiAgdm9sY2Fub3MgPC0gdm9sY2Fub19ybmEgfCB2b2xjYW5vX3Byb3RlaW4gfCB2b2xjYW5vX2NvbXBsZXgKICAKICBwbG90X3NhbXBsZSA8LSBwbG90X3NhbXBsZSAvIHZvbGNhbm9zCiAgCiAgcHJpbnQocGxvdF9zYW1wbGUpCn0KCgojJyAjIyBDYXRlZ29yeSBJSUkgTmV3IGRpc2NvdmVyaWVzCiMrIGZpZy53aWR0aD0xOCwgZmlnLmhlaWdodD0xMgpmb3IgKGkgaW4gdW5pcXVlKHNhWyBDQVRFR09SWSA9PSAiSUlJIiBdJFNBTVBMRV9JRCkpewogIHByaW50KHBhc3RlKCJTYW1wbGUgSUQ6IiwgaSwgIkNhdXNhbCBnZW5lOiIsIHNhW1NBTVBMRV9JRCA9PSBpXSRLTk9XTl9NVVRBVElPTiApICkKICAKICBwbG90X29yZyA8LSBnZ2FuYXRvZ3JhbShkYXRhPSAgcGF0aWVudHNbU0FNUExFX0lEID09IGldLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBmaWxsT3V0bGluZT0nd2hpdGUnLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBvcmdhbmlzbT0naHVtYW4nLCAKICAgICAgICAgICAgICAgICAgICAgICAgICBzZXg9IHVuaXF1ZShzYVtTQU1QTEVfSUQgPT0gaV0kZ2VuZGVyKSwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgZmlsbD0iY29sb3VyIikrIAogICAgdGhlbWVfdm9pZCgpICsgZ2d0aXRsZShwYXN0ZTAoImluZGl2aWR1YWwgIyIsIGkgKSkgKwogICAgdGhlbWUocGxvdC50aXRsZSA9IGVsZW1lbnRfdGV4dChtYXJnaW4gPSBOVUxMLGZhY2U9ImJvbGQiLCBzaXplID0gOSwgaGp1c3QgPSAwLjUpLAogICAgICAgICAgcGxvdC5tYXJnaW4gPSBtYXJnaW4oMCwgMCwgMCwgMCwgImNtIikpCiAgCiAgcGhlbm90eXBlcyA8LSBwYXRfaHBvW1NBTVBMRV9JRCA9PSBpLCAgYyggIkhQT190ZXJtIikgXQogIHBoZW5vdHlwZXMgPC0gZ3JpZEV4dHJhOjp0YWJsZUdyb2IocGhlbm90eXBlcykKICBwbG90X29yZyA8LSAgcGxvdF9vcmcgIHwgcGhlbm90eXBlcyAKICAKICBpZiAobnJvdyhycFtTQU1QTEVfSUQgPT0gaSBdKSA9PSAwKXsKICAgIHByaW50KCJObyBvdXRsaWVycyBkZXRlY3RlZCIpCiAgICBwbG90X3NhbXBsZSA8LSBwbG90X29yZwogICAgCiAgfWVsc2V7CiAgICBwbG90X3NhbXBsZSA8LSBwbG90X3BhdGllbnRfYWxsKHJwLCBzYW1wbGUgPSBpKSAKICAgIHBsb3Rfc2FtcGxlIDwtIHBsb3Rfb3JnIHwgcGxvdF9zYW1wbGUKICB9CiAgCiAgCiAgdm9sY2Fub19ybmEgPC0gcm5hX3ZvbGNhbm9GKHJweCwgaSkgKyB0aGVtZSggbGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKSArIGdndGl0bGUoIkFiZXJyYW50IFJOQSBleHByZXNzaW9uIikKICB2b2xjYW5vX3Byb3RlaW4gPC0gcHJvdGVpbl92b2xjYW5vRihycHgsIGkpICsgdGhlbWUoIGxlZ2VuZC5wb3NpdGlvbiA9ICJub25lIikgICsgZ2d0aXRsZSgiQWJlcnJhbnQgcHJvdGVpbiBleHByZXNzaW9uIikKICB2b2xjYW5vX2NvbXBsZXggPC0gY29tcGxleF92b2xjYW5vRihjb21wbGV4ZXMsIGkpICArIGdndGl0bGUoIkFiZXJyYW50IHByb3RlaW4gY29tcGxleCBleHByZXNzaW9uIikKICAKICB2b2xjYW5vcyA8LSB2b2xjYW5vX3JuYSB8IHZvbGNhbm9fcHJvdGVpbiB8IHZvbGNhbm9fY29tcGxleAogIAogIHBsb3Rfc2FtcGxlIDwtIHBsb3Rfc2FtcGxlIC8gdm9sY2Fub3MKICAKICBwcmludChwbG90X3NhbXBsZSkKfQoKCgoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Patient_analysis.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

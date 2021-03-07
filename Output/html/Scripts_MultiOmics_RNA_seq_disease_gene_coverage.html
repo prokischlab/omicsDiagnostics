@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-15" />
+
+<title>Disease gene coverage by RNAseq</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Disease gene coverage by RNAseq</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-15</h4>
+
+</div>
+
+
+<pre class="r"><code># Load config
+source(&#39;src/config.R&#39;)
+
+
+# Load disease genes table
+# dis_genes &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv&#39;)
+dis_genes &lt;- fread(snakemake@input$disease_genes)
+
+
+# Get all protein coding genes
+# genecode_v29 &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv&#39;)
+genecode_v29 &lt;- fread(snakemake@input$gencode_annotation)
+genecode_v29[, geneID := toupper(gene_name_unique)]
+protein_coding &lt;- genecode_v29[gene_type == &#39;protein_coding&#39;]
+protein_coding[, DISEASE := &#39;Protein coding&#39;]
+protein_coding &lt;- protein_coding[geneID != &quot;&quot; &amp; !is.na(geneID) , c(&quot;geneID&quot;, &quot;DISEASE&quot;)]
+protein_coding &lt;- protein_coding[!duplicated(protein_coding)]
+protein_coding[, total := .N]
+protein_coding[, ORIGIN := &#39;genecode v29&#39;]
+
+# Combine
+dis_genes &lt;- rbind( dis_genes, protein_coding)
+dis_genes[ , geneID := toupper(geneID)]
+dis_genes &lt;- dis_genes[!duplicated(dis_genes)]
+
+# Subset only protein coding genes
+dis_genes &lt;- dis_genes[geneID %in% unique(protein_coding$geneID)]
+dis_genes[ , total := .N, by = DISEASE]
+rm(protein_coding, genecode_v29)
+
+dis_genes &lt;- dis_genes[DISEASE %in% c(&quot;Protein coding&quot;, &quot;MITO&quot;, &quot;Neuromuscular&quot;, &quot;Neurology&quot;, &quot;OMIM&quot; ) ]
+
+####################################################################
+
+
+# READ ANNOTATION
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+
+### RNA unfiltered
+ods &lt;- readRDS(snakemake@input$ods_unfiltered)
+# ods &lt;- readRDS(&quot;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/ods_unfiltered.Rds&quot;)
+ods_100 &lt;- OUTRIDER::filterExpression(ods, percentile = 0)   # detected in all
+ods_50 &lt;- OUTRIDER::filterExpression(ods, percentile = 0.5)  # detected in 50%
+ods_once &lt;- OUTRIDER::filterExpression(ods, percentile = 0.9999) # detected in 0,001% (once)
+rm(ods)
+
+rnaseq &lt;- as.data.table(rowData(ods_once))
+rnaseq[, once := T]
+rnaseq &lt;- rnaseq[ , c(&quot;gene_name_unique&quot;, &quot;once&quot;)]
+rnaseq[ , half := gene_name_unique %in% rowData(ods_50)$gene_name_unique ]
+rnaseq[ , all := gene_name_unique %in% rowData(ods_100)$gene_name_unique ]
+setnames(rnaseq, &quot;gene_name_unique&quot;, &quot;geneID&quot;)
+rnaseq[ , geneID := toupper(geneID)]
+rnaseq &lt;- rnaseq[!duplicated(rnaseq)]
+
+
+# write_tsv(rnaseq, &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/detected_transcripts.tsv&#39;)
+write_tsv(rnaseq,  snakemake@output$detected_transcripts)
+
+
+
+
+# Combine with dis gene list
+rnaseq &lt;- rnaseq[geneID %in% unique(dis_genes$geneID) ]
+dis_genes_fib &lt;- merge(dis_genes, rnaseq, by = &quot;geneID&quot;)
+dis_genes_fib[, TISSUE := &quot;Fibroblasts&quot;]
+dis_genes_fib[ once == T, ONCE_1 := .N, by = DISEASE ]
+dis_genes_fib[ half == T, HALF_1 := .N, by = DISEASE ]
+dis_genes_fib[ all == T, ALL := .N, by = DISEASE ]
+dis_genes_fib &lt;- dis_genes_fib[, c(&quot;TISSUE&quot;, &quot;DISEASE&quot;, &quot;total&quot;, &quot;ONCE_1&quot;,&quot;HALF_1&quot;,&quot;ALL&quot;  )]
+dis_genes_fib &lt;- dis_genes_fib[!duplicated(dis_genes_fib)]
+dis_genes_fib[, HALF := HALF_1 - ALL]
+dis_genes_fib[, ONCE := ONCE_1 - HALF_1]
+dis_genes_fib &lt;- dis_genes_fib[, c(&quot;TISSUE&quot;, &quot;DISEASE&quot;, &quot;total&quot;, &quot;ONCE&quot;,&quot;HALF&quot;,&quot;ALL&quot;  )]
+dis_genes_fib &lt;- dis_genes_fib[!is.na(ALL)]
+
+detected_fib &lt;- melt(dis_genes_fib, id.vars=c(&quot;TISSUE&quot;, &quot;DISEASE&quot;, &quot;total&quot; )) %&gt;% as.data.table()
+detected_fib &lt;- detected_fib[!duplicated(detected_fib)]
+setnames(detected_fib, c(&quot;variable&quot;, &quot;value&quot; ), c(&quot;DETECTED&quot;, &quot;N&quot;))
+detected_fib[, prop:= N / total ]
+
+
+detected_fib$DISEASE &lt;- factor(detected_fib$DISEASE, levels = c(&quot;Protein coding&quot;, &quot;MITO&quot;, &quot;Neuromuscular&quot;, &quot;Neurology&quot;, &quot;OMIM&quot; ))
+
+detected_fib$dis_n &lt;- paste0(detected_fib$DISEASE, &quot;\n&quot;  ,&quot;(&quot;,detected_fib$total, &quot;)&quot;)
+# unique(detected_fib$dis_n)
+detected_fib$dis_n &lt;- factor(detected_fib$dis_n, levels = c(&quot;Protein coding\n(20336)&quot;, &quot;MITO\n(388)&quot;, &quot;Neuromuscular\n(132)&quot;, &quot;Neurology\n(284)&quot;, &quot;OMIM\n(4270)&quot; ))</code></pre>
+<div id="rna-seq-coverage-in-fibroblasts" class="section level1">
+<h1>RNA-seq coverage in fibroblasts</h1>
+<pre class="r"><code>ggplot(detected_fib, aes(dis_n, prop)) + 
+  geom_col(aes(fill = DETECTED)) +  # stat= &#39;identity&#39;, 
+  scale_y_continuous( labels=scales::percent) +
+  scale_fill_brewer(palette=&quot;Blues&quot;) +
+  labs( y = &quot;fraction covered&quot;)+
+  theme_classic()+
+  theme(legend.position=&quot;none&quot;,  
+        axis.title.y = element_text(face=&quot;bold&quot;, size=12) , 
+        axis.title.x = element_blank() ,
+        axis.text.x = element_text(size=12, face=&quot;bold&quot;) ,
+        legend.title = element_blank(), legend.direction = &quot;horizontal&quot;, 
+        axis.text.y = element_text(face=&quot;bold&quot;, size=12, hjust = 0.5),
+        plot.margin = margin(0, 0, 0, 0, &quot;cm&quot;)) </code></pre>
+<p><img src="Scripts_MultiOmics_RNA_seq_disease_gene_coverage_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code># write_tsv(detected_fib, &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/rna_coverage.tsv&#39;)
+write_tsv(detected_fib,  snakemake@output$rna_coverage)</code></pre>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IERpc2Vhc2UgZ2VuZSBjb3ZlcmFnZSBieSBSTkFzZXEKIycgYXV0aG9yOiBzbWlybm92ZAojJyB3YjoKIycgIGlucHV0OiAKIycgIC0gZ2VuY29kZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siREFUQVNFVFMiXSArICIvZ2VuZV9hbm5vdGF0aW9uX3YyOS50c3YiYCcKIycgIC0gZGlzZWFzZV9nZW5lczogJ2BzbSBjb25maWdbIkRBVEFTRVRTIl0gKyAiL2Rpc2Vhc2VfZ2VuZXMudHN2ImAnCiMnICAtIHNhbXBsZV9hbm5vdGF0aW9uOiAnYHNtIGNvbmZpZ1siQU5OT1RBVElPTiJdYCcKIycgIC0gb2RzX3VuZmlsdGVyZWQ6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvb3V0cmlkZXIvb2RzX3VuZmlsdGVyZWQuUmRzImAnCiMnICBvdXRwdXQ6CiMnICAtIGRldGVjdGVkX3RyYW5zY3JpcHRzOiAnYHNtIGNvbmZpZ1siUFJPQ19EQVRBIl0gKyAiL2ludGVncmF0aW9uL2RldGVjdGVkX3RyYW5zY3JpcHRzLnRzdiJgJwojJyAgLSBybmFfY292ZXJhZ2U6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvaW50ZWdyYXRpb24vcm5hX2NvdmVyYWdlLnRzdiJgJwojJyBvdXRwdXQ6IAojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgojIExvYWQgY29uZmlnCnNvdXJjZSgnc3JjL2NvbmZpZy5SJykKCgojIExvYWQgZGlzZWFzZSBnZW5lcyB0YWJsZQojIGRpc19nZW5lcyA8LSBmcmVhZCgnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL2RhdGFzZXRzL2Rpc2Vhc2VfZ2VuZXMudHN2JykKZGlzX2dlbmVzIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRkaXNlYXNlX2dlbmVzKQoKCiMgR2V0IGFsbCBwcm90ZWluIGNvZGluZyBnZW5lcwojIGdlbmVjb2RlX3YyOSA8LSBmcmVhZCgnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL2RhdGFzZXRzL2dlbmVfYW5ub3RhdGlvbl92MjkudHN2JykKZ2VuZWNvZGVfdjI5IDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRnZW5jb2RlX2Fubm90YXRpb24pCmdlbmVjb2RlX3YyOVssIGdlbmVJRCA6PSB0b3VwcGVyKGdlbmVfbmFtZV91bmlxdWUpXQpwcm90ZWluX2NvZGluZyA8LSBnZW5lY29kZV92MjlbZ2VuZV90eXBlID09ICdwcm90ZWluX2NvZGluZyddCnByb3RlaW5fY29kaW5nWywgRElTRUFTRSA6PSAnUHJvdGVpbiBjb2RpbmcnXQpwcm90ZWluX2NvZGluZyA8LSBwcm90ZWluX2NvZGluZ1tnZW5lSUQgIT0gIiIgJiAhaXMubmEoZ2VuZUlEKSAsIGMoImdlbmVJRCIsICJESVNFQVNFIildCnByb3RlaW5fY29kaW5nIDwtIHByb3RlaW5fY29kaW5nWyFkdXBsaWNhdGVkKHByb3RlaW5fY29kaW5nKV0KcHJvdGVpbl9jb2RpbmdbLCB0b3RhbCA6PSAuTl0KcHJvdGVpbl9jb2RpbmdbLCBPUklHSU4gOj0gJ2dlbmVjb2RlIHYyOSddCgojIENvbWJpbmUKZGlzX2dlbmVzIDwtIHJiaW5kKCBkaXNfZ2VuZXMsIHByb3RlaW5fY29kaW5nKQpkaXNfZ2VuZXNbICwgZ2VuZUlEIDo9IHRvdXBwZXIoZ2VuZUlEKV0KZGlzX2dlbmVzIDwtIGRpc19nZW5lc1shZHVwbGljYXRlZChkaXNfZ2VuZXMpXQoKIyBTdWJzZXQgb25seSBwcm90ZWluIGNvZGluZyBnZW5lcwpkaXNfZ2VuZXMgPC0gZGlzX2dlbmVzW2dlbmVJRCAlaW4lIHVuaXF1ZShwcm90ZWluX2NvZGluZyRnZW5lSUQpXQpkaXNfZ2VuZXNbICwgdG90YWwgOj0gLk4sIGJ5ID0gRElTRUFTRV0Kcm0ocHJvdGVpbl9jb2RpbmcsIGdlbmVjb2RlX3YyOSkKCmRpc19nZW5lcyA8LSBkaXNfZ2VuZXNbRElTRUFTRSAlaW4lIGMoIlByb3RlaW4gY29kaW5nIiwgIk1JVE8iLCAiTmV1cm9tdXNjdWxhciIsICJOZXVyb2xvZ3kiLCAiT01JTSIgKSBdCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIwoKCiMgUkVBRCBBTk5PVEFUSU9OCiMgc2EgPC0gZnJlYWQoJy9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9yYXdfZGF0YS9wcm90ZW9taWNzX2Fubm90YXRpb24udHN2JykKc2EgPC0gZnJlYWQoc25ha2VtYWtlQGlucHV0JHNhbXBsZV9hbm5vdGF0aW9uKQpzYSA8LSBzYVtVU0VfRk9SX1BST1RFT01JQ1NfUEFQRVIgPT0gVF0KCgojIyMgUk5BIHVuZmlsdGVyZWQKb2RzIDwtIHJlYWRSRFMoc25ha2VtYWtlQGlucHV0JG9kc191bmZpbHRlcmVkKQojIG9kcyA8LSByZWFkUkRTKCIvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcHJvY2Vzc2VkX2RhdGEvb3V0cmlkZXIvb2RzX3VuZmlsdGVyZWQuUmRzIikKb2RzXzEwMCA8LSBPVVRSSURFUjo6ZmlsdGVyRXhwcmVzc2lvbihvZHMsIHBlcmNlbnRpbGUgPSAwKSAgICMgZGV0ZWN0ZWQgaW4gYWxsCm9kc181MCA8LSBPVVRSSURFUjo6ZmlsdGVyRXhwcmVzc2lvbihvZHMsIHBlcmNlbnRpbGUgPSAwLjUpICAjIGRldGVjdGVkIGluIDUwJQpvZHNfb25jZSA8LSBPVVRSSURFUjo6ZmlsdGVyRXhwcmVzc2lvbihvZHMsIHBlcmNlbnRpbGUgPSAwLjk5OTkpICMgZGV0ZWN0ZWQgaW4gMCwwMDElIChvbmNlKQpybShvZHMpCgpybmFzZXEgPC0gYXMuZGF0YS50YWJsZShyb3dEYXRhKG9kc19vbmNlKSkKcm5hc2VxWywgb25jZSA6PSBUXQpybmFzZXEgPC0gcm5hc2VxWyAsIGMoImdlbmVfbmFtZV91bmlxdWUiLCAib25jZSIpXQpybmFzZXFbICwgaGFsZiA6PSBnZW5lX25hbWVfdW5pcXVlICVpbiUgcm93RGF0YShvZHNfNTApJGdlbmVfbmFtZV91bmlxdWUgXQpybmFzZXFbICwgYWxsIDo9IGdlbmVfbmFtZV91bmlxdWUgJWluJSByb3dEYXRhKG9kc18xMDApJGdlbmVfbmFtZV91bmlxdWUgXQpzZXRuYW1lcyhybmFzZXEsICJnZW5lX25hbWVfdW5pcXVlIiwgImdlbmVJRCIpCnJuYXNlcVsgLCBnZW5lSUQgOj0gdG91cHBlcihnZW5lSUQpXQpybmFzZXEgPC0gcm5hc2VxWyFkdXBsaWNhdGVkKHJuYXNlcSldCgoKIyB3cml0ZV90c3Yocm5hc2VxLCAnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2ludGVncmF0aW9uL2RldGVjdGVkX3RyYW5zY3JpcHRzLnRzdicpCndyaXRlX3RzdihybmFzZXEsICBzbmFrZW1ha2VAb3V0cHV0JGRldGVjdGVkX3RyYW5zY3JpcHRzKQoKCgoKIyBDb21iaW5lIHdpdGggZGlzIGdlbmUgbGlzdApybmFzZXEgPC0gcm5hc2VxW2dlbmVJRCAlaW4lIHVuaXF1ZShkaXNfZ2VuZXMkZ2VuZUlEKSBdCmRpc19nZW5lc19maWIgPC0gbWVyZ2UoZGlzX2dlbmVzLCBybmFzZXEsIGJ5ID0gImdlbmVJRCIpCmRpc19nZW5lc19maWJbLCBUSVNTVUUgOj0gIkZpYnJvYmxhc3RzIl0KZGlzX2dlbmVzX2ZpYlsgb25jZSA9PSBULCBPTkNFXzEgOj0gLk4sIGJ5ID0gRElTRUFTRSBdCmRpc19nZW5lc19maWJbIGhhbGYgPT0gVCwgSEFMRl8xIDo9IC5OLCBieSA9IERJU0VBU0UgXQpkaXNfZ2VuZXNfZmliWyBhbGwgPT0gVCwgQUxMIDo9IC5OLCBieSA9IERJU0VBU0UgXQpkaXNfZ2VuZXNfZmliIDwtIGRpc19nZW5lc19maWJbLCBjKCJUSVNTVUUiLCAiRElTRUFTRSIsICJ0b3RhbCIsICJPTkNFXzEiLCJIQUxGXzEiLCJBTEwiICApXQpkaXNfZ2VuZXNfZmliIDwtIGRpc19nZW5lc19maWJbIWR1cGxpY2F0ZWQoZGlzX2dlbmVzX2ZpYildCmRpc19nZW5lc19maWJbLCBIQUxGIDo9IEhBTEZfMSAtIEFMTF0KZGlzX2dlbmVzX2ZpYlssIE9OQ0UgOj0gT05DRV8xIC0gSEFMRl8xXQpkaXNfZ2VuZXNfZmliIDwtIGRpc19nZW5lc19maWJbLCBjKCJUSVNTVUUiLCAiRElTRUFTRSIsICJ0b3RhbCIsICJPTkNFIiwiSEFMRiIsIkFMTCIgICldCmRpc19nZW5lc19maWIgPC0gZGlzX2dlbmVzX2ZpYlshaXMubmEoQUxMKV0KCmRldGVjdGVkX2ZpYiA8LSBtZWx0KGRpc19nZW5lc19maWIsIGlkLnZhcnM9YygiVElTU1VFIiwgIkRJU0VBU0UiLCAidG90YWwiICkpICU+JSBhcy5kYXRhLnRhYmxlKCkKZGV0ZWN0ZWRfZmliIDwtIGRldGVjdGVkX2ZpYlshZHVwbGljYXRlZChkZXRlY3RlZF9maWIpXQpzZXRuYW1lcyhkZXRlY3RlZF9maWIsIGMoInZhcmlhYmxlIiwgInZhbHVlIiApLCBjKCJERVRFQ1RFRCIsICJOIikpCmRldGVjdGVkX2ZpYlssIHByb3A6PSBOIC8gdG90YWwgXQoKCmRldGVjdGVkX2ZpYiRESVNFQVNFIDwtIGZhY3RvcihkZXRlY3RlZF9maWIkRElTRUFTRSwgbGV2ZWxzID0gYygiUHJvdGVpbiBjb2RpbmciLCAiTUlUTyIsICJOZXVyb211c2N1bGFyIiwgIk5ldXJvbG9neSIsICJPTUlNIiApKQoKZGV0ZWN0ZWRfZmliJGRpc19uIDwtIHBhc3RlMChkZXRlY3RlZF9maWIkRElTRUFTRSwgIlxuIiAgLCIoIixkZXRlY3RlZF9maWIkdG90YWwsICIpIikKIyB1bmlxdWUoZGV0ZWN0ZWRfZmliJGRpc19uKQpkZXRlY3RlZF9maWIkZGlzX24gPC0gZmFjdG9yKGRldGVjdGVkX2ZpYiRkaXNfbiwgbGV2ZWxzID0gYygiUHJvdGVpbiBjb2RpbmdcbigyMDMzNikiLCAiTUlUT1xuKDM4OCkiLCAiTmV1cm9tdXNjdWxhclxuKDEzMikiLCAiTmV1cm9sb2d5XG4oMjg0KSIsICJPTUlNXG4oNDI3MCkiICkpCgoKCiMnICMgUk5BLXNlcSBjb3ZlcmFnZSBpbiBmaWJyb2JsYXN0cwojKyBmaWcud2lkdGg9NywgZmlnLmhlaWdodD00CmdncGxvdChkZXRlY3RlZF9maWIsIGFlcyhkaXNfbiwgcHJvcCkpICsgCiAgZ2VvbV9jb2woYWVzKGZpbGwgPSBERVRFQ1RFRCkpICsgICMgc3RhdD0gJ2lkZW50aXR5JywgCiAgc2NhbGVfeV9jb250aW51b3VzKCBsYWJlbHM9c2NhbGVzOjpwZXJjZW50KSArCiAgc2NhbGVfZmlsbF9icmV3ZXIocGFsZXR0ZT0iQmx1ZXMiKSArCiAgbGFicyggeSA9ICJmcmFjdGlvbiBjb3ZlcmVkIikrCiAgdGhlbWVfY2xhc3NpYygpKwogIHRoZW1lKGxlZ2VuZC5wb3NpdGlvbj0ibm9uZSIsICAKICAgICAgICBheGlzLnRpdGxlLnkgPSBlbGVtZW50X3RleHQoZmFjZT0iYm9sZCIsIHNpemU9MTIpICwgCiAgICAgICAgYXhpcy50aXRsZS54ID0gZWxlbWVudF9ibGFuaygpICwKICAgICAgICBheGlzLnRleHQueCA9IGVsZW1lbnRfdGV4dChzaXplPTEyLCBmYWNlPSJib2xkIikgLAogICAgICAgIGxlZ2VuZC50aXRsZSA9IGVsZW1lbnRfYmxhbmsoKSwgbGVnZW5kLmRpcmVjdGlvbiA9ICJob3Jpem9udGFsIiwgCiAgICAgICAgYXhpcy50ZXh0LnkgPSBlbGVtZW50X3RleHQoZmFjZT0iYm9sZCIsIHNpemU9MTIsIGhqdXN0ID0gMC41KSwKICAgICAgICBwbG90Lm1hcmdpbiA9IG1hcmdpbigwLCAwLCAwLCAwLCAiY20iKSkgCgojIHdyaXRlX3RzdihkZXRlY3RlZF9maWIsICcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcHJvY2Vzc2VkX2RhdGEvaW50ZWdyYXRpb24vcm5hX2NvdmVyYWdlLnRzdicpCndyaXRlX3RzdihkZXRlY3RlZF9maWIsICBzbmFrZW1ha2VAb3V0cHV0JHJuYV9jb3ZlcmFnZSkKCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("disease_gene_coverage.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

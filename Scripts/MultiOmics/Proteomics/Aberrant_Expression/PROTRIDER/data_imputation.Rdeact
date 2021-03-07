@@ -1,0 +1,38 @@
+#'---
+#' title: Proteomics data imputation     
+#' author: smirnovd
+#' wb:
+#'  input:
+#'  - sa: '`sm config["ANNOTATION"]`'
+#'  - raw_prot: '`sm config["RAW_Protein"]`'
+#'  output:
+#'  - proteomics_imputed: '`sm config["PROC_DATA"] + "/protrider/proteomics_imputed.tsv"`'
+#'  type: script
+#'---
+
+#load functions
+source("src/config.R")
+source("src/functions/LIMMA/limma_functions.R")
+
+#' READ ANNOTATION
+# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
+sa <- fread(snakemake@input$sa)
+
+
+
+#' READ Proteomics data
+raw_prot <- fread(snakemake@input$raw_prot) %>% as.data.frame()
+# raw_prot <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv') %>% as.data.frame()
+
+rownames(raw_prot) <- raw_prot$geneID
+raw_prot$geneID <- NULL
+
+# Number of samples
+ncol(raw_prot)
+
+prot_imputed <- impute_min(raw_prot, sa)
+
+
+# Save imputed data
+#write_tsv(prot_imputed, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/proteomics_imputed.tsv')
+write_tsv(prot_imputed,  snakemake@output$proteomics_imputed)

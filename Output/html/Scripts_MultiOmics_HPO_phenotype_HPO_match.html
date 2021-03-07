@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd" />
+
+<meta name="date" content="2021-02-09" />
+
+<title>HPO match Fresard et al 2019</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">HPO match Fresard et al 2019</h1>
+<h4 class="author">smirnovd</h4>
+<h4 class="date">2021-02-09</h4>
+
+</div>
+
+
+<pre class="r"><code>source(snakemake@input$config)
+
+
+# READ ANNOTATION
+#sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sa)
+sa &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+# Load patient&#39;s HPO 
+pat_hpo &lt;- fread(snakemake@input$patient_hpo)
+#pat_hpo &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/Patient_HPO_phenotypes.tsv&#39;)
+
+pat_hpo &lt;- pat_hpo[, c(&quot;SAMPLE_ID&quot;, &quot;HPO_ID&quot;)]
+pat_hpo &lt;-pat_hpo[!duplicated(pat_hpo )]
+
+
+
+
+# HPO mapping
+# load HPO ontology
+hpo &lt;- get_ontology(&quot;http://purl.obolibrary.org/obo/hp.obo&quot;, extract_tags=&quot;everything&quot;)
+
+
+
+
+# extract parent and chiled for a given term 
+hpo_names &lt;- data.frame(HPO_ID = hpo$id, HPO_name = hpo$name,  stringsAsFactors = F) #save names
+
+# extract parents
+parents &lt;- ldply(hpo$parents, data.frame, stringsAsFactors = F)
+colnames(parents) &lt;- c(&quot;HPO_ID&quot;, &quot;relative&quot;)
+parents$relation &lt;- &quot;parent&quot;
+
+# extract children
+children &lt;- ldply(hpo$children, data.frame, stringsAsFactors = F)
+colnames(children) &lt;- c(&quot;HPO_ID&quot;, &quot;relative&quot;)
+children$relation &lt;- &quot;child&quot;
+
+# combine parents and children
+hpo_df &lt;- rbind(parents, children, stringsAsFactors = F)
+hpo_df &lt;- as.data.table(hpo_df[!duplicated(hpo_df ),])
+
+
+index &lt;- data.frame(HPO_ID = unique(hpo_names$HPO_ID), relative = unique(hpo_names$HPO_ID), stringsAsFactors = F)
+index$relation &lt;- &quot;index&quot;
+
+#combine into one df
+hpo_df &lt;- rbind(hpo_df, index)
+hpo_df &lt;-hpo_df[!duplicated(hpo_df ),]
+#hpo_df &lt;- merge(hpo_df, hpo_names, by = &quot;HPO_ID&quot;)
+hpo_df  &lt;- hpo_df [HPO_ID %in% unique(pat_hpo$HPO_ID)]
+#hpo_df &lt;- hpo_df[relation != &quot;parent&quot;]
+
+
+#load gene - hpo 
+hpo_gene &lt;- fread(&quot;http://compbio.charite.de/jenkins/job/hpo.annotations/lastSuccessfulBuild/artifact/util/annotation/phenotype_to_genes.txt&quot;)
+colnames(hpo_gene) &lt;- c(&quot;HPO_ID&quot;, &quot;HPO_name&quot;, &quot;entrezID&quot;, &quot;geneID&quot;, &quot;Additional_Info&quot;,  &quot;source&quot;, &quot;disease-ID&quot;)
+hpo_gene &lt;- hpo_gene[, c(&quot;HPO_ID&quot;,&quot;geneID&quot;)]
+hpo_gene &lt;- hpo_gene[!duplicated(hpo_gene)]
+
+
+# Annotate relatives by gene
+hpo_df &lt;- merge(hpo_df, hpo_gene, by.x= &quot;relative&quot;, by.y = &quot;HPO_ID&quot;)
+
+
+# Consider genes matched to relatives - matched to index
+hpo_df$relative &lt;- NULL 
+hpo_df$relation &lt;- NULL 
+hpo_df &lt;- hpo_df[!duplicated(hpo_df), ]
+ 
+
+pat_hpo &lt;- merge(pat_hpo, hpo_df,  by = &quot;HPO_ID&quot;, allow.cartesian=TRUE )
+pat_hpo$HPO_ID &lt;- NULL
+pat_hpo &lt;-pat_hpo[!duplicated(pat_hpo ),]
+pat_hpo[ , HPO_match := T]</code></pre>
+<p>number of genes matching phenotype per sample</p>
+<pre class="r"><code>os &lt;- pat_hpo[, .N, by=  SAMPLE_ID]
+os &lt;- os[order(N),]
+os$rank &lt;- seq(1: nrow(os))
+ggplot(os)+
+  geom_line( aes( x= rank, y = N), size=1.7)+
+  theme_classic()+
+  scale_y_continuous(trans=&#39;log2&#39;)+
+  scale_x_continuous(breaks= c(1, 25,  50,  75,  100,  130),  limits=c(1, nrow(os)))+ #
+  geom_hline(yintercept = median(os$N), linetype = &quot;dashed&quot;)+
+  xlab(&quot;Sample rank&quot;) + 
+  ylab(&quot;#Genes matching HPO phenotype&quot;)</code></pre>
+<p><img src="Scripts_MultiOmics_HPO_phenotype_HPO_match_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>#write_tsv(pat_hpo,  &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_HPO_Gene_mapping.tsv&#39;)
+write_tsv(pat_hpo,  snakemake@output$hpo_match)</code></pre>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IEhQTyBtYXRjaCBGcmVzYXJkIGV0IGFsIDIwMTkgIAojJyBhdXRob3I6IHNtaXJub3ZkCiMnIHdiOgojJyAgaW5wdXQ6CiMnICAtIGNvbmZpZzogJ3NyYy9jb25maWcuUicKIycgIC0gc2E6ICdgc20gY29uZmlnWyJBTk5PVEFUSU9OIl1gJwojJyAgLSBwYXRpZW50X2hwbzogJ2BzbSBjb25maWdbIlJBV19IUE8iXWAnCiMnICBvdXRwdXQ6CiMnICAtIGhwb19tYXRjaDogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9IUE8vUGF0aWVudHNfSFBPX0dlbmVfbWFwcGluZy50c3YiYCcKIycgb3V0cHV0OgojJyAgIGh0bWxfZG9jdW1lbnQ6CiMnICAgIGNvZGVfZm9sZGluZzogaGlkZQojJyAgICBjb2RlX2Rvd25sb2FkOiBUUlVFCiMnLS0tCgoKc291cmNlKHNuYWtlbWFrZUBpbnB1dCRjb25maWcpCgoKIyBSRUFEIEFOTk9UQVRJT04KI3NhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19hbm5vdGF0aW9uLnRzdicpCnNhIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRzYSkKc2EgPC0gc2FbVVNFX0ZPUl9QUk9URU9NSUNTX1BBUEVSID09IFRdCgojIExvYWQgcGF0aWVudCdzIEhQTyAKcGF0X2hwbyA8LSBmcmVhZChzbmFrZW1ha2VAaW5wdXQkcGF0aWVudF9ocG8pCiNwYXRfaHBvIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvUGF0aWVudF9IUE9fcGhlbm90eXBlcy50c3YnKQoKcGF0X2hwbyA8LSBwYXRfaHBvWywgYygiU0FNUExFX0lEIiwgIkhQT19JRCIpXQpwYXRfaHBvIDwtcGF0X2hwb1shZHVwbGljYXRlZChwYXRfaHBvICldCgoKCgojIEhQTyBtYXBwaW5nCiMgbG9hZCBIUE8gb250b2xvZ3kKaHBvIDwtIGdldF9vbnRvbG9neSgiaHR0cDovL3B1cmwub2JvbGlicmFyeS5vcmcvb2JvL2hwLm9ibyIsIGV4dHJhY3RfdGFncz0iZXZlcnl0aGluZyIpCgoKCgojIGV4dHJhY3QgcGFyZW50IGFuZCBjaGlsZWQgZm9yIGEgZ2l2ZW4gdGVybSAKaHBvX25hbWVzIDwtIGRhdGEuZnJhbWUoSFBPX0lEID0gaHBvJGlkLCBIUE9fbmFtZSA9IGhwbyRuYW1lLCAgc3RyaW5nc0FzRmFjdG9ycyA9IEYpICNzYXZlIG5hbWVzCgojIGV4dHJhY3QgcGFyZW50cwpwYXJlbnRzIDwtIGxkcGx5KGhwbyRwYXJlbnRzLCBkYXRhLmZyYW1lLCBzdHJpbmdzQXNGYWN0b3JzID0gRikKY29sbmFtZXMocGFyZW50cykgPC0gYygiSFBPX0lEIiwgInJlbGF0aXZlIikKcGFyZW50cyRyZWxhdGlvbiA8LSAicGFyZW50IgoKIyBleHRyYWN0IGNoaWxkcmVuCmNoaWxkcmVuIDwtIGxkcGx5KGhwbyRjaGlsZHJlbiwgZGF0YS5mcmFtZSwgc3RyaW5nc0FzRmFjdG9ycyA9IEYpCmNvbG5hbWVzKGNoaWxkcmVuKSA8LSBjKCJIUE9fSUQiLCAicmVsYXRpdmUiKQpjaGlsZHJlbiRyZWxhdGlvbiA8LSAiY2hpbGQiCgojIGNvbWJpbmUgcGFyZW50cyBhbmQgY2hpbGRyZW4KaHBvX2RmIDwtIHJiaW5kKHBhcmVudHMsIGNoaWxkcmVuLCBzdHJpbmdzQXNGYWN0b3JzID0gRikKaHBvX2RmIDwtIGFzLmRhdGEudGFibGUoaHBvX2RmWyFkdXBsaWNhdGVkKGhwb19kZiApLF0pCgoKaW5kZXggPC0gZGF0YS5mcmFtZShIUE9fSUQgPSB1bmlxdWUoaHBvX25hbWVzJEhQT19JRCksIHJlbGF0aXZlID0gdW5pcXVlKGhwb19uYW1lcyRIUE9fSUQpLCBzdHJpbmdzQXNGYWN0b3JzID0gRikKaW5kZXgkcmVsYXRpb24gPC0gImluZGV4IgoKI2NvbWJpbmUgaW50byBvbmUgZGYKaHBvX2RmIDwtIHJiaW5kKGhwb19kZiwgaW5kZXgpCmhwb19kZiA8LWhwb19kZlshZHVwbGljYXRlZChocG9fZGYgKSxdCiNocG9fZGYgPC0gbWVyZ2UoaHBvX2RmLCBocG9fbmFtZXMsIGJ5ID0gIkhQT19JRCIpCmhwb19kZiAgPC0gaHBvX2RmIFtIUE9fSUQgJWluJSB1bmlxdWUocGF0X2hwbyRIUE9fSUQpXQojaHBvX2RmIDwtIGhwb19kZltyZWxhdGlvbiAhPSAicGFyZW50Il0KCgojbG9hZCBnZW5lIC0gaHBvIApocG9fZ2VuZSA8LSBmcmVhZCgiaHR0cDovL2NvbXBiaW8uY2hhcml0ZS5kZS9qZW5raW5zL2pvYi9ocG8uYW5ub3RhdGlvbnMvbGFzdFN1Y2Nlc3NmdWxCdWlsZC9hcnRpZmFjdC91dGlsL2Fubm90YXRpb24vcGhlbm90eXBlX3RvX2dlbmVzLnR4dCIpCmNvbG5hbWVzKGhwb19nZW5lKSA8LSBjKCJIUE9fSUQiLCAiSFBPX25hbWUiLCAiZW50cmV6SUQiLCAiZ2VuZUlEIiwgIkFkZGl0aW9uYWxfSW5mbyIsICAic291cmNlIiwgImRpc2Vhc2UtSUQiKQpocG9fZ2VuZSA8LSBocG9fZ2VuZVssIGMoIkhQT19JRCIsImdlbmVJRCIpXQpocG9fZ2VuZSA8LSBocG9fZ2VuZVshZHVwbGljYXRlZChocG9fZ2VuZSldCgoKIyBBbm5vdGF0ZSByZWxhdGl2ZXMgYnkgZ2VuZQpocG9fZGYgPC0gbWVyZ2UoaHBvX2RmLCBocG9fZ2VuZSwgYnkueD0gInJlbGF0aXZlIiwgYnkueSA9ICJIUE9fSUQiKQoKCiMgQ29uc2lkZXIgZ2VuZXMgbWF0Y2hlZCB0byByZWxhdGl2ZXMgLSBtYXRjaGVkIHRvIGluZGV4Cmhwb19kZiRyZWxhdGl2ZSA8LSBOVUxMIApocG9fZGYkcmVsYXRpb24gPC0gTlVMTCAKaHBvX2RmIDwtIGhwb19kZlshZHVwbGljYXRlZChocG9fZGYpLCBdCiAKCnBhdF9ocG8gPC0gbWVyZ2UocGF0X2hwbywgaHBvX2RmLCAgYnkgPSAiSFBPX0lEIiwgYWxsb3cuY2FydGVzaWFuPVRSVUUgKQpwYXRfaHBvJEhQT19JRCA8LSBOVUxMCnBhdF9ocG8gPC1wYXRfaHBvWyFkdXBsaWNhdGVkKHBhdF9ocG8gKSxdCnBhdF9ocG9bICwgSFBPX21hdGNoIDo9IFRdCgoKIycgbnVtYmVyIG9mIGdlbmVzIG1hdGNoaW5nIHBoZW5vdHlwZSBwZXIgc2FtcGxlCm9zIDwtIHBhdF9ocG9bLCAuTiwgYnk9ICBTQU1QTEVfSURdCm9zIDwtIG9zW29yZGVyKE4pLF0Kb3MkcmFuayA8LSBzZXEoMTogbnJvdyhvcykpCmdncGxvdChvcykrCiAgZ2VvbV9saW5lKCBhZXMoIHg9IHJhbmssIHkgPSBOKSwgc2l6ZT0xLjcpKwogIHRoZW1lX2NsYXNzaWMoKSsKICBzY2FsZV95X2NvbnRpbnVvdXModHJhbnM9J2xvZzInKSsKICBzY2FsZV94X2NvbnRpbnVvdXMoYnJlYWtzPSBjKDEsIDI1LCAgNTAsICA3NSwgIDEwMCwgIDEzMCksICBsaW1pdHM9YygxLCBucm93KG9zKSkpKyAjCiAgZ2VvbV9obGluZSh5aW50ZXJjZXB0ID0gbWVkaWFuKG9zJE4pLCBsaW5ldHlwZSA9ICJkYXNoZWQiKSsKICB4bGFiKCJTYW1wbGUgcmFuayIpICsgCiAgeWxhYigiI0dlbmVzIG1hdGNoaW5nIEhQTyBwaGVub3R5cGUiKQoKCgoKI3dyaXRlX3RzdihwYXRfaHBvLCAgJy9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9wcm9jZXNzZWRfZGF0YS9IUE8vUGF0aWVudHNfSFBPX0dlbmVfbWFwcGluZy50c3YnKQp3cml0ZV90c3YocGF0X2hwbywgIHNuYWtlbWFrZUBvdXRwdXQkaHBvX21hdGNoKQoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("HPO_match.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

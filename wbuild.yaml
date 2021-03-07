@@ -1,0 +1,18 @@
+---
+webDir: /s/public_webshare/project/prokisch/omicsDiagnostics/
+projectTitle: omicsDiagnostics
+htmlOutputPath: Output/html
+scriptsPath: Scripts
+fileRegex: .*
+
+ANNOTATION: /s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv
+RAW_HPO: /s/project/mitoMultiOmics/multiOMICs_integration/raw_data/Patient_HPO_phenotypes.tsv
+RAW_RNA: /s/project/mitoMultiOmics/multiOMICs_integration/raw_data/raw_counts.tsv
+RAW_Protein: /s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv
+
+DATASETS: /s/project/mitoMultiOmics/multiOMICs_integration/datasets
+
+RAW_DATA: /s/project/mitoMultiOmics/multiOMICs_integration/raw_data
+PROC_DATA: /s/project/mitoMultiOmics/multiOMICs_integration/processed_data
+
+FIGURE_DIR: /s/project/mitoMultiOmics/multiOMICs_integration/Figures

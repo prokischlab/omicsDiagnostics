@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="smirnovd, Chen Meng" />
+
+<meta name="date" content="2021-02-15" />
+
+<title>Proteomics data normalization and preparation for limma</title>
+
+<script src="libR/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libR/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="libR/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libR/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="libR/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libR/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libR/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libR/navigation-1.1/tabsets.js"></script>
+<script src="libR/navigation-1.1/codefolding.js"></script>
+<script src="libR/navigation-1.1/sourceembed.js"></script>
+<link href="libR/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="libR/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+<link rel="stylesheet" href="lib/add_content_table.css" type="text/css" />
+<link rel="stylesheet" href="lib/leo_style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Proteomics data normalization and preparation for limma</h1>
+<h4 class="author">smirnovd, Chen Meng</h4>
+<h4 class="date">2021-02-15</h4>
+
+</div>
+
+
+<pre class="r"><code># source(&quot;src/config.R&quot;)
+
+#load functions
+source(&quot;src/functions/LIMMA/limma_functions.R&quot;)
+
+
+# READ ANNOTATION
+# sa &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv&#39;)
+sa &lt;- fread(snakemake@input$sample_annotation)</code></pre>
+<div id="step-1-read-and-investigate-data" class="section level1">
+<h1>step 1 read and investigate data</h1>
+<pre class="r"><code>step1.data &lt;- fread(snakemake@input$raw_prot) %&gt;% as.data.frame()
+# step1.data &lt;- fread(&#39;/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv&#39;) %&gt;% as.data.frame()
+
+rownames(step1.data) &lt;- step1.data$geneID
+step1.data$geneID &lt;- NULL</code></pre>
+<pre class="r"><code>plots_normalization(step1.data, sa)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-3-1.png" width="960" /><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-3-2.png" width="960" /></p>
+<pre class="r"><code># barplots
+dfx &lt;- data.table( SAMPLE_ID = rownames(t(step1.data)) , SUM_INT = rowSums(t(step1.data)) )
+dfx &lt;- merge(sa[ ,.(SAMPLE_ID, PROTEOMICS_BATCH, BATCH_RUN, INSTRUMENT)], dfx, by = &quot;SAMPLE_ID&quot; )
+dfx &lt;- dfx[order(BATCH_RUN)]</code></pre>
+<pre class="r"><code>ggplot(dfx, aes(SAMPLE_ID , SUM_INT))+
+  geom_col()+ 
+  theme_bw()+ 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.title.x = element_blank())+
+  facet_wrap(~PROTEOMICS_BATCH , scales = &quot;free_x&quot;, nrow =2 )</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-4-1.png" width="1152" /></p>
+<pre class="r"><code>rm(dfx)
+
+# Remove samples after inspection
+rm.samples &lt;- c(&quot;failed_OM54862&quot;, &quot;failed_OM12102&quot;) </code></pre>
+</div>
+<div id="step-2-between-run-normalization" class="section level1">
+<h1>step 2 between run normalization</h1>
+<pre class="r"><code># step2.data &lt;- rowwise_normalise(step1.data, quantil_cutoff = F, add.jitter = F, shift1 = FALSE)
+step2.data &lt;- rowshift(df = step1.data, batch = sa$PROTEOMICS_BATCH, ref = sa$NORMALIZATION_SAMPLE == T)</code></pre>
+<pre class="r"><code>plots_normalization(step2.data, sa, rm.samples)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-6-1.png" width="960" /><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-6-2.png" width="960" /></p>
+</div>
+<div id="step-3-between-sample-normalisation" class="section level1">
+<h1>step 3 between sample normalisation</h1>
+<pre class="r"><code>step3.data &lt;- colwise_normalise(step2.data)</code></pre>
+<pre class="r"><code>plots_normalization(step3.data, sa, rm.samples)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-8-1.png" width="960" /><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-8-2.png" width="960" /></p>
+<pre class="r"><code># Save normalized data
+df &lt;- cbind(rownames(step3.data), step3.data)
+colnames(df)[1] &lt;- &quot;geneID&quot;
+# write_tsv(df, &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/proteomics_normalized_not_imputed.tsv&#39;)
+write_tsv(df,  snakemake@output$norm_data)</code></pre>
+</div>
+<div id="step-4-imputation" class="section level1">
+<h1>step 4 Imputation</h1>
+<pre class="r"><code>step4.data &lt;- impute_min(step2.data, sa)
+
+
+# Save imputed data
+# write_tsv(step4.data, &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/proteomics_normalized_imputed.tsv&#39;)
+write_tsv(step4.data,  snakemake@output$norm_imp_data)
+
+
+genes &lt;- step4.data$geneID
+step4.data &lt;- step4.data[ , -1]
+rownames(step4.data) &lt;- genes</code></pre>
+<pre class="r"><code>plots_normalization(step4.data, sa, rm.samples)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-10-1.png" width="960" /><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-10-2.png" width="960" /></p>
+</div>
+<div id="step-5-prepare-samples-for-limma-paper-cases" class="section level1">
+<h1>step 5 Prepare samples for LIMMA (paper cases)</h1>
+<pre class="r"><code>step5.data &lt;- step4.data
+
+sa_paper &lt;- sa[USE_FOR_PROTEOMICS_PAPER == T]
+
+#Generate matrix, subset samples
+mat_norm_prot_zero &lt;- as.matrix(step5.data)
+mat_norm_prot_zero &lt;- mat_norm_prot_zero[,colnames(mat_norm_prot_zero) %in% sa_paper$SAMPLE_ID ]
+dim(mat_norm_prot_zero)</code></pre>
+<pre><code>## [1] 9270  147</code></pre>
+<pre class="r"><code>#mat_norm_prot_zero[1:5, 1:5]
+
+
+## Filter data - removes corrupted samples
+# use only samples with less than 30% of NA or 0 
+sampleZeroFreq &lt;- apply(mat_norm_prot_zero,2,function(x){ sum(x == 0)/length(x) })
+#table(round(sampleZeroFreq, 3))
+mat_norm_prot_zero &lt;- mat_norm_prot_zero[, sampleZeroFreq &lt; 0.3] 
+dim(mat_norm_prot_zero)</code></pre>
+<pre><code>## [1] 9270  147</code></pre>
+<pre class="r"><code>## Filter data - removes proteins with too many NAs
+# use only genes expressed in 80% of samples
+protZeroFreq &lt;- apply(mat_norm_prot_zero,1,function(x){ sum(x == 0)/length(x) })
+table(round(protZeroFreq, 3))</code></pre>
+<pre><code>## 
+##     0 0.007 0.014  0.02 0.027 0.034 0.041 0.048 0.054 0.061 0.068 0.075 0.082 0.088 0.095 0.102 0.109 0.116 0.122 0.129 
+##  5339     2     1     5    55    69    12    64   363     6     1    11    47    61    23    49   161    14     6    13 
+## 0.136 0.143  0.15 0.156 0.163  0.17 0.177 0.184  0.19 0.197 0.204 0.211 0.218 0.224 0.231 0.238 0.245 0.252 0.259 0.265 
+##    45    44    24    38    86    21     9    13    42    60    23    43    35    12     8    20    31    40    22    28 
+## 0.272 0.279 0.286 0.293 0.299 0.306 0.313  0.32 0.327 0.333  0.34 0.347 0.354 0.361 0.367 0.374 0.381 0.388 0.395 0.401 
+##    35    18    13    32    35    37    11    24    29    14    11    35    30    26    19    26    19    18    20    30 
+## 0.408 0.415 0.422 0.429 0.435 0.442 0.449 0.456 0.463 0.469 0.476 0.483  0.49 0.497 0.503  0.51 0.517 0.524 0.531 0.537 
+##    25    19    27    16    19    18    19    26    19    21    21    11    22    16    28    16    18    20    25    15 
+## 0.544 0.551 0.558 0.565 0.571 0.578 0.585 0.592 0.599 0.605 0.612 0.619 0.626 0.633 0.639 0.646 0.653  0.66 0.667 0.673 
+##    18    29    20    15    16    18    17    21    13    21    19    29    21    22    29    12    21    16    20    16 
+##  0.68 0.687 0.694 0.701 0.707 0.714 0.721 0.728 0.735 0.741 0.748 0.755 0.762 0.769 0.776 0.782 0.789 0.796 0.803  0.81 
+##    21    28    30    19    22    18    16    18    22    21    34    10    19    14    15    23    28    36    46    17 
+## 0.816 0.823  0.83 0.837 0.844  0.85 0.857 0.864 0.871 0.878 0.884 0.891 0.898 0.905 0.912 0.918 0.925 0.932 0.939 0.946 
+##    19    16    10    35    12    37    25    30    12    10    15    64    29    20    24    38    11     7    15    59 
+## 0.952 0.959 0.966 0.973 0.986     1 
+##    14    18    21    27     4    19</code></pre>
+<pre class="r"><code>mat_norm_prot_zero &lt;- mat_norm_prot_zero[protZeroFreq &lt; 0.86,]#
+dim(mat_norm_prot_zero)</code></pre>
+<pre><code>## [1] 8833  147</code></pre>
+<pre class="r"><code>norm_prot_zero &lt;- as.data.frame(mat_norm_prot_zero)
+
+
+step5.data &lt;- cbind(as.data.frame(rownames(norm_prot_zero)), norm_prot_zero)
+setnames(step5.data, &quot;rownames(norm_prot_zero)&quot;, &quot;geneID&quot;)
+
+
+
+# Write data
+write_tsv(step5.data,  snakemake@output$limma_data)
+# write_tsv(step5.data, &#39;/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/limma_data.tsv&#39;)
+
+step5.data$geneID &lt;- NULL</code></pre>
+<pre class="r"><code>plots_normalization(step5.data, sa, rm.samples)</code></pre>
+<p><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-12-1.png" width="960" /><img src="Scripts_MultiOmics_Proteomics_Aberrant_Expression_LIMMA_batch_normalization_files/figure-html/unnamed-chunk-12-2.png" width="960" /></p>
+</div>
+
+<div id="rmd-source-code">IyctLS0KIycgdGl0bGU6IFByb3Rlb21pY3MgZGF0YSBub3JtYWxpemF0aW9uIGFuZCBwcmVwYXJhdGlvbiBmb3IgbGltbWEgICAgICAgCiMnIGF1dGhvcjogc21pcm5vdmQsIENoZW4gTWVuZwojJyB3YjoKIycgIGlucHV0OgojJyAgLSBzYW1wbGVfYW5ub3RhdGlvbjogJ2BzbSBjb25maWdbIkFOTk9UQVRJT04iXWAnCiMnICAtIHJhd19wcm90OiAnYHNtIGNvbmZpZ1siUkFXX1Byb3RlaW4iXWAnCiMnICBvdXRwdXQ6CiMnICAtIG5vcm1fZGF0YTogJ2BzbSBjb25maWdbIlBST0NfREFUQSJdICsgIi9saW1tYS9wcm90ZW9taWNzX25vcm1hbGl6ZWRfbm90X2ltcHV0ZWQudHN2ImAnCiMnICAtIG5vcm1faW1wX2RhdGE6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvbGltbWEvcHJvdGVvbWljc19ub3JtYWxpemVkX2ltcHV0ZWQudHN2ImAnCiMnICAtIGxpbW1hX2RhdGE6ICdgc20gY29uZmlnWyJQUk9DX0RBVEEiXSArICIvbGltbWEvbGltbWFfZGF0YS50c3YiYCcKIycgb3V0cHV0OiAKIycgICBodG1sX2RvY3VtZW50OgojJyAgICBjb2RlX2ZvbGRpbmc6IGhpZGUKIycgICAgY29kZV9kb3dubG9hZDogVFJVRQojJy0tLQoKIyBzb3VyY2UoInNyYy9jb25maWcuUiIpCgojbG9hZCBmdW5jdGlvbnMKc291cmNlKCJzcmMvZnVuY3Rpb25zL0xJTU1BL2xpbW1hX2Z1bmN0aW9ucy5SIikKCgojIFJFQUQgQU5OT1RBVElPTgojIHNhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19hbm5vdGF0aW9uLnRzdicpCnNhIDwtIGZyZWFkKHNuYWtlbWFrZUBpbnB1dCRzYW1wbGVfYW5ub3RhdGlvbikKCgoKCiMnICMgc3RlcCAxIHJlYWQgYW5kIGludmVzdGlnYXRlIGRhdGEKc3RlcDEuZGF0YSA8LSBmcmVhZChzbmFrZW1ha2VAaW5wdXQkcmF3X3Byb3QpICU+JSBhcy5kYXRhLmZyYW1lKCkKIyBzdGVwMS5kYXRhIDwtIGZyZWFkKCcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcmF3X2RhdGEvcHJvdGVvbWljc19ub3Rfbm9ybWFsaXplZC50c3YnKSAlPiUgYXMuZGF0YS5mcmFtZSgpCgpyb3duYW1lcyhzdGVwMS5kYXRhKSA8LSBzdGVwMS5kYXRhJGdlbmVJRApzdGVwMS5kYXRhJGdlbmVJRCA8LSBOVUxMCgojKyBmaWcud2lkdGg9MTAsIGZpZy5oZWlnaHQ9MTAKcGxvdHNfbm9ybWFsaXphdGlvbihzdGVwMS5kYXRhLCBzYSkKCgojIGJhcnBsb3RzCmRmeCA8LSBkYXRhLnRhYmxlKCBTQU1QTEVfSUQgPSByb3duYW1lcyh0KHN0ZXAxLmRhdGEpKSAsIFNVTV9JTlQgPSByb3dTdW1zKHQoc3RlcDEuZGF0YSkpICkKZGZ4IDwtIG1lcmdlKHNhWyAsLihTQU1QTEVfSUQsIFBST1RFT01JQ1NfQkFUQ0gsIEJBVENIX1JVTiwgSU5TVFJVTUVOVCldLCBkZngsIGJ5ID0gIlNBTVBMRV9JRCIgKQpkZnggPC0gZGZ4W29yZGVyKEJBVENIX1JVTildCgojKyBmaWcud2lkdGg9MTIsIGZpZy5oZWlnaHQ9MTAKZ2dwbG90KGRmeCwgYWVzKFNBTVBMRV9JRCAsIFNVTV9JTlQpKSsKICBnZW9tX2NvbCgpKyAKICB0aGVtZV9idygpKyAKICB0aGVtZShheGlzLnRleHQueCA9IGVsZW1lbnRfdGV4dChhbmdsZSA9IDQ1LCBoanVzdCA9IDEpLAogICAgICAgIGF4aXMudGl0bGUueCA9IGVsZW1lbnRfYmxhbmsoKSkrCiAgZmFjZXRfd3JhcCh+UFJPVEVPTUlDU19CQVRDSCAsIHNjYWxlcyA9ICJmcmVlX3giLCBucm93ID0yICkKCnJtKGRmeCkKCiMgUmVtb3ZlIHNhbXBsZXMgYWZ0ZXIgaW5zcGVjdGlvbgpybS5zYW1wbGVzIDwtIGMoImZhaWxlZF9PTTU0ODYyIiwgImZhaWxlZF9PTTEyMTAyIikgCgoKIycgIyBzdGVwIDIgYmV0d2VlbiBydW4gbm9ybWFsaXphdGlvbgojIHN0ZXAyLmRhdGEgPC0gcm93d2lzZV9ub3JtYWxpc2Uoc3RlcDEuZGF0YSwgcXVhbnRpbF9jdXRvZmYgPSBGLCBhZGQuaml0dGVyID0gRiwgc2hpZnQxID0gRkFMU0UpCnN0ZXAyLmRhdGEgPC0gcm93c2hpZnQoZGYgPSBzdGVwMS5kYXRhLCBiYXRjaCA9IHNhJFBST1RFT01JQ1NfQkFUQ0gsIHJlZiA9IHNhJE5PUk1BTElaQVRJT05fU0FNUExFID09IFQpCiMrIGZpZy53aWR0aD0xMCwgZmlnLmhlaWdodD0xMApwbG90c19ub3JtYWxpemF0aW9uKHN0ZXAyLmRhdGEsIHNhLCBybS5zYW1wbGVzKQoKCiMnICMgc3RlcCAzIGJldHdlZW4gc2FtcGxlIG5vcm1hbGlzYXRpb24Kc3RlcDMuZGF0YSA8LSBjb2x3aXNlX25vcm1hbGlzZShzdGVwMi5kYXRhKQojKyBmaWcud2lkdGg9MTAsIGZpZy5oZWlnaHQ9MTAKcGxvdHNfbm9ybWFsaXphdGlvbihzdGVwMy5kYXRhLCBzYSwgcm0uc2FtcGxlcykKCiMgU2F2ZSBub3JtYWxpemVkIGRhdGEKZGYgPC0gY2JpbmQocm93bmFtZXMoc3RlcDMuZGF0YSksIHN0ZXAzLmRhdGEpCmNvbG5hbWVzKGRmKVsxXSA8LSAiZ2VuZUlEIgojIHdyaXRlX3RzdihkZiwgJy9zL3Byb2plY3QvbWl0b011bHRpT21pY3MvbXVsdGlPTUlDc19pbnRlZ3JhdGlvbi9wcm9jZXNzZWRfZGF0YS9saW1tYS9wcm90ZW9taWNzX25vcm1hbGl6ZWRfbm90X2ltcHV0ZWQudHN2JykKd3JpdGVfdHN2KGRmLCAgc25ha2VtYWtlQG91dHB1dCRub3JtX2RhdGEpCgoKCgojJyAjIHN0ZXAgNCBJbXB1dGF0aW9uIApzdGVwNC5kYXRhIDwtIGltcHV0ZV9taW4oc3RlcDIuZGF0YSwgc2EpCgoKIyBTYXZlIGltcHV0ZWQgZGF0YQojIHdyaXRlX3RzdihzdGVwNC5kYXRhLCAnL3MvcHJvamVjdC9taXRvTXVsdGlPbWljcy9tdWx0aU9NSUNzX2ludGVncmF0aW9uL3Byb2Nlc3NlZF9kYXRhL2xpbW1hL3Byb3Rlb21pY3Nfbm9ybWFsaXplZF9pbXB1dGVkLnRzdicpCndyaXRlX3RzdihzdGVwNC5kYXRhLCAgc25ha2VtYWtlQG91dHB1dCRub3JtX2ltcF9kYXRhKQoKCmdlbmVzIDwtIHN0ZXA0LmRhdGEkZ2VuZUlECnN0ZXA0LmRhdGEgPC0gc3RlcDQuZGF0YVsgLCAtMV0Kcm93bmFtZXMoc3RlcDQuZGF0YSkgPC0gZ2VuZXMKIysgZmlnLndpZHRoPTEwLCBmaWcuaGVpZ2h0PTEwCnBsb3RzX25vcm1hbGl6YXRpb24oc3RlcDQuZGF0YSwgc2EsIHJtLnNhbXBsZXMpCgoKCgoKIycgIyBzdGVwIDUgUHJlcGFyZSBzYW1wbGVzIGZvciBMSU1NQSAocGFwZXIgY2FzZXMpCnN0ZXA1LmRhdGEgPC0gc3RlcDQuZGF0YQoKc2FfcGFwZXIgPC0gc2FbVVNFX0ZPUl9QUk9URU9NSUNTX1BBUEVSID09IFRdCgojR2VuZXJhdGUgbWF0cml4LCBzdWJzZXQgc2FtcGxlcwptYXRfbm9ybV9wcm90X3plcm8gPC0gYXMubWF0cml4KHN0ZXA1LmRhdGEpCm1hdF9ub3JtX3Byb3RfemVybyA8LSBtYXRfbm9ybV9wcm90X3plcm9bLGNvbG5hbWVzKG1hdF9ub3JtX3Byb3RfemVybykgJWluJSBzYV9wYXBlciRTQU1QTEVfSUQgXQpkaW0obWF0X25vcm1fcHJvdF96ZXJvKQojbWF0X25vcm1fcHJvdF96ZXJvWzE6NSwgMTo1XQoKCiMjIEZpbHRlciBkYXRhIC0gcmVtb3ZlcyBjb3JydXB0ZWQgc2FtcGxlcwojIHVzZSBvbmx5IHNhbXBsZXMgd2l0aCBsZXNzIHRoYW4gMzAlIG9mIE5BIG9yIDAgCnNhbXBsZVplcm9GcmVxIDwtIGFwcGx5KG1hdF9ub3JtX3Byb3RfemVybywyLGZ1bmN0aW9uKHgpeyBzdW0oeCA9PSAwKS9sZW5ndGgoeCkgfSkKI3RhYmxlKHJvdW5kKHNhbXBsZVplcm9GcmVxLCAzKSkKbWF0X25vcm1fcHJvdF96ZXJvIDwtIG1hdF9ub3JtX3Byb3RfemVyb1ssIHNhbXBsZVplcm9GcmVxIDwgMC4zXSAKZGltKG1hdF9ub3JtX3Byb3RfemVybykKCgojIyBGaWx0ZXIgZGF0YSAtIHJlbW92ZXMgcHJvdGVpbnMgd2l0aCB0b28gbWFueSBOQXMKIyB1c2Ugb25seSBnZW5lcyBleHByZXNzZWQgaW4gODAlIG9mIHNhbXBsZXMKcHJvdFplcm9GcmVxIDwtIGFwcGx5KG1hdF9ub3JtX3Byb3RfemVybywxLGZ1bmN0aW9uKHgpeyBzdW0oeCA9PSAwKS9sZW5ndGgoeCkgfSkKdGFibGUocm91bmQocHJvdFplcm9GcmVxLCAzKSkKbWF0X25vcm1fcHJvdF96ZXJvIDwtIG1hdF9ub3JtX3Byb3RfemVyb1twcm90WmVyb0ZyZXEgPCAwLjg2LF0jCmRpbShtYXRfbm9ybV9wcm90X3plcm8pCm5vcm1fcHJvdF96ZXJvIDwtIGFzLmRhdGEuZnJhbWUobWF0X25vcm1fcHJvdF96ZXJvKQoKCnN0ZXA1LmRhdGEgPC0gY2JpbmQoYXMuZGF0YS5mcmFtZShyb3duYW1lcyhub3JtX3Byb3RfemVybykpLCBub3JtX3Byb3RfemVybykKc2V0bmFtZXMoc3RlcDUuZGF0YSwgInJvd25hbWVzKG5vcm1fcHJvdF96ZXJvKSIsICJnZW5lSUQiKQoKCgojIFdyaXRlIGRhdGEKd3JpdGVfdHN2KHN0ZXA1LmRhdGEsICBzbmFrZW1ha2VAb3V0cHV0JGxpbW1hX2RhdGEpCiMgd3JpdGVfdHN2KHN0ZXA1LmRhdGEsICcvcy9wcm9qZWN0L21pdG9NdWx0aU9taWNzL211bHRpT01JQ3NfaW50ZWdyYXRpb24vcHJvY2Vzc2VkX2RhdGEvbGltbWEvbGltbWFfZGF0YS50c3YnKQoKc3RlcDUuZGF0YSRnZW5lSUQgPC0gTlVMTAojKyBmaWcud2lkdGg9MTAsIGZpZy5oZWlnaHQ9MTAKcGxvdHNfbm9ybWFsaXphdGlvbihzdGVwNS5kYXRhLCBzYSwgcm0uc2FtcGxlcykK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("batch_normalization.R");
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
