@@ -16,7 +16,7 @@ This project is setup as a [wBuild workflow](https://github.com/gagneurlab/wBuil
 
 ## Data and prerequisites 
 
-This project depends on the packages `wBuild` and `PROTRIDER`
+This project depends on the packages `wBuild` and `PROTRIDER`, developed by [Gagneur Lab](https://github.com/gagneurlab) 
 
 The pipeline starts with the series of files available via [Zenodo](https://zenodo.org/record/4501904): `DOI:10.5281/zenodo.4501904`
 
@@ -56,7 +56,7 @@ and install wbuild using pip by running.
 
 ```
 pip install wBuild
-wBuild init
+wbuild init
 ```
 
 Since `wBuild init` will reset the current `Snakefile`, ` readme.md`, and `wbuild.yaml` we have to revert them again with git.

@@ -1,6 +1,6 @@
 #'---
 #' title: Aberrant protein expression with PROTRIDER
-#' author: loipfins, smirnovd
+#' author: loipfins
 #' wb:
 #'  input:
 #'  - protrider_annotation: '`sm config["PROC_DATA"] + "/protrider/protrider_annotation.tsv"`'

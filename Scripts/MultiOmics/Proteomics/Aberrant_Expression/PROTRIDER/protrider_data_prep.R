@@ -1,6 +1,6 @@
 #'---
 #' title: Proteomics data preparation with imputation for protrider      
-#' author: smirnovd
+#' author: loipfins
 #' wb:
 #'  input:
 #'  - sa: '`sm config["ANNOTATION"]`'

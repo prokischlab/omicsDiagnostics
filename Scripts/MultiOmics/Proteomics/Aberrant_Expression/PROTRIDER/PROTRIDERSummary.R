@@ -1,6 +1,6 @@
 #'---
 #' title: PROTRIDER Summary
-#' author: smirnovd
+#' author: loipfins
 #' wb:
 #'  input:
 #'  - protrider_results: '`sm config["PROC_DATA"] + "/protrider/PROTRIDER_results.rds"`'
