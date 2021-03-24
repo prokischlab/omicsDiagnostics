@@ -1,6 +1,6 @@
 # Integration of proteomics with genomics and transcriptomics increases the diagnosis rate of Mendelian disorders
 
-This project contains different scripts to automatize and visualize analysis performed for the "Integration of proteomics with genomics and transcriptomics increases the diagnosis rate of Mendelian disorders" [paper]().
+This project contains different scripts to automatize and visualize analysis performed for the "Integration of proteomics with genomics and transcriptomics increases the diagnosis rate of Mendelian disorders" [paper](https://www.medrxiv.org/content/10.1101/2021.03.09.21253187v1).
 
 [Webserver](https://prokischlab.github.io/omicsDiagnostics/#readme.html), produced as one of the outputs of the pipeline. 
 
@@ -48,7 +48,7 @@ First download the repo and its dependencies:
 
 ```
 # analysis code
-git clone https://github.com/gagneurlab/omicsDiagnostics
+git clone https://github.com/prokischlab/omicsDiagnostics
 cd omicsDiagnostics
 ```
 
