@@ -1,6 +1,6 @@
 #'---
 #' title: Diagnosed cases 
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -18,14 +18,12 @@ source(snakemake@input$config)
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 sa <- sa[!is.na(KNOWN_MUTATION) & KNOWN_MUTATION != "CONTROL", 1:4]
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 # Subset diagnosed cases and candidates

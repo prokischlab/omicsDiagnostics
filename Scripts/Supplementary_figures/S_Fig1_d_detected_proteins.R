@@ -17,14 +17,12 @@
 source(snakemake@input$config)
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 
 # Read raw protein matrix
 raw_prot <- fread(snakemake@input$raw_prot)
-# raw_prot <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv')
 dim(raw_prot)
 
 # Subset for the paper cases
@@ -64,11 +62,11 @@ dt2plot <- melt(1:2, value.name="NumProteins", variable.name="Variable",
                     NumShared=shared_num_detected,
                     NumCum=cum_num_detected
                 ))
-
+dt2plot <- as.data.frame(dt2plot)
 # plot data
 s_fig <- ggplot(dt2plot, aes(rank, NumProteins, color=Variable)) +
     geom_line() +
-    ylim(c(0, max(dt2plot[,NumProteins]))) +
+   ylim(c(0, max(dt2plot$NumProteins))) +
     ylab("# of proteins") +
     xlab("# of samples")+
     ggtitle("detected proteins, cummulative, per sample, shared")+
@@ -85,7 +83,7 @@ s_fig <- ggplot(dt2plot, aes(rank, NumProteins, color=Variable)) +
 s_fig
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig1_d.pdf",  
+pdf(snakemake@output$fig, 
     width = 3, height =6,  useDingbats=FALSE )
 print(s_fig) 
 dev.off()

@@ -1,6 +1,6 @@
 #'---
 #' title: Supplementary Figure 2c, proportion of outliers with rare variants
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - enrichments_proportions: '`sm config["RAW_DATA"] + "/enrichment_proportions_variants.tsv"`'
@@ -17,7 +17,6 @@ source('src/config.R')
 
 # Read combined file produced on full variant table
 px <- fread(snakemake@input$enrichments_proportions)
-# px <- fread("/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/enrichment_proportions_variants.tsv")
 px <- px[up_down_outlier %in% c("RNA_underexpression", "Protein_underexpression", "RNA_Protein_underexpression", "non_outlier")]
 px <- px[, c("up_down_outlier", "var_type", "prop", "total", "type")]
 
@@ -81,7 +80,7 @@ s_fig <- ggplot(px[ type != "pb"], aes(outlier_class_label, prop)) +
 #+ fig.width=7.5, fig.height=3
 s_fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig2_c.pdf",  
+pdf(snakemake@output$fig, 
     width = 7.5, height = 3,  useDingbats=FALSE )
 print(s_fig) 
 dev.off()

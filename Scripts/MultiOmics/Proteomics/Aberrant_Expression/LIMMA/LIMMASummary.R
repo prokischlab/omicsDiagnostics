@@ -1,6 +1,6 @@
 #'---
 #' title: LIMMA Summary   
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - results: '`sm config["PROC_DATA"] + "/limma/LIMMA_results.rds"`'

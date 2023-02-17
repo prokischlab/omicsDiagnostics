@@ -1,6 +1,6 @@
 #'---
 #' title: Disease gene coverage by proteomics
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - gencode_annotation: '`sm config["DATASETS"] + "/gene_annotation_v29.tsv"`'
@@ -21,12 +21,10 @@ source('src/config.R')
 
 
 # Load disease genes table
-# dis_genes <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv')
 dis_genes <- fread(snakemake@input$disease_genes)
 
 
 # Get all protein coding genes
-# genecode_v29 <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv')
 genecode_v29 <- fread(snakemake@input$gencode_annotation)
 genecode_v29[, geneID := toupper(gene_name_unique)]
 protein_coding <- genecode_v29[gene_type == 'protein_coding']
@@ -52,7 +50,6 @@ dis_genes <- dis_genes[DISEASE %in% c("Protein coding", "MITO", "Neuromuscular",
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
@@ -60,7 +57,6 @@ sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read protein matrix 
 proteomics <- fread(snakemake@input$norm_data)
-# proteomics <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/proteomics_normalized_not_imputed.tsv')
 colnames(proteomics)[1] <-  "geneID"
 
 proteomics_detected = melt(proteomics, id.vars= "geneID") %>% as.data.table()
@@ -76,7 +72,6 @@ proteomics_detected[, all :=  N == max(N)]
 proteomics_detected$N <- NULL
 
 
-# write_tsv(proteomics_detected, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/detected_proteins.tsv')
 write_tsv(proteomics_detected,  snakemake@output$detected_proteins)
 
 
@@ -123,6 +118,5 @@ ggplot(detected_fib, aes(dis_n, prop)) +
         plot.margin = margin(0, 0, 0, 0, "cm")) 
 
 
-# write_tsv(detected_fib, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/protein_coverage.tsv')
 write_tsv(detected_fib,  snakemake@output$protein_coverage)
 

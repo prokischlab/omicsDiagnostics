@@ -19,13 +19,12 @@ source(snakemake@input$config)
 
 
 # READ ANNOTATION
-#sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sa)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Load patient's HPO 
 pat_hpo <- fread(snakemake@input$patient_hpo)
-#pat_hpo <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/Patient_HPO_phenotypes.tsv')
+
 
 pat_hpo <- pat_hpo[, c("SAMPLE_ID", "HPO_ID")]
 pat_hpo <-pat_hpo[!duplicated(pat_hpo )]
@@ -108,6 +107,5 @@ ggplot(os)+
 
 
 
-#write_tsv(pat_hpo,  '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_HPO_Gene_mapping.tsv')
 write_tsv(pat_hpo,  snakemake@output$hpo_match)
 

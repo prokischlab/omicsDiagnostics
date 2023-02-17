@@ -1,6 +1,6 @@
 #'---
 #' title: Supplementary Figure 1e gene set coverage by GTeX proteomics
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - config: 'src/config.R'
@@ -21,13 +21,11 @@ source(snakemake@input$config)
 
 
 # Load disease genes table
-# dis_genes <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv')
 dis_genes <- fread(snakemake@input$disease_genes)
 
 
 
 # Get all protein coding genes
-# genecode_v29 <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv')
 genecode_v29 <- fread(snakemake@input$gencode_annotation)
 genecode_v29[, geneID := toupper(gene_name_unique)]
 protein_coding <- genecode_v29[gene_type == 'protein_coding']
@@ -50,18 +48,15 @@ rm(protein_coding)
 
 
 # Download data
-# download.file(destfile= paste0("/s/project/mitoMultiOmics/multiOMICs_integration/datasets", "/Table_S1_gene_info_at_protein_level.xlsx" ), url= 'https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx')
 download.file(destfile= paste0(snakemake@input$datasets, "/Table_S1_gene_info_at_protein_level.xlsx" ), url= 'https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx')
 
 
 # Load GTEx annotation
-# sa_gtex <- read_excel(paste0("/s/project/mitoMultiOmics/multiOMICs_integration/datasets", "/Table_S1_gene_info_at_protein_level.xlsx" ), sheet = 2) %>% as.data.table()
 sa_gtex <- read_excel(paste0(snakemake@input$datasets, "/Table_S1_gene_info_at_protein_level.xlsx" ), sheet = 2) %>% as.data.table()
 sa_gtex[, proteome_ID:= paste0("Run", Run, "_Tag", Tag)]
 
 
 # Load GTEx proteomics data
-# gtex <- read_excel(paste0("/s/project/mitoMultiOmics/multiOMICs_integration/datasets", "/Table_S1_gene_info_at_protein_level.xlsx" ), sheet = 6)
 gtex <- read_excel(paste0(snakemake@input$datasets, "/Table_S1_gene_info_at_protein_level.xlsx" ), sheet = 6)
 gtex <- gtex[-c(1, 2), -1] 
 colnames(gtex)[1] <- "gene_id"
@@ -142,7 +137,8 @@ gtex_all$dis_n <- factor(gtex_all$dis_n, levels = c("Protein coding\n(20336)",
                                                     "Neurology\n(284)", 
                                                     "Hematology\n(50)",
                                                     "Ophthalmology\n(366)",
-                                                    "OMIM\n(4354)"))
+                                                    "OMIM\n(4354)", 
+                                                    "MITOCARTA\n(1136)"))
 
 gtex_all[ , CAT:= "No" ]
 gtex_all[TISSUE %in% c("Muscle", "Skin") , CAT:= "Yes" ]
@@ -171,10 +167,12 @@ s_fig <- ggplot(gtex_all, aes(dis_n, prop)) +
         axis.text.y = element_text(face="bold", size=12, hjust = 0.5))
 
 
-#s_fig
+# s_fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig1_e.pdf",  
+pdf(snakemake@output$fig, 
     width = 10, height = 6,  useDingbats=FALSE )
 print(s_fig) 
 dev.off()
+
+
 

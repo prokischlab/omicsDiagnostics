@@ -1,6 +1,6 @@
 #'---
 #' title: Supplementary Fig 3 
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - config: 'src/config.R'
@@ -23,7 +23,6 @@ source("src/functions/plots.R")
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
@@ -34,7 +33,6 @@ sa <- sa[ !is.na(KNOWN_MUTATION) & CATEGORY == "III"]
 sa <- sa[ !(KNOWN_MUTATION %in% c("LIG3", "MRPL38", "MORC2", "DARS2", "MRPS25", "EPG5") )]
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 # Subset diagnosed cases and candidates
 rp <- rp[SAMPLE_ID %in% sa$SAMPLE_ID]
@@ -71,7 +69,7 @@ s_fig <- plot_OM87369 + plot_OM34814 + plot_OM38813 +  plot_OM21111 + plot_OM567
 s_fig
 
 
-pdf( snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig3.pdf",   # 
+pdf( snakemake@output$fig, 
     useDingbats=FALSE, width = 13, height =16,  ) # paper = "a4"
 s_fig
 dev.off()

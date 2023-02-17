@@ -1,6 +1,6 @@
 #'---
 #' title: OUTRIDER Summary
-#' author: Michaela Mueller, vyepez
+#' author: Michaela Mueller, Vicente Yepez
 #' wb:
 #'  input:
 #'   - ods: '`sm config["PROC_DATA"] + "/outrider/ods.Rds"`'
@@ -35,7 +35,6 @@ plotAberrantPerSample(ods)
 ##################
 #Load OUTRIDER results 
 ##################
-# rna <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/OUTRIDER_results.rds') %>% as.data.table()
 rna <- readRDS(snakemake@input$outrider) %>% as.data.table()
 
 #' ### How many samples with at least one outlier gene

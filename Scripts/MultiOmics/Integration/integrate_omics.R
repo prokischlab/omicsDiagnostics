@@ -19,12 +19,6 @@
 #'---
 
 
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
-# rna <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/OUTRIDER_results.rds") %>% as.data.table()
-# prot <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds") %>% as.data.table()
-# phenotype <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_phenotype_data.tsv')
-# var_hpo <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/patient_variant_hpo_data.tsv')
-
 
 # Load config and functions
 source(snakemake@input$config)
@@ -60,7 +54,6 @@ patient_omics <- combine_omics(annotation = sa,
 
 # Save full results
 saveRDS(patient_omics, snakemake@output$patient_omics_full)
-# saveRDS(patient_omics, "/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS")
 
 
 
@@ -79,7 +72,6 @@ patient_omics <- patient_omics[ , c("SAMPLE_ID", "geneID", "causal_gene",
 
 # Save results
 saveRDS(patient_omics, snakemake@output$patient_omics)
-# saveRDS(patient_omics, "/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS")
 
 
 

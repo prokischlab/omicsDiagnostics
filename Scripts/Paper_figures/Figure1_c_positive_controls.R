@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 1c Cases with published pathogenic variants
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -23,7 +23,6 @@ dev.off()
 
 ##########################################################
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
@@ -88,7 +87,7 @@ fig <- ggplot(rp, aes(geneID,  PROTEIN_ZSCORE ))+
 fig
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig1_c.pdf",  
+pdf(snakemake@output$fig, 
     width = 4, height = 3,  useDingbats=FALSE )
 print(fig) 
 dev.off()

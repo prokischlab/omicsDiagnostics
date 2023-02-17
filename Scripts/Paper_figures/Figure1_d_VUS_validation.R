@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 1d VUS validation
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -23,12 +23,10 @@ dev.off()
 
 ##########################################################
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 sa$sample_gene <- paste0(sa$SAMPLE_ID, "_", sa$KNOWN_MUTATION)
@@ -87,7 +85,7 @@ fig <- ggplot(rp, aes(geneID,  PROTEIN_ZSCORE ))+
 fig
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig1_d.pdf",  
+pdf(snakemake@output$fig,  
     width = 4, height = 3,  useDingbats=FALSE )
 print(fig) 
 dev.off()

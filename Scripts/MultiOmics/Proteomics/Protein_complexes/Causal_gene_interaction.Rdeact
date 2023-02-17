@@ -20,14 +20,14 @@ source("src/functions/LIMMA/limma_functions.R")
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
+
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 sa[ , sample_gene := paste0(SAMPLE_ID, "_", KNOWN_MUTATION )]
 
 # Read protein outlier results
 prot <- readRDS(snakemake@input$protrider) %>% as.data.table()
-# prot <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds') %>% as.data.table()
+
 prot[ , sample_gene := paste0(SAMPLE_ID, "_", geneID )]
 
 prot[, causal_gene := sample_gene %in% sa$sample_gene]

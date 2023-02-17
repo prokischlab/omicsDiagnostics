@@ -33,7 +33,7 @@ library(RColorBrewer)
 
 
 # Read annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/protrider_annotation.tsv') %>% as.data.frame()
+
 sa <- fread(snakemake@input$protrider_annotation) %>% as.data.frame()
 rownames(sa) <- sa$SAMPLE_ID
 sa$PROTEOMICS_BATCH <- as.character(sa$PROTEOMICS_BATCH)
@@ -44,7 +44,6 @@ sa$INSTRUMENT <- as.character(sa$INSTRUMENT)
 
 # load protrider summarized experiment
 se <- readRDS(snakemake@input$protrider_object)
-# se <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/protrider_obj.rds')
 
 
 Fig_S5a <- as.ggplot(pheatmap(cor(assays(se)$X, use="complete.obs"), 
@@ -439,7 +438,7 @@ Fig_S5
 
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig5.pdf",  
+pdf(snakemake@output$fig, 
     width = 24, height = 20,  useDingbats=FALSE )
 print(Fig_S5) 
 dev.off()

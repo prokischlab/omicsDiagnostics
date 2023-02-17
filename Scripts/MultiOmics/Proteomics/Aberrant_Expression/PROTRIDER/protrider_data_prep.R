@@ -1,6 +1,6 @@
 #'---
 #' title: Proteomics data preparation with imputation for protrider      
-#' author: loipfins
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - sa: '`sm config["ANNOTATION"]`'
@@ -19,7 +19,6 @@ source("src/functions/LIMMA/limma_functions.R")
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sa)
 
 
@@ -30,7 +29,6 @@ sa <- fread(snakemake@input$sa)
 
 #' READ Proteomics data
 raw_prot <- fread(snakemake@input$raw_prot) %>% as.data.frame()
-# raw_prot <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv') %>% as.data.frame()
 
 rownames(raw_prot) <- raw_prot$geneID
 raw_prot$geneID <- NULL
@@ -48,7 +46,6 @@ prot[ prot$geneID == "TASP1",  "OM30476"] <- 0
 
 
 # Save imputed data
-# write_tsv(prot, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/proteomics_imputed.tsv')
 write_tsv(prot,  snakemake@output$proteomics_imputed)
 
 
@@ -66,7 +63,6 @@ nrow(sa)
 
 # Save subset of the annotation
 write_tsv(sa,  snakemake@output$protrider_annotation)
-# write_tsv(sa, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/protrider_annotation.tsv')
 
 
 # Subset samples
@@ -115,7 +111,7 @@ colnames(protrider_data)[1] <- "geneID"
 
 # Save data ready for outrider2
 write_tsv(protrider_data,  snakemake@output$protrider_data)
-# write_tsv(protrider_data, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/protrider_data.tsv')
+
 
 
 # For py_outrider / outrider2
@@ -140,5 +136,4 @@ colnames(protrider_data_norm)[1] <- "SAMPLE_ID"
 
 # Save norm data
 write_tsv(protrider_data_norm,  snakemake@output$protrider_data_norm)
-# write_tsv(protrider_data_norm, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/protrider_data_norm_log.tsv')
 

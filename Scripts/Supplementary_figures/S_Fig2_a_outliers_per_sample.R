@@ -1,6 +1,6 @@
 #'---
 #' title: Supplementary Fig 2a outliers per sample 
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - config: 'src/config.R'
@@ -19,11 +19,6 @@
 # load config
 source(snakemake@input$config)
 
-
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
-# limma <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/LIMMA_results.rds') %>% as.data.table()
-# protr <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds") %>% as.data.table()
-# outrider <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/OUTRIDER_results.rds") %>% as.data.table()
 
 # Load sample annotation
 sa <- fread(snakemake@input$sample_annotation)
@@ -127,7 +122,7 @@ s_fig <- ggplot(os, aes(Rank , N, color = Method))+
 s_fig
 
 
-pdf(snakemake@output$fig, #"/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig2_a.pdf",  
+pdf(snakemake@output$fig, 
     width = 8, height =5,  useDingbats=FALSE )
 print(s_fig) 
 dev.off()

@@ -1,6 +1,6 @@
 #'---
 #' title: Proteomics data normalization and preparation for limma       
-#' author: smirnovd, Chen Meng
+#' author: Dmitrii Smirnov, Chen Meng
 #' wb:
 #'  input:
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
@@ -22,7 +22,6 @@ source("src/functions/LIMMA/limma_functions.R")
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 
 
@@ -30,7 +29,7 @@ sa <- fread(snakemake@input$sample_annotation)
 
 #' # step 1 read and investigate data
 step1.data <- fread(snakemake@input$raw_prot) %>% as.data.frame()
-# step1.data <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv') %>% as.data.frame()
+
 
 rownames(step1.data) <- step1.data$geneID
 step1.data$geneID <- NULL
@@ -73,7 +72,6 @@ plots_normalization(step3.data, sa, rm.samples)
 # Save normalized data
 df <- cbind(rownames(step3.data), step3.data)
 colnames(df)[1] <- "geneID"
-# write_tsv(df, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/proteomics_normalized_not_imputed.tsv')
 write_tsv(df,  snakemake@output$norm_data)
 
 
@@ -84,7 +82,6 @@ step4.data <- impute_min(step2.data, sa)
 
 
 # Save imputed data
-# write_tsv(step4.data, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/proteomics_normalized_imputed.tsv')
 write_tsv(step4.data,  snakemake@output$norm_imp_data)
 
 
@@ -134,7 +131,7 @@ setnames(step5.data, "rownames(norm_prot_zero)", "geneID")
 
 # Write data
 write_tsv(step5.data,  snakemake@output$limma_data)
-# write_tsv(step5.data, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/limma_data.tsv')
+
 
 step5.data$geneID <- NULL
 #+ fig.width=10, fig.height=10

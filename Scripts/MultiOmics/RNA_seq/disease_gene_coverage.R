@@ -1,6 +1,6 @@
 #'---
 #' title: Disease gene coverage by RNAseq
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - gencode_annotation: '`sm config["DATASETS"] + "/gene_annotation_v29.tsv"`'
@@ -21,12 +21,10 @@ source('src/config.R')
 
 
 # Load disease genes table
-# dis_genes <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv')
 dis_genes <- fread(snakemake@input$disease_genes)
 
 
 # Get all protein coding genes
-# genecode_v29 <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv')
 genecode_v29 <- fread(snakemake@input$gencode_annotation)
 genecode_v29[, geneID := toupper(gene_name_unique)]
 protein_coding <- genecode_v29[gene_type == 'protein_coding']
@@ -52,14 +50,12 @@ dis_genes <- dis_genes[DISEASE %in% c("Protein coding", "MITO", "Neuromuscular",
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 
 ### RNA unfiltered
 ods <- readRDS(snakemake@input$ods_unfiltered)
-# ods <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/ods_unfiltered.Rds")
 ods_100 <- OUTRIDER::filterExpression(ods, percentile = 0)   # detected in all
 ods_50 <- OUTRIDER::filterExpression(ods, percentile = 0.5)  # detected in 50%
 ods_once <- OUTRIDER::filterExpression(ods, percentile = 0.9999) # detected in 0,001% (once)
@@ -75,7 +71,6 @@ rnaseq[ , geneID := toupper(geneID)]
 rnaseq <- rnaseq[!duplicated(rnaseq)]
 
 
-# write_tsv(rnaseq, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/detected_transcripts.tsv')
 write_tsv(rnaseq,  snakemake@output$detected_transcripts)
 
 
@@ -125,7 +120,6 @@ ggplot(detected_fib, aes(dis_n, prop)) +
         axis.text.y = element_text(face="bold", size=12, hjust = 0.5),
         plot.margin = margin(0, 0, 0, 0, "cm")) 
 
-# write_tsv(detected_fib, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/rna_coverage.tsv')
 write_tsv(detected_fib,  snakemake@output$rna_coverage)
 
 

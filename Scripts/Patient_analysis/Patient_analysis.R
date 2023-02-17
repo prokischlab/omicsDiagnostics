@@ -1,6 +1,6 @@
 #'---
 #' title: Patient analysis 
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
@@ -21,8 +21,9 @@ source("src/config.R")
 # Load plotting functions
 source("src/functions/plots.R")
 
+
+
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 # Subset diagnosed cases and candidates
@@ -30,7 +31,6 @@ sa <- sa[ !is.na(KNOWN_MUTATION)]
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 # Subset diagnosed cases and candidates
 rp <- rp[SAMPLE_ID %in% sa$SAMPLE_ID]
@@ -40,7 +40,6 @@ rp <- rp[ outlier_class != 'non_outlier' | causal_gene == T]
 
 
 
-# complexes <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/Complex_outliers_LIMMA.rds") %>% as.data.table()
 complexes <- readRDS(snakemake@input$complex_results) %>% as.data.table()
 # Subset diagnosed cases and candidates
 complexes <- complexes[SAMPLE_ID %in% sa$SAMPLE_ID]
@@ -49,7 +48,6 @@ complexes <- complexes[SAMPLE_ID %in% sa$SAMPLE_ID]
 
 # Load patient's HPO 
 pat_hpo <- fread(snakemake@input$patient_hpo)
-# pat_hpo <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/Patient_HPO_phenotypes.tsv')
 
 # Subset diagnosed cases and candidates
 pat_hpo <- pat_hpo[SAMPLE_ID %in% sa$SAMPLE_ID, c("SAMPLE_ID", "HPO_term")]
@@ -57,7 +55,7 @@ pat_hpo <-pat_hpo[!duplicated(pat_hpo ),]
 
 # Load patient's affected organ systems
 patients <- fread(snakemake@input$patient_organ_syst)
-# patients <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_affected_organs.tsv')
+
 # Subset diagnosed cases and candidates
 patients <- patients[SAMPLE_ID %in% sa$SAMPLE_ID]
 

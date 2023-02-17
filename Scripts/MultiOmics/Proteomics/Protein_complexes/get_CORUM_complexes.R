@@ -1,6 +1,6 @@
 #'---
 #' title: Get protein complexes from CORUM 
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -37,7 +37,6 @@ paste("median number of subunits:", median( corum[ , .N, by = COMPLEX]$N) )
 paste("maximum number of subunits:", max( corum[ , .N, by = COMPLEX]$N) )
 
 write_tsv(corum,  snakemake@output$corum)
-# write_tsv(corum, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/CORUM.tsv')
 
 
 

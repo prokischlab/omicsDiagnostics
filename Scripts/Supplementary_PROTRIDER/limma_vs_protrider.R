@@ -22,7 +22,7 @@ source("src/functions/LIMMA/limma_functions.R")
 
 # Load sample annotation
 sa <- fread(snakemake@input$sample_annotation)
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
+
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 sa <- sa[!is.na(KNOWN_MUTATION)]
 sa[ , sample_gene := paste0(SAMPLE_ID, "_", KNOWN_MUTATION )]
@@ -30,7 +30,7 @@ sa[ , sample_gene := paste0(SAMPLE_ID, "_", KNOWN_MUTATION )]
 
 # Load LIMMA results
 limmar <- readRDS(snakemake@input$limma_results) %>% as.data.table()
-#limmar <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/LIMMA_results.rds") %>% as.data.table()
+
 # Remove TASP1 gene. This gene has a bad detection rate and was not detected in this sample. 
 # Intensity value was imputed.
 limmar <- limmar[!(SAMPLE_ID == "OM30476" & geneID == "TASP1") ]
@@ -39,7 +39,7 @@ limmar <- limmar[SAMPLE_ID %in% sa$SAMPLE_ID ]
 
 # Load PROTRIDER results
 protr <- readRDS(snakemake@input$protrider_results) %>% as.data.table()
-# protr <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds") %>% as.data.table()
+
 # Remove TASP1 gene. This gene has a bad detection rate and was not detected in this sample. 
 # Intensity value was imputed.
 protr <- protr[!(SAMPLE_ID == "OM30476" & geneID == "TASP1") ]

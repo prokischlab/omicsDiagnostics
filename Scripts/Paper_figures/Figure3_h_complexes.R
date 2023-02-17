@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 3h RCC analysis
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -18,12 +18,10 @@ source(snakemake@input$config)
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 # Read mito complexes 
-# compl <- fread("/s/project/mitoMultiOmics/multiOMICs_integration/datasets/HGNC_mito_groups.tsv")
 compl <- fread(snakemake@input$mito_groups)
 compl <- compl[ COMPLEX %in% c("mRibo", "RCCI", "RCCII", "RCCIII", "RCCIV", "RCCV"), ]
 compl[, gt := "nDNA-encoded"]
@@ -89,7 +87,7 @@ fig <- ggplot(rpx, aes(case_assay, mean_fold_change, fill = case_assay))+
 
 fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_h.pdf",  
+pdf(snakemake@output$fig, 
     width = 5, height =5,  useDingbats=FALSE )
 print(fig) 
 dev.off()

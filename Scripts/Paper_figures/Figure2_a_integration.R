@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 2a RNA vs protein integration all individuals
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -17,7 +17,6 @@ source(snakemake@input$config)
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
@@ -69,7 +68,7 @@ fig <- ggplot(data = rp[gene_detected == "RNA and protein detected"], aes(RNA_ZS
         plot.margin = margin(0, 0, 0, 0, "cm"))
 fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig2_a.pdf",  
+pdf(snakemake@output$fig,
     width = 7, height = 7,  useDingbats=FALSE )
 print(fig) 
 dev.off()

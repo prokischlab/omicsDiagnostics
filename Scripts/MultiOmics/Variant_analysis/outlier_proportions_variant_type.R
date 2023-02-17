@@ -19,7 +19,6 @@ source("src/functions/variant_enrichment.R")
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 # Subset cases with WES and RNA-seq data avaliable 
@@ -98,7 +97,6 @@ DT::datatable(os, caption = "Outlier counts",   escape = F)
 
 ####################
 pr <- fread(snakemake@input$enrichments_proportions)
-# pr <- fread("/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/enrichment_proportions_variants.tsv")
 pr <- pr[ type == "var_type"]
 
 #' ### Underexpression outliers

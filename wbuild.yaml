@@ -1,5 +1,5 @@
 ---
-webDir: /s/public_webshare/project/prokisch/omicsDiagnostics/
+webDir: Output/html
 projectTitle: omicsDiagnostics
 htmlOutputPath: Output/html
 scriptsPath: Scripts

@@ -19,12 +19,10 @@ source("src/functions/LIMMA/limma_functions.R")
 
 #' ## Results
 prot <- readRDS(snakemake@input$protrider_results_fib) %>% as.data.table()
-# prot <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/results_fib_all.rds') %>% as.data.table()
 prot$sample_gene <- paste0(prot$SAMPLE_ID, "_", prot$geneID)
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sa)
 sa$sample_gene <- paste0(sa$SAMPLE_ID, "_", sa$KNOWN_MUTATION)
 sa <- sa[SAMPLE_ID %in% unique(prot$SAMPLE_ID) ]

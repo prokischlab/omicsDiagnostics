@@ -1,6 +1,6 @@
 #'---
 #' title: PROTRIDER Summary
-#' author: loipfins
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - protrider_results: '`sm config["PROC_DATA"] + "/protrider/PROTRIDER_results.rds"`'
@@ -18,7 +18,6 @@ source("src/functions/LIMMA/limma_functions.R")
 
 #' ## Results
 prot <- readRDS(snakemake@input$protrider_results) %>% as.data.table()
-# prot <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/protrider/PROTRIDER_results.rds')
 
 
 #' Total number of outliers: 

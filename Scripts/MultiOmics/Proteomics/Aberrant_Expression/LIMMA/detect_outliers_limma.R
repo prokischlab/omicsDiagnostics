@@ -1,6 +1,6 @@
 #'---
 #' title: Aberrant protein expression with LIMMA
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - sa: '`sm config["ANNOTATION"]`'
@@ -18,7 +18,6 @@ source("src/functions/LIMMA/limma_functions.R")
 
 
 #Read proteomics data
-# limma_data <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/limma/limma_data.tsv') %>% as.data.frame()
 limma_data <- fread(snakemake@input$limma_data) %>% as.data.frame()
 
 genes <- limma_data$geneID
@@ -27,7 +26,6 @@ rownames(limma_data) <- genes
 dim(limma_data)
 
 #Read sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sa)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
@@ -68,7 +66,6 @@ prot <- prot[!is.na(PROTEIN_PVALUE)]
 
 # WRITE RESULTS
 saveRDS(prot,  snakemake@output$limma)
-# saveRDS(prot,  '/s/project/mitoMultiOmics/proteome_analysis/processed_data/limma/LIMMA_results.rds')
 
 
 

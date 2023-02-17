@@ -1,6 +1,6 @@
 #'---
 #' title: Aberrantly expressed HGNC mito groups PROTRIDER
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -20,19 +20,17 @@ source("src/functions/LIMMA/limma_functions.R")
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read protein outlier results
 prot <- readRDS(snakemake@input$protrider) %>% as.data.table()
-# prot <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds') %>% as.data.table()
+
 
 # Subset necessary columns 
 prot <- prot[,  c("SAMPLE_ID", "geneID","PROTEIN_LOG2FC")]
 
 # Read HGNC mito groups
-# compl <- fread("/s/project/mitoMultiOmics/multiOMICs_integration/datasets/HGNC_mito_groups.tsv")
 compl <- fread(snakemake@input$mito_groups)
 
 setnames(compl, c("Group_name", "COMPLEX"), c("COMPLEX", "COMPLEX2") )

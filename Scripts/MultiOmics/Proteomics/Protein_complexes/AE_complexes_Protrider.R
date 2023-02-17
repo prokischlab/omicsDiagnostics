@@ -1,6 +1,6 @@
 #'---
 #' title: Aberrantly expressed CORUM complexes PROTRIDER
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -22,19 +22,17 @@ source(snakemake@input$config)
 source("src/functions/LIMMA/limma_functions.R")
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read protein outlier results
 prot <- readRDS(snakemake@input$protrider) %>% as.data.table()
-# prot <- readRDS('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/protrider/PROTRIDER_results.rds') %>% as.data.table()
+
 
 # Subset necessary columns 
 prot <- prot[,  c("SAMPLE_ID", "geneID","PROTEIN_LOG2FC")]
 
 # Read CORUM complexes
-#corum <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/CORUM.tsv')
 corum <- fread(snakemake@input$corum)
 
 paste("Number of unique protein complexes:", uniqueN(corum$COMPLEX) )
@@ -120,7 +118,6 @@ corum_annotate <- corum_annotate[ !duplicated(corum_annotate$ComplexName) ]
 res <- merge(complex, corum_annotate, by.x= "COMPLEX", by.y = "ComplexName", all.x = T)
 res <- res[order(SAMPLE_ID)]
 
-# saveRDS(res, "/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/Complex_outliers_PROTRIDER.rds")
 saveRDS(res, snakemake@output$complex_results)
 
 
@@ -170,5 +167,4 @@ subunit$Aberrant_complexes <- as.character(subunit$Aberrant_complexes)
 
 
 write_tsv(subunit,  snakemake@output$subunits_result)
-#write_tsv(subunit, '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/aberrant_complex_subunits_PROTRIDER.tsv')
 

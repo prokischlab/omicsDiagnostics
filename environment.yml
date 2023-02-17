@@ -10,8 +10,7 @@ dependencies:
   - pip
   - pandas==1.0.3
   - pip:
-    - tensorflow==1.14.0
-    - keras==1.1.0
+    - py_outrider
     - wbuild
 
 

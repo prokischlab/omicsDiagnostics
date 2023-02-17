@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 2c MORC2 dominant case example
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -36,18 +36,15 @@ edb <- EnsDb.Hsapiens.v75
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 # Load patient's affected organs
 patients <- fread(snakemake@input$patient_organs)
-# patients <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_affected_organs.tsv')
 
 
 ######################################################
@@ -62,7 +59,7 @@ fig_human <- gganatogram(data=  patients[SAMPLE_ID == "OM27390"],
         plot.margin = margin(0, 0, 0, 0, "cm"))
 fig_human
 
-pdf(snakemake@output$fig_human, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig2_c_human.pdf",  
+pdf(snakemake@output$fig_human, 
     width = 3, height =5,  useDingbats=FALSE )
 print(fig_human) 
 dev.off()
@@ -110,7 +107,7 @@ fig <- ggplot(samp[gene_detected == "RNA and protein detected" ], aes(RNA_ZSCORE
 #+ fig.width=4, fig.height=4
 fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig2_c.pdf",  
+pdf(snakemake@output$fig, 
     width = 4, height =4,  useDingbats=FALSE )
 print(fig) 
 dev.off()

@@ -1,6 +1,6 @@
 #'---
 #' title: Gene detection by OMICs
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - patient_omics: '`sm config["PROC_DATA"] + "/integration/patient_omics.RDS"`'
@@ -21,7 +21,6 @@ source("src/config.R")
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 rp <- rp[ gene_detected != "no RNA"]
@@ -36,7 +35,6 @@ ggplot(rp, aes(log10(normcounts), fill = gene_detected))+
 rm(rp)
 
 # Get all protein coding genes
-# genecode_v29 <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv')
 genecode_v29 <- fread(snakemake@input$gencode_annotation)
 genecode_v29[, geneID := toupper(gene_name)]
 genecode_v29 <- genecode_v29[ , .(geneID , gene_type)]
@@ -50,7 +48,6 @@ genecode <- genecode[!duplicated(genecode), ]
 rm(genecode_v29)
 
 # Load disease genes table
-# dis_genes <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv')
 dis_genes <- fread(snakemake@input$disease_genes)
 dis_genes <- dis_genes[ , .(geneID , DISEASE)]
 dis_genes <- dis_genes[!duplicated(dis_genes)]
@@ -67,7 +64,6 @@ rm(genecode, dg)
 
 
 # Load list of genes, detected by RNS-seq
-# detected_transcripts <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/detected_transcripts.tsv')
 detected_transcripts <- fread(snakemake@input$detected_transcripts)
 detected_transcripts[once == T , fib_RNA := "once"]
 detected_transcripts[half == T , fib_RNA := "half of the samples"]
@@ -80,7 +76,6 @@ allgenes <- as.data.table( merge(allgenes, detected_transcripts, by = "geneID", 
 allgenes[is.na(fib_RNA), fib_RNA := "not detected" ]
 
 # Load list of genes, detected by proteomics
-# detected_proteins <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/detected_proteins.tsv')
 detected_proteins <- fread(snakemake@input$detected_proteins)
 detected_proteins[once == T , fib_protein := "once"]
 detected_proteins[half == T , fib_protein := "half of the samples"]
@@ -92,7 +87,6 @@ allgenes[is.na(fib_protein), fib_protein := "not detected" ]
 
 
 # Load list of genes, detected by GTEx proteomics
-# detected_proteins_gtex <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/detected_proteins_gtex.tsv')
 detected_proteins_gtex <- fread(snakemake@input$detected_proteins_gtex)
 detected_proteins_gtex[once == T , protein := "once"]
 detected_proteins_gtex[half == T , protein := "half of the samples"]

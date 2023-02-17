@@ -1,6 +1,6 @@
 #'---
-#' title: Figure 1b rna and proteome coverage
-#' author: smirnovd
+#' title: Figure 1b RNA and proteome coverage
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - protein_coverage: '`sm config["PROC_DATA"] + "/integration/protein_coverage.tsv"`'
@@ -17,12 +17,10 @@
 source('src/config.R')
 
 
-# rna_c <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/rna_coverage.tsv')
 rna_c <- fread(snakemake@input$rna_coverage)
 rna_c[, type:= "RNAseq"]
 
 
-# prot_c <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/protein_coverage.tsv')
 prot_c <- fread(snakemake@input$protein_coverage)
 prot_c[, type:= "Proteomics"]
 
@@ -108,7 +106,7 @@ fig
 
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig1_b.pdf",  
+pdf(snakemake@output$fig, 
     width = 7, height =4,  useDingbats=FALSE )
 print(fig) 
 dev.off()

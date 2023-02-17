@@ -18,19 +18,16 @@
 source('src/config.R')
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 
 
 # Load disease genes table
-# dis_genes <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/datasets/disease_genes.tsv')
 dis_genes <- fread(snakemake@input$disease_genes)
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 rp <- rp[ gene_detected == "RNA and protein detected"]
 
@@ -127,7 +124,6 @@ gp_s[, significant := padj < 0.05]
 
 # Save results
 write_tsv(gp_s, snakemake@output$rna_prot_cor)
-# write_tsv(gp_s, "/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/rna_protein_cor.tsv")
 
 
 

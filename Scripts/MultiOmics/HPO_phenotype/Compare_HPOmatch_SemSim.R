@@ -19,17 +19,14 @@ source(snakemake@input$config)
 
 
 # READ ANNOTATION
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sa)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read HPO match
-# hpo_match <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_HPO_Gene_mapping.tsv')
 hpo_match <- fread(snakemake@input$hpo_match)
 
 
 # Read Semantic similarity scores
-# SSscores <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patient_Gene_semantic_similariy.tsv')
 SSscores <- fread(snakemake@input$semantic_similariy)
 
 
@@ -38,7 +35,6 @@ phenotype[ is.na(HPO_match ) , HPO_match := F]
 phenotype[ is.na(Semantic_sim ) , Semantic_sim := 0]
 
 
-# write_tsv(phenotype,  '/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_phenotype_data.tsv')
 write_tsv(phenotype,  snakemake@output$phenotype_data)
 
 

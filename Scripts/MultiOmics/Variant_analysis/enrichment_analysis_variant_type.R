@@ -21,7 +21,6 @@ source("src/functions/variant_enrichment.R")
 
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 # Subset cases with WES and RNA-seq data avaliable 

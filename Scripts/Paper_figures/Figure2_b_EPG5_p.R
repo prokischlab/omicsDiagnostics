@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 2b EPG5 case example with protein only
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -37,18 +37,15 @@ edb <- EnsDb.Hsapiens.v75
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 # Load patient's affected organs
 patients <- fread(snakemake@input$patient_organs)
-# patients <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_affected_organs.tsv')
 
 
 ######################################################
@@ -117,7 +114,7 @@ fig <- ggplot(samp[gene_detected == "RNA and protein detected" ], aes(RNA_ZSCORE
 #+ fig.width=4, fig.height=4
 fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig2_b.pdf",  
+pdf(snakemake@output$fig, 
     width = 4, height =4,  useDingbats=FALSE )
 print(fig) 
 dev.off()

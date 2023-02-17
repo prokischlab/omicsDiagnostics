@@ -44,9 +44,6 @@ obtain_junctions <- function(introns_gr){
 
 
 
-# download.file(destfile= paste0("/s/project/mitoMultiOmics/multiOMICs_integration/datasets", "/gencode.v29lift37.annotation.gtf.gz" ), 
-#               url= 'ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/GRCh37_mapping/gencode.v29lift37.annotation.gtf.gz')
-# gencode_txdb = makeTxDbFromGFF("ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_29/GRCh37_mapping/gencode.v29lift37.annotation.gtf.gz", format='gtf')
 
 
 # Download gencode gtf
@@ -56,7 +53,6 @@ download.file(destfile= paste0( datasets_dir, "/gencode.v29lift37.annotation.gtf
 
 ## Create txdb object for OUTRIDER
 gencode_txdb = makeTxDbFromGFF(paste0(datasets_dir, "/gencode.v29lift37.annotation.gtf.gz" ), format='gtf') # snakemake@input$datasets
-#gencode_txdb = makeTxDbFromGFF(paste0("/s/project/mitoMultiOmics/multiOMICs_integration/datasets", "/gencode.v29lift37.annotation.gtf.gz" ), format='gtf')
 
 
 
@@ -65,14 +61,11 @@ gencode_txdb <- keepStandardChromosomes(gencode_txdb)
 
 # Save txdb
 saveDb(gencode_txdb, snakemake@output$txdb)
-# saveDb(gencode_txdb, "/s/project/mitoMultiOmics/multiOMICs_integration/datasets/txdb.db")
-
 
 
 
 ## Make annotation table with gene names
 
-# gtf_dt <- rtracklayer::import("/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gencode.v29lift37.annotation.gtf.gz") %>% as.data.table
 gtf_dt <- rtracklayer::import(paste0(datasets_dir , "/gencode.v29lift37.annotation.gtf.gz") ) %>% as.data.table # snakemake@input$datasets
 gtf_dt <- gtf_dt[type == "gene", .(seqnames, start, end, strand, gene_id, gene_name, gene_type, gene_status)]
 gtf_dt <- gtf_dt[seqnames %in% GenomeInfoDb::standardChromosomes(BSgenome.Hsapiens.UCSC.hg19)]
@@ -106,5 +99,4 @@ gtf_dt[, mtDNA := seqnames == "chrM"]
 
 # Save annotation table
 write_tsv(gtf_dt, snakemake@output$gencode_annotation)
-# write_tsv(gtf_dt, "/s/project/mitoMultiOmics/multiOMICs_integration/datasets/gene_annotation_v29.tsv")
 

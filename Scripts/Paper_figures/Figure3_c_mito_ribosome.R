@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 3c MRPL38 mitochondrial ribosome  
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -17,14 +17,12 @@
 source(snakemake@input$config)
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics_full.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 
 
 # Read CORUM complexes
-# corum <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/Complexes/CORUM.tsv')
 corum <- fread(snakemake@input$corum)
 
 ## Get Corum MRPL/S complexes
@@ -84,7 +82,7 @@ fig <- ss / ls
 fig
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_c.pdf",  
+pdf(snakemake@output$fig, 
     width = 5, height =7,  useDingbats=FALSE )
 print(fig) 
 dev.off()

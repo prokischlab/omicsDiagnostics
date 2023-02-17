@@ -1,6 +1,6 @@
 #'---
 #' title: Supplementary Fig 1f validation of positive controls and VUS
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - config: 'src/config.R'
@@ -29,7 +29,6 @@ rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 sa$sample_gene <- paste0(sa$SAMPLE_ID, "_", sa$KNOWN_MUTATION)
@@ -140,7 +139,7 @@ s_fig
 
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig1_f.pdf",  
+pdf(snakemake@output$fig,
     width = 10, height =7,  useDingbats=FALSE )
 print(s_fig) 
 dev.off()

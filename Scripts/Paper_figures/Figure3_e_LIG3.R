@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 3e LIG3 case example
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'
@@ -36,19 +36,16 @@ edb <- EnsDb.Hsapiens.v75
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 
 # Read integrated omics file 
-# rp <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/patient_omics.RDS") %>% as.data.table()
 rp <- readRDS(snakemake@input$patient_omics) %>% as.data.table()
 
 
 
 # Load patient's affected organs
 patients <- fread(snakemake@input$patient_organs)
-# patients <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/HPO/Patients_affected_organs.tsv')
 
 
 ######################################################
@@ -65,7 +62,7 @@ fig_human <- gganatogram(data=  patients[SAMPLE_ID == "OM91786"],
 fig_human
 
 
-pdf(snakemake@output$fig_human, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_e_human.pdf",  
+pdf(snakemake@output$fig_human,
     width = 3, height =5,  useDingbats=FALSE )
 print(fig_human) 
 dev.off()
@@ -117,7 +114,7 @@ fig <- ggplot(samp[gene_detected == "RNA and protein detected" ], aes(RNA_ZSCORE
 #+ fig.width=5, fig.height=5
 fig
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_e.pdf",  
+pdf(snakemake@output$fig, 
     width = 5, height =5,  useDingbats=FALSE )
 print(fig) 
 dev.off()
@@ -178,7 +175,7 @@ fig_no_lines <- ggplot(samp[gene_detected == "RNA and protein detected" ], aes(R
 #+ fig.width=5, fig.height=5
 fig_no_lines
 
-pdf(snakemake@output$fig2, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Fig3_e_nolines.pdf",  
+pdf(snakemake@output$fig2, 
     width = 5, height =5,  useDingbats=FALSE )
 print(fig_no_lines) 
 dev.off()

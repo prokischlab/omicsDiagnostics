@@ -35,7 +35,6 @@ suppressPackageStartupMessages({
 
 
 # Read sample annotation and subset to samples that we have either RNA or Proteome
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 
 # Prepare annotation 
@@ -55,7 +54,6 @@ sa <- sa[! (is.na(RNA_ID) & is.na(PROTEOME_ID))]
 
 # Read protein matrix, subset, log-transform and center
 protein_gene_mat <- fread(snakemake@input$protein_gene_mat) %>% as.data.frame()
-# protein_gene_mat <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_not_normalized.tsv') %>% as.data.frame()
 rownames(protein_gene_mat) <- protein_gene_mat$geneID
 protein_gene_mat$geneID <- NULL
 setnames(protein_gene_mat, sa$SAMPLE_ID, sa$PROTEOME_ID, skip_absent=TRUE)
@@ -75,7 +73,6 @@ row.names(protein_gene_mat) <- toupper(row.names(protein_gene_mat))
 
 
 # Read RNA data
-# ods <- readRDS("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/outrider/ods.Rds")
 ods <- readRDS(snakemake@input$ods)
 counts <- counts(ods, normalized = F)
 counts <- t(t(counts) / sizeFactors(ods))
@@ -99,7 +96,6 @@ dim(protein_gene_mat)
 
 
 # Read rna - protein correlation data 
-# rpc <- fread("/s/project/mitoMultiOmics/multiOMICs_integration/processed_data/integration/rna_protein_cor.tsv")
 rpc <- fread(snakemake@input$rna_prot_cor)
 # Genes with significantly correlated RNA and protein levels
 rpc_sign <- rpc[p.value < 0.05  ] # significant == T
@@ -151,7 +147,7 @@ Fig_S4a <- as.ggplot(pheatmap(x, cluster_rows=F, cluster_cols=F,
 
 
 #' Save supplementary figure 4a
-pdf(snakemake@output$fig1, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig4_a.pdf",  
+pdf(snakemake@output$fig1,  
     width = 15, height = 15,  useDingbats=FALSE )
 print(Fig_S4a) 
 dev.off()
@@ -228,7 +224,7 @@ examp <- ggplot(dt[Proteome_ID == "OM35261P"], aes(reorder(RNA_ID, value), value
 ggplotly(examp)
 
 
-pdf(snakemake@output$fig2, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig4_b.pdf",  
+pdf(snakemake@output$fig2,  
     width = 7, height = 5,  useDingbats=FALSE )
 plot(examp)
 dev.off()

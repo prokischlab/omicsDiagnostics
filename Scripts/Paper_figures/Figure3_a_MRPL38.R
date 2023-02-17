@@ -1,6 +1,6 @@
 #'---
 #' title: Figure 3a MRPL38 case example
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - config: 'src/config.R'

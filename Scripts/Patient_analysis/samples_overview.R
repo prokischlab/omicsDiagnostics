@@ -1,6 +1,6 @@
 #'---
 #' title: Samples overview  
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input:
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
@@ -19,7 +19,6 @@ source("src/config.R")
 
 
 # Load sample annotation
-# sa <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/proteomics_annotation.tsv')
 sa <- fread(snakemake@input$sample_annotation)
 
 

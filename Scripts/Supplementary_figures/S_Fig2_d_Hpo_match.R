@@ -1,6 +1,6 @@
 #'---
 #' title: Supplementary Fig 2d Semantic similarity vs HPO_match
-#' author: smirnovd
+#' author: Dmitrii Smirnov
 #' wb:
 #'  input: 
 #'  - config: 'src/config.R'
@@ -19,7 +19,6 @@ source(snakemake@input$config)
 
 
 # Load phenotype information for all cases
-# var_hpo <- fread('/s/project/mitoMultiOmics/multiOMICs_integration/raw_data/patient_variant_hpo_data.tsv')
 var_hpo <- fread(snakemake@input$var_hpo)
 var_hpo <- var_hpo[!is.na(HPO_match)]
 
@@ -42,7 +41,7 @@ s_fig <- ggplot(var_hpo, aes(HPO_match ,Semantic_sim,  fill = HPO_match))+
 s_fig
 
 
-pdf(snakemake@output$fig, # "/s/project/mitoMultiOmics/multiOMICs_integration/Figures/Supplementary_figures/S_Fig2_d.pdf",  
+pdf(snakemake@output$fig, 
     width = 6, height =6,  useDingbats=FALSE )
 print(s_fig) 
 dev.off()

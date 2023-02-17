@@ -67,9 +67,18 @@ git checkout wbuild.yaml
 git checkout readme.md
 ```
 
+Next clone outrider2 branch from original [OUTRIDER repository](https://github.com/gagneurlab/OUTRIDER/tree/outrider2). 
+OUTRIDER2 includes implementation of protrider algorithm.
+
+```
+# OUTRIDER2 to detect outliers in proteomics data 
+git clone --branch outrider2 https://github.com/gagneurlab/OUTRIDER.git
+```
+
+
 
 Specify correct file and folder locations in the `wbuild.yaml`.
-
+For higher stability we recommend specifying of full paths. 
 
 
 ## Install dependencies
@@ -89,5 +98,5 @@ To run the full pipeline, execute the following commands with 10 cores in parall
 
 2) `snakemake graph`
 
-3) `snakemake publish -j 10`
+3) `snakemake -c 10`
 
