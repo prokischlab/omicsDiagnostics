@@ -1,3 +1,5 @@
+suppressPackageStartupMessages({
+  stringsAsFactors=F
 # Load required libraries
 library(shiny)
 library(data.table)
@@ -7,6 +9,11 @@ library(yaml)
 library(gganatogram)
 library(shinyjs)
 library(shinybusy)
+library(shinyWidgets)
+library(shinythemes)
+library(tippy)
+library(bslib)
+})
 
 # Load config and functions
 source("src/config.R")
@@ -130,18 +137,26 @@ tryCatch({
 
 # Define UI for application
 ui <- fluidPage(
+  theme = bslib::bs_theme(bootswatch = "flatly"),
+  
   titlePanel("omicsDiagnostics APP"),
   
-  # Add loading spinner
+  # Add loading spinner and progress bar
   shinyjs::useShinyjs(),
   shinybusy::add_busy_spinner(spin = "fading-circle"),
+  shinybusy::add_busy_bar(color = "#FF0000"),
   
   sidebarLayout(
     sidebarPanel(
       width = 2,
       
-      # Diagnosis filter
+      # Diagnosis filter with tooltip
       h4("Diagnosis Filter"),
+      tippy::tippy_this(
+        "solvedF",
+        "Filter samples by their diagnosis status",
+        placement = "right"
+      ),
       checkboxGroupInput("solvedF",
                         label = NULL,
                         choices = list("Unsolved" = "unsolved",
@@ -149,43 +164,67 @@ ui <- fluidPage(
                                      "Diagnosed" = "solved"),
                         selected = c("unsolved", "candidate", "solved")),
       
-      # Sample selection
+      # Sample selection with search
       h4("Sample Selection"),
-      selectInput(inputId = "Sample",
-                 label = "Choose Sample ID:",
-                 multiple = TRUE,
-                 choices = NULL),
+      pickerInput(inputId = "Sample",
+                  label = "Choose Sample ID:",
+                  multiple = TRUE,
+                  choices = NULL,
+                  options = list(
+                    `live-search` = TRUE,
+                    `actions-box` = TRUE
+                  )),
       
       hr(),
       
-      # Z-score filters
+      # Z-score filters with tooltips
       h4("Z-score Filters"),
+      tippy::tippy_this(
+        "z_RNA",
+        "Filter by absolute RNA z-score threshold",
+        placement = "right"
+      ),
       sliderInput(inputId = "z_RNA",
-                 label = "|RNA z-score|:",
-                 min = 0,
-                 max = round(max(abs(rp[!is.na(RNA_ZSCORE)]$RNA_ZSCORE)), 0),
-                 value = 0),
+                  label = "|RNA z-score|:",
+                  min = 0,
+                  max = round(max(abs(rp[!is.na(RNA_ZSCORE)]$RNA_ZSCORE)), 0),
+                  value = 0),
       
+      tippy::tippy_this(
+        "z_Protein",
+        "Filter by absolute Protein z-score threshold",
+        placement = "right"
+      ),
       sliderInput(inputId = "z_Protein",
-                 label = "|Protein z-score|:",
-                 min = 0,
-                 max = round(max(abs(rp[!is.na(PROTEIN_ZSCORE)]$PROTEIN_ZSCORE)), 0),
-                 value = 2),
+                  label = "|Protein z-score|:",
+                  min = 0,
+                  max = round(max(abs(rp[!is.na(PROTEIN_ZSCORE)]$PROTEIN_ZSCORE)), 0),
+                  value = 2),
       
       hr(),
       
-      # Phenotype similarity
+      # Phenotype similarity with tooltip
       h4("Phenotype Similarity"),
+      tippy::tippy_this(
+        "SemSim",
+        "Filter by phenotype similarity percentage",
+        placement = "right"
+      ),
       sliderInput(inputId = "SemSim",
-                 label = "Phenotype similarity %:",
-                 min = 0,
-                 max = round(max(abs(rp$SemSim)), 0),
-                 value = 1),
+                  label = "Phenotype similarity %:",
+                  min = 0,
+                  max = round(max(abs(rp$SemSim)), 0),
+                  value = 1),
       
       hr(),
       
-      # Variant filter
+      # Variant filter with tooltip
       h4("Variant Filter"),
+      tippy::tippy_this(
+        "variantsF",
+        "Filter by variant type",
+        placement = "right"
+      ),
       checkboxGroupInput("variantsF",
                         label = NULL,
                         choices = list("No variant" = "no rare variant",
@@ -195,12 +234,27 @@ ui <- fluidPage(
       
       hr(),
       
-      # Gene selection
+      # Gene selection with search
       h4("Gene Selection"),
+      tippy::tippy_this(
+        "genesF",
+        "Enter gene names separated by commas",
+        placement = "right"
+      ),
       textInput("genesF",
                 "Select genes of interest",
                 "ACAD9"),
       helpText("Use comma space ', ' to specify multiple genes"),
+      
+      # Add gene search functionality
+      selectizeInput("geneSearch",
+                    "Search for genes:",
+                    choices = unique(rp$geneID),
+                    multiple = TRUE,
+                    options = list(
+                      placeholder = 'Type to search genes...',
+                      onInitialize = I('function() { this.setValue(""); }')
+                    )),
       
       hr(),
       
@@ -212,41 +266,74 @@ ui <- fluidPage(
       width = 10,
       h1("RNA and Protein Integration"),
       
-      # Patient info table
-      DTOutput("patientInfo"),
+      # Add summary statistics
+      fluidRow(
+        column(12,
+               wellPanel(
+                 h4("Summary Statistics"),
+                 textOutput("summaryStats")
+               )
+        )
+      ),
       
-      # First row of plots
+      # Patient info table with download button
+      fluidRow(
+        column(12,
+               h3("Patient Information"),
+               downloadButton("downloadPatientInfo", "Download Patient Info"),
+               DTOutput("patientInfo")
+        )
+      ),
+      
+      # First row of plots with download buttons
       fluidRow(
         column(4,
                tabsetPanel(
                  type = "tabs",
-                 tabPanel("Anatogram", plotOutput("anatogram", height = "600px")),
-                 tabPanel("Phenotypes", DTOutput("patientHPO"))
+                 tabPanel("Anatogram", 
+                         downloadButton("downloadAnatogram", "Download Anatogram"),
+                         plotOutput("anatogram", height = "600px")),
+                 tabPanel("Phenotypes", 
+                         downloadButton("downloadHPO", "Download HPO Data"),
+                         DTOutput("patientHPO"))
                )
         ),
         column(8,
                tabsetPanel(
                  type = "tabs",
-                 tabPanel("Integration", plotlyOutput("patientPlot", height = "600px")),
-                 tabPanel("Protein volcano", plotlyOutput("proteinVolcanoPlot", height = "600px")),
-                 tabPanel("RNA volcano", plotlyOutput("rnaVolcanoPlot", height = "600px"))
+                 tabPanel("Integration", 
+                         downloadButton("downloadIntegration", "Download Integration Plot"),
+                         plotlyOutput("patientPlot", height = "600px")),
+                 tabPanel("Protein volcano", 
+                         downloadButton("downloadProteinVolcano", "Download Protein Volcano"),
+                         plotlyOutput("proteinVolcanoPlot", height = "600px")),
+                 tabPanel("RNA volcano", 
+                         downloadButton("downloadRNAVolcano", "Download RNA Volcano"),
+                         plotlyOutput("rnaVolcanoPlot", height = "600px"))
                )
         )
       ),
       
       hr(),
       
-      # Second row of plots
+      # Second row of plots with download buttons
       fluidRow(
-        column(4, plotlyOutput("complexVolcanoPlot")),
-        column(4, plotlyOutput("rankRNAPlot")),
-        column(4, plotlyOutput("rankProteinPlot"))
+        column(4, 
+               downloadButton("downloadComplexVolcano", "Download Complex Volcano"),
+               plotlyOutput("complexVolcanoPlot")),
+        column(4, 
+               downloadButton("downloadRankRNA", "Download RNA Rank"),
+               plotlyOutput("rankRNAPlot")),
+        column(4, 
+               downloadButton("downloadRankProtein", "Download Protein Rank"),
+               plotlyOutput("rankProteinPlot"))
       ),
       
       hr(),
       
-      # OMICS table
+      # OMICS table with enhanced features
       h2("OMICS Table"),
+      downloadButton("downloadOMICSTable", "Download OMICS Table"),
       DTOutput("omicsTable", width = "100%")
     )
   )
@@ -254,23 +341,50 @@ ui <- fluidPage(
 
 # Define server logic
 server <- function(input, output, session) {
-  # Add error handling for reactive expressions
-  filtered_samples <- reactive({
-    tryCatch({
-      sa[solved_class %in% input$solvedF, SAMPLE_ID]
-    }, error = function(e) {
-      showNotification("Error filtering samples", type = "error")
-      return(NULL)
-    })
+  # Cache expensive computations
+  cached_data <- reactiveValues(
+    filtered_samples = NULL,
+    filtered_data = NULL
+  )
+  
+  # Update cached filtered samples
+  observe({
+    cached_data$filtered_samples <- sa[solved_class %in% input$solvedF, SAMPLE_ID]
   })
   
-  # Update sample selection
+  # Update sample selection with cached data
   observe({
-    tryCatch({
-      updateSelectInput(session, "Sample", choices = filtered_samples())
-    }, error = function(e) {
-      showNotification("Error updating sample selection", type = "error")
-    })
+    updatePickerInput(session, "Sample", choices = cached_data$filtered_samples)
+  })
+  
+  # Update gene search when gene text input changes
+  observe({
+    if (!is.null(input$genesF) && input$genesF != "") {
+      genes <- toupper(unlist(strsplit(input$genesF, ", ")))
+      updateSelectizeInput(session, "geneSearch", selected = genes)
+    }
+  })
+  
+  # Update gene text input when gene search changes
+  observe({
+    if (!is.null(input$geneSearch)) {
+      updateTextInput(session, "genesF", value = paste(input$geneSearch, collapse = ", "))
+    }
+  })
+  
+  # Summary statistics
+  output$summaryStats <- renderText({
+    data <- pat()
+    if (is.null(data)) return("No data available")
+    
+    paste(
+      "Total samples:", length(unique(data$SAMPLE_ID)), "\n",
+      "Total genes:", length(unique(data$geneID)), "\n",
+      "Outliers:", sum(data$outlier_class != "non_outlier"), "\n",
+      "RNA outliers:", sum(data$outlier_class == "RNA-only"), "\n",
+      "Protein outliers:", sum(data$outlier_class == "protein-only"), "\n",
+      "RNA and Protein outliers:", sum(data$outlier_class == "RNA-and-protein")
+    )
   })
   
   # Patient info table
@@ -421,6 +535,32 @@ server <- function(input, output, session) {
       showNotification("Error rendering OMICS table", type = "error")
       return(NULL)
     })
+  })
+  
+  # Add download handlers
+  output$downloadPatientInfo <- downloadHandler(
+    filename = function() {
+      paste("patient_info_", Sys.Date(), ".csv", sep = "")
+    },
+    content = function(file) {
+      write.csv(sa[SAMPLE_ID %in% input$Sample, 
+                  c("SAMPLE_ID", "gender", "KNOWN_MUTATION", "CATEGORY", 
+                    "solved_class", "TISSUE", "PROTEOMICS_BATCH")], 
+                file, row.names = FALSE)
+    }
+  )
+  
+  # Enhanced error handling with user feedback
+  observeEvent(input$Sample, {
+    if (length(input$Sample) == 0) {
+      showNotification("Please select at least one sample", type = "warning")
+    }
+  })
+  
+  observeEvent(input$genesF, {
+    if (input$genesF == "") {
+      showNotification("Please enter at least one gene", type = "warning")
+    }
   })
 }
 
