@@ -1,0 +1,41 @@
+import pathlib
+import wbuild
+
+configfile: "wbuild.yaml"
+
+# Define all output files
+OUTRIDER_RESULTS = config["PROC_DATA"] + "/outrider/OUTRIDER_results.rds"
+PROTRIDER_RESULTS = config["PROC_DATA"] + "/protrider/PROTRIDER_results.rds"
+LIMMA_RESULTS = config["PROC_DATA"] + "/limma/LIMMA_results.rds"
+PATIENT_OMICS_FULL = config["PROC_DATA"] + "/integration/patient_omics_full.RDS"
+PATIENT_OMICS = config["PROC_DATA"] + "/integration/patient_omics.RDS"
+README_HTML = "Output/html/readme.html"
+
+rule all:
+    input: README_HTML, PATIENT_OMICS, PATIENT_OMICS_FULL
+
+rule outrider:
+    input: config["RAW_RNA"]
+    output: OUTRIDER_RESULTS
+
+rule limma:
+    input: config["RAW_Protein"]
+    output: LIMMA_RESULTS
+
+rule protrider:
+    input: config["RAW_Protein"]
+    output: PROTRIDER_RESULTS
+
+rule integration:
+    input: 
+        rna = OUTRIDER_RESULTS,
+        prot = PROTRIDER_RESULTS,
+        annotation = config["ANNOTATION"],
+        phenotype = config["PROC_DATA"] + "/HPO/Patients_phenotype_data.tsv",
+        var_hpo = config["RAW_DATA"] + "/patient_variant_hpo_data.tsv"
+    output: 
+        full = PATIENT_OMICS_FULL,
+        filtered = PATIENT_OMICS
+
+rule readme:
+    output: README_HTML 

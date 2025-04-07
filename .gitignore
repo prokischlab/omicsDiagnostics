@@ -1,10 +1,13 @@
 # dirs
 # data heavy folders structure
 data/
+datasets/
 Output/
 .snakemake/
 .wBuild*
 .drop/
+.Rdata
+*.Rdata
 
 # typical latex tmp files
 *.aux

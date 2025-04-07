@@ -102,3 +102,4 @@ To run the full pipeline, execute the following commands with 10 cores in parall
 
 3) `snakemake -c 10`
 
+If dag doesn't work run: `snakemake --snakefile Snakefile.dag --dag | dot -Tpng > dag.png`
