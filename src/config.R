@@ -45,6 +45,9 @@ suppressPackageStartupMessages({
   library(PCAN)
   library(ontologySimilarity)
   
+  library(parallel)
+  library(foreach)
+  
 })
 
 

@@ -82,19 +82,21 @@ For higher stability we recommend specifying of full paths.
 
 
 ## Install dependencies
+* Create Conda environment
+  * `conda env create --name omicsDiagnosticsMinimal --file=environment.yml`
+
 * R packages
   * Make sure that `data.table` is installed or install with `install.packages("data.table")`
   * `Rscript src/installRPackages.R src/requirementsR.txt`
 
-* Create Conda environment
-  * `conda env create --name omicsDiagnostics --file=environment.yml`
+
 
 
 
 ## Run the full pipeline
 To run the full pipeline, execute the following commands with 10 cores in parallel:
 
-1) `conda activate omicsDiagnostics`
+1) `conda activate omicsDiagnosticsMinimal`
 
 2) `snakemake graph`
 

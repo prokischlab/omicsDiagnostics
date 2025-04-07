@@ -5,14 +5,16 @@ htmlOutputPath: Output/html
 scriptsPath: Scripts
 fileRegex: .*
 
-ANNOTATION: /path_to_folder/raw_data/proteomics_annotation.tsv
-RAW_HPO: /path_to_folder/raw_data/Patient_HPO_phenotypes.tsv
-RAW_RNA: /path_to_folder/raw_data/raw_counts.tsv
-RAW_Protein: /path_to_folder/raw_data/proteomics_not_normalized.tsv
+DATASETS: datasets
+# CONDA_ENV: omicsDiagnosticsMinimal
+PROTRIDER_CONFIG: config_protrider.yml
 
-DATASETS: /path_to_folder/datasets
+ANNOTATION: /Users/Mitya/Desktop/working/omicsDagnostics_data/raw_data/proteomics_annotation.tsv
+RAW_HPO: /Users/Mitya/Desktop/working/omicsDagnostics_data/raw_data/Patient_HPO_phenotypes.tsv
+RAW_RNA: /Users/Mitya/Desktop/working/omicsDagnostics_data/raw_data/raw_counts.tsv
+RAW_Protein: /Users/Mitya/Desktop/working/omicsDagnostics_data/raw_data/proteomics_not_normalized.tsv
 
-RAW_DATA: /path_to_folder/raw_data
-PROC_DATA: /path_to_folder/processed_data
+RAW_DATA: /Users/Mitya/Desktop/working/omicsDagnostics_data/raw_data
+PROC_DATA: /Users/Mitya/Desktop/working/omicsDagnostics_data/processed_data
 
-FIGURE_DIR: /path_to_folder/Figures
+FIGURE_DIR: /Users/Mitya/Desktop/working/omicsDagnostics_data/Figures

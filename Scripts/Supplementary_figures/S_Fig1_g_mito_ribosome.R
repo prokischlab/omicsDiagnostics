@@ -6,7 +6,7 @@
 #'  - config: 'src/config.R'
 #'  - patient_omics: '`sm config["PROC_DATA"] + "/integration/patient_omics_full.RDS"`'
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
-#'  - corum: '`sm config["PROC_DATA"] + "/Complexes/CORUM.tsv"`'
+#'  - corum: '`sm config["DATASETS"] + "/CORUM.tsv"`'
 #'  output:
 #'  - fig: '`sm config["FIGURE_DIR"] + "/Supplementary_figures/S_Fig1_g.pdf"`'
 #' output: 

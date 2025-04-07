@@ -48,7 +48,7 @@ rm(protein_coding)
 
 
 # Download data
-download.file(destfile= paste0(snakemake@input$datasets, "/Table_S1_gene_info_at_protein_level.xlsx" ), url= 'https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx')
+# download.file(destfile= paste0(snakemake@input$datasets, "/Table_S1_gene_info_at_protein_level.xlsx" ), url= 'https://storage.googleapis.com/gtex_egtex/proteomics/Table_S1_gene_info_at_protein_level.xlsx')
 
 
 # Load GTEx annotation

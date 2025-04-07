@@ -20,145 +20,135 @@ combine_omics <- function(annotation = NULL,
                           Zscore_threshold = 3, 
                           l2FC_threshold = 1){
   
-  ##########################################################
+  
+   ##########################################################
   # Combine RNA-seq and proteomics aberrant expression (AE)
   ##########################################################
+  # Input validation
+  if (is.null(RNA_ae) || is.null(PROTEIN_ae)) {
+    stop("RNA_ae and PROTEIN_ae must be provided")
+  }
   
-  PROTEIN_ae[ , PROTEIN_INT := 2^PROTEIN_LOG2INT ]
+  # Ensure geneID is uppercase in both datasets
   RNA_ae$geneID <- toupper(RNA_ae$geneID)
-  rna_protein <-  merge(RNA_ae, PROTEIN_ae, by= c('SAMPLE_ID', 'geneID'), all= T) #outer join 
-  rna_protein[, rank_rna := rank(normcounts +1, na.last= "keep"), by= geneID]
-  rna_protein[, rank_protein := rank(PROTEIN_INT, na.last= "keep"), by= geneID]
+  PROTEIN_ae$geneID <- toupper(PROTEIN_ae$geneID)
   
-  # Extended RNA and Protein outliar class
+  # Calculate protein intensity
+  PROTEIN_ae[ , PROTEIN_INT := 2^PROTEIN_LOG2INT ]
+  
+  # Merge RNA and protein data with proper NA handling
+  rna_protein <- merge(RNA_ae, PROTEIN_ae, 
+                      by = c('SAMPLE_ID', 'geneID'), 
+                      all = TRUE,
+                      suffixes = c("_RNA", "_PROTEIN"))
+  
+  # Calculate ranks with proper NA handling
+  rna_protein[, rank_rna := rank(normcounts + 1, na.last = "keep"), by = geneID]
+  rna_protein[, rank_protein := rank(PROTEIN_INT, na.last = "keep"), by = geneID]
+  
+  # Initialize outlier class
   rna_protein[, outlier_class := 'non_outlier']
-  rna_protein[RNA_PADJ < Padj_threshold & PROTEIN_PADJ >= Padj_threshold, outlier_class := 'RNA-only']
-  rna_protein[RNA_PADJ >= Padj_threshold & PROTEIN_PADJ < Padj_threshold, outlier_class := 'protein-only']
   
-  rna_protein[RNA_PADJ < Padj_threshold & PROTEIN_PADJ < Padj_threshold, outlier_class := 'RNA-and-protein']
+  # Define outlier classes with proper NA handling
+  rna_protein[!is.na(RNA_PADJ) & !is.na(PROTEIN_PADJ) & 
+               RNA_PADJ < Padj_threshold & PROTEIN_PADJ >= Padj_threshold, 
+               outlier_class := 'RNA-only']
   
-  rna_protein[RNA_PADJ < Padj_threshold & abs(PROTEIN_LOG2FC) > l2FC_threshold & PROTEIN_PVALUE < 0.05, outlier_class := 'RNA-and-protein']
-  rna_protein[RNA_PADJ < Padj_threshold & abs(PROTEIN_ZSCORE) > Zscore_threshold , outlier_class := 'RNA-and-protein']
+  rna_protein[!is.na(RNA_PADJ) & !is.na(PROTEIN_PADJ) & 
+               RNA_PADJ >= Padj_threshold & PROTEIN_PADJ < Padj_threshold, 
+               outlier_class := 'protein-only']
   
-  rna_protein[ abs(RNA_LOG2FC) > l2FC_threshold & RNA_PVALUE < 0.05 & PROTEIN_PADJ < Padj_threshold, outlier_class := 'RNA-and-protein']
-  rna_protein[ abs(RNA_ZSCORE) > Zscore_threshold & PROTEIN_PADJ < Padj_threshold, outlier_class := 'RNA-and-protein']
+  rna_protein[!is.na(RNA_PADJ) & !is.na(PROTEIN_PADJ) & 
+               RNA_PADJ < Padj_threshold & PROTEIN_PADJ < Padj_threshold, 
+               outlier_class := 'RNA-and-protein']
   
+  # Add validation category with proper NA handling
+  rna_protein[, validated := FALSE]
+  rna_protein[!is.na(PROTEIN_LOG2FC) & !is.na(PROTEIN_PVALUE) & 
+               PROTEIN_LOG2FC <= -1 & PROTEIN_PVALUE < 0.05, 
+               validated := TRUE]
   
-  # Add validation category
-  rna_protein[, validated := F]
-  rna_protein[outlier_class == 'Protein_outlier' , validated := T]
-  rna_protein[PROTEIN_LOG2FC <= -1 & PROTEIN_PVALUE < 0.05 , validated := T]
-  rna_protein[PROTEIN_ZSCORE <= -2 & PROTEIN_PVALUE < 0.05 , validated := T]
-  
+  rna_protein[!is.na(PROTEIN_ZSCORE) & !is.na(PROTEIN_PVALUE) & 
+               PROTEIN_ZSCORE <= -2 & PROTEIN_PVALUE < 0.05, 
+               validated := TRUE]
   
   # Add data availability flags
-  rna_protein[ , RNA_seq_avaliable := SAMPLE_ID %in% unique(RNA_ae$SAMPLE_ID)]
-  rna_protein[ , Proteomics_avaliable := SAMPLE_ID %in% unique(PROTEIN_ae$SAMPLE_ID)]
+  rna_protein[, RNA_seq_avaliable := SAMPLE_ID %in% unique(RNA_ae$SAMPLE_ID)]
+  rna_protein[, Proteomics_avaliable := SAMPLE_ID %in% unique(PROTEIN_ae$SAMPLE_ID)]
   
-  # Add flag for gene products detected by RNA-seq or proteomics + passed the filters for AE
-  rna_protein[, gene_detected := "RNA and protein detected" ]
-  rna_protein[ is.na(RNA_ZSCORE), gene_detected := "no RNA" ]
-  rna_protein[ is.na(PROTEIN_ZSCORE), gene_detected := "no Protein" ]
-  rna_protein[ is.na(RNA_ZSCORE) & is.na(PROTEIN_ZSCORE), gene_detected := "no RNA and protein" ]
+  # Add gene detection flags
+  rna_protein[, gene_detected := "RNA and protein detected"]
+  rna_protein[is.na(RNA_ZSCORE), gene_detected := "no RNA"]
+  rna_protein[is.na(PROTEIN_ZSCORE), gene_detected := "no Protein"]
+  rna_protein[is.na(RNA_ZSCORE) & is.na(PROTEIN_ZSCORE), gene_detected := "no RNA and protein"]
   
-  
-  
-  ##########################################################
-  # Add other OMICs data
-  ##########################################################
-  
-  # Add variant annotation 
-  if (!is.null(variants)) {
-    rna_protein <- merge(variants, rna_protein, by= c('SAMPLE_ID', 'geneID'), all.y = T)
-    
-    # Add data availability flag
-    rna_protein[ , WES_avaliable := SAMPLE_ID %in% unique(variants$SAMPLE_ID)]
-    
-    # Correct annotation
-    rna_protein[WES_avaliable == T & is.na(rare), rare := F ]
-    rna_protein[WES_avaliable == T & is.na(potential_biallelic), potential_biallelic := F ]
-    
-    # Add N variants info
-    rna_protein[WES_avaliable == F , gene_class := "no data" ]
-    rna_protein[WES_avaliable == T , gene_class := "no rare variant" ]
-    rna_protein[WES_avaliable == T & rare == T , gene_class := "1 rare variant" ]
-    rna_protein[WES_avaliable == T & potential_biallelic == T, gene_class := "rare pot. biallelic variants" ] 
-    
-
-    
-    
-    # UPD validation category - if variant information available, consider only genes with rare variants 
-    rna_protein[WES_avaliable == T &  rare == F , validated := F]
-    
-  }
-  
-  # Add phenotype data    
-  if (!is.null(phenotype)) {
-    rna_protein <- merge(rna_protein, phenotype,  by= c('SAMPLE_ID', 'geneID'), all.x = T)
-    
-    # Add data availability flag
-    rna_protein[ , HPO_avaliable := SAMPLE_ID %in% unique(phenotype$SAMPLE_ID)]
-    
-    # Mendelian disease gene flag
-    rna_protein[ , MDG := geneID %in% unique(phenotype$geneID)]
-    
-    rna_protein[ is.na(Semantic_sim), Semantic_sim := 0]
-  }
-  
-  
-  # Add combined variants and phenotype data  
+  # Add variant annotation if available
   if (!is.null(variants_hpo)) {
-    rna_protein <- merge(variants_hpo, rna_protein, by= c('SAMPLE_ID', 'geneID'), all.y = T)
+    # Ensure consistent column names
+    variants_hpo$geneID <- toupper(variants_hpo$geneID)
     
-    # Add data availability flags
-    rna_protein[ , WES_avaliable := SAMPLE_ID %in% unique(variants_hpo[WES_avaliable == T]$SAMPLE_ID)]
-    rna_protein[ , HPO_avaliable := SAMPLE_ID %in% unique(variants_hpo[HPO_avaliable == T]$SAMPLE_ID)]
+    # Merge with proper NA handling
+    rna_protein <- merge(rna_protein, variants_hpo, 
+                        by = c('SAMPLE_ID', 'geneID'), 
+                        all.x = TRUE,
+                        suffixes = c("", "_variant"))
     
-    # Mendelian disease gene flag
-    rna_protein[ , MDG := geneID %in% unique(variants_hpo[!is.na(Semantic_sim)]$geneID)]
-    rna_protein[ is.na(Semantic_sim), Semantic_sim := 0]
+    # Update flags
+    rna_protein[, WES_avaliable := SAMPLE_ID %in% unique(variants_hpo[WES_avaliable == TRUE]$SAMPLE_ID)]
+    rna_protein[, HPO_avaliable := SAMPLE_ID %in% unique(variants_hpo[HPO_avaliable == TRUE]$SAMPLE_ID)]
     
-    # UPD annotation
-    rna_protein[WES_avaliable == T & is.na(rare), rare := F ]
-    rna_protein[WES_avaliable == T & is.na(potential_biallelic), potential_biallelic := F ]
+    # Handle NA values in variant data
+    rna_protein[WES_avaliable == TRUE & is.na(rare), rare := FALSE]
+    rna_protein[WES_avaliable == TRUE & is.na(potential_biallelic), potential_biallelic := FALSE]
     
-    # UPD N variants info
-    rna_protein[WES_avaliable == T & is.na( gene_class), gene_class := "no rare variant" ]
-    rna_protein[WES_avaliable == F & is.na( gene_class), gene_class := "no data" ]
+    # Update gene class
+    rna_protein[WES_avaliable == FALSE, gene_class := "no data"]
+    rna_protein[WES_avaliable == TRUE & is.na(gene_class), gene_class := "no rare variant"]
+    rna_protein[WES_avaliable == TRUE & rare == TRUE, gene_class := "1 rare variant"]
+    rna_protein[WES_avaliable == TRUE & potential_biallelic == TRUE, gene_class := "rare pot. biallelic variants"]
     
-    # UPD validation category - if variant information available, consider only genes with rare variants 
-    rna_protein[WES_avaliable == T &  rare == F , validated := F]
+    # Update validation
+    rna_protein[WES_avaliable == TRUE & rare == FALSE, validated := FALSE]
   }
   
+  # Add phenotype data if available
+  if (!is.null(phenotype)) {
+    phenotype$geneID <- toupper(phenotype$geneID)
+    rna_protein <- merge(rna_protein, phenotype, 
+                        by = c('SAMPLE_ID', 'geneID'), 
+                        all.x = TRUE,
+                        suffixes = c("", "_pheno"))
+    
+    # Handle NA values in phenotype data
+    rna_protein[is.na(Semantic_sim), Semantic_sim := 0]
+    rna_protein[, MDG := geneID %in% unique(phenotype$geneID)]
+  }
   
-  # Add causal gene annotation  
-  if (!is.null(sa)) {
-    diagnosed_cases <- sa[!is.na(KNOWN_MUTATION), c('SAMPLE_ID', 'KNOWN_MUTATION') ]
-    diagnosed_cases[ , sample_gene := paste0(SAMPLE_ID, '_',  KNOWN_MUTATION )]
+  # Add causal gene annotation if available
+  if (!is.null(annotation)) {
+    diagnosed_cases <- annotation[!is.na(KNOWN_MUTATION), .(SAMPLE_ID, KNOWN_MUTATION)]
+    diagnosed_cases[, sample_gene := paste0(SAMPLE_ID, '_', KNOWN_MUTATION)]
     
-    rna_protein[ , sample_gene := paste0(SAMPLE_ID, '_',  geneID )]
-    rna_protein[ , causal_gene := sample_gene %in% diagnosed_cases$sample_gene]
+    rna_protein[, sample_gene := paste0(SAMPLE_ID, '_', geneID)]
+    rna_protein[, causal_gene := sample_gene %in% diagnosed_cases$sample_gene]
     
-    # Add annotation for cases, where WES export was not possible or available
-    rna_protein[causal_gene == T, rare := T ]
+    # Update known cases
+    known_cases <- list(
+      c("OM25068", "SLC25A4"),
+      c("OM26649", "AARS2"),
+      c("OM65728", "ACAD9"),
+      c("OM94976", "DNAJC30")
+    )
     
-    rna_protein[ SAMPLE_ID == "OM25068" & geneID == "SLC25A4", rare := T ]
-    rna_protein[ SAMPLE_ID == "OM25068" & geneID == "SLC25A4", potential_biallelic := T ]
+    for (case in known_cases) {
+      rna_protein[SAMPLE_ID == case[1] & geneID == case[2], `:=`(rare = TRUE, potential_biallelic = TRUE)]
+    }
     
-    rna_protein[ SAMPLE_ID == "OM26649" & geneID == "AARS2", rare := T ]
-    rna_protein[ SAMPLE_ID == "OM26649" & geneID == "AARS2", potential_biallelic := T ]
-    
-    rna_protein[ SAMPLE_ID == "OM65728" & geneID == "ACAD9", rare := T ]
-    rna_protein[ SAMPLE_ID == "OM65728" & geneID == "ACAD9", potential_biallelic := T ]
-    
-    rna_protein[ SAMPLE_ID == "OM94976" & geneID == "DNAJC30", rare := T ]
-    rna_protein[ SAMPLE_ID == "OM94976" & geneID == "DNAJC30", potential_biallelic := T ]
-    
-    # Correct annotation 
-    rna_protein[rare == T , gene_class := "1 rare variant" ]
-    rna_protein[ potential_biallelic == T, gene_class := "rare pot. biallelic variants" ] 
-    
-  }  
+    # Update gene class for causal genes
+    rna_protein[rare == TRUE, gene_class := "1 rare variant"]
+    rna_protein[potential_biallelic == TRUE, gene_class := "rare pot. biallelic variants"]
+  }
+  
   return(rna_protein)
 }
 

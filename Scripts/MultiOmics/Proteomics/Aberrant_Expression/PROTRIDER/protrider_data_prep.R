@@ -1,139 +1,85 @@
 #'---
-#' title: Proteomics data preparation with imputation for protrider      
+#' title: Proteomics data preparation with imputation for PROTRIDER      
 #' author: Dmitrii Smirnov
 #' wb:
 #'  input:
-#'  - sa: '`sm config["ANNOTATION"]`'
-#'  - raw_prot: '`sm config["RAW_Protein"]`'
+#'   - sa: '`sm config["ANNOTATION"]`'
+#'   - raw_prot: '`sm config["RAW_Protein"]`'
+#'   - config_protrider: '`sm config["PROTRIDER_CONFIG"]`'
+#'   - protr_out: '`sm config["PROC_DATA"] + "/protrider"`'
 #'  output:
-#'  - proteomics_imputed: '`sm config["PROC_DATA"] + "/protrider/proteomics_imputed.tsv"`'
-#'  - protrider_annotation: '`sm config["PROC_DATA"] + "/protrider/protrider_annotation.tsv"`'
-#'  - protrider_data: '`sm config["PROC_DATA"] + "/protrider/protrider_data.tsv"`'
-#'  - protrider_data_norm: '`sm config["PROC_DATA"] + "/protrider/protrider_data_norm_log.tsv"`'
+#'   - proteomics_imputed: '`sm config["PROC_DATA"] + "/protrider/proteomics_imputed.tsv"`'
+#'   - protrider_annotation: '`sm config["PROC_DATA"] + "/protrider/protrider_annotation.tsv"`'
+#'   - protrider_data: '`sm config["PROC_DATA"] + "/protrider/protrider_data.tsv"`'
+#'   - protrider_config: '`sm config["PROC_DATA"] + "/protrider/config_protrider.yaml"`'
 #'  type: script
 #'---
 
-#load functions
+library(data.table)
+library(readr)
+library(dplyr)
+library(yaml)
+
+# Load helper functions if needed
 source("src/config.R")
 source("src/functions/LIMMA/limma_functions.R")
 
-
-# READ ANNOTATION
+# Read sample annotation
 sa <- fread(snakemake@input$sa)
 
 
-
-###################
-### Impute data ###
-###################
-
-#' READ Proteomics data
+# Read raw proteomics data
 raw_prot <- fread(snakemake@input$raw_prot) %>% as.data.frame()
-
 rownames(raw_prot) <- raw_prot$geneID
 raw_prot$geneID <- NULL
 
-#' Total number of samples
-ncol(raw_prot)
-
-# Impute
+# Impute missing values (using your impute_min function)
 prot <- impute_min(raw_prot, sa)
 
-
-# Remove TASP1 gene. This gene has a bad detection rate and was not detected in this sample. 
-# Intensity value was imputed.
-prot[ prot$geneID == "TASP1",  "OM30476"] <- 0
-
+# (Optional) Remove problematic gene (e.g., TASP1)
+prot[prot$geneID == "TASP1", "OM30476"] <- 0
 
 # Save imputed data
-write_tsv(prot,  snakemake@output$proteomics_imputed)
+write_tsv(prot, snakemake@output$proteomics_imputed)
 
+# Subset sample annotation to those used for proteomics and save
+sa <- sa[USE_FOR_PROTEOMICS_PAPER == TRUE]
+write_tsv(sa, snakemake@output$protrider_annotation)
 
-
-#######################
-### Prepare dataset ###
-#######################
-
-
-# Subset samples
-sa <- sa[USE_FOR_PROTEOMICS_PAPER ==T]
-
-#' Number of samples
-nrow(sa)
-
-# Save subset of the annotation
-write_tsv(sa,  snakemake@output$protrider_annotation)
-
-
-# Subset samples
+# Prepare the proteomics data matrix for PROTRIDER
+# (Note: We perform filtering but do NOT normalize or log-transform since PROTRIDER handles that)
 rownames(prot) <- prot$geneID
 prot$geneID <- NULL
+prot <- prot[, sa$SAMPLE_ID]
+prot <- prot[!duplicated(prot), ]
 
-# Subset samples
-prot <- prot[ , sa$SAMPLE_ID]
-prot <- prot[!duplicated(prot ),]
+mat_prot <- as.matrix(prot)
+# Filter out samples with >30% zeros
+sampleZeroFreq <- apply(mat_prot, 2, function(x) sum(x == 0) / length(x))
+mat_prot <- mat_prot[, sampleZeroFreq < 0.3]
 
+# Filter out proteins not expressed in enough samples (e.g., proteins missing in > (MIN_SAMPLE_NUM_PROT*100)% samples)
+MIN_SAMPLE_NUM_PROT <- 0.52
+message('Filtering proteins detected in >', round(ncol(mat_prot) * (1 - MIN_SAMPLE_NUM_PROT)), ' samples')
+protZeroFreq <- apply(mat_prot, 1, function(x) sum(x == 0) / length(x))
+mat_prot <- mat_prot[protZeroFreq < MIN_SAMPLE_NUM_PROT, ]
 
-
-# Create matrix
-mat_prot_zero <- as.matrix(prot)
-dim(mat_prot_zero)
-# mat_prot_zero[1:5, 1:5]
-
-
-#' Filter data - removes corrupted samples
-# use only samples with less than 30% of NA or 0 
-sampleZeroFreq <- apply(mat_prot_zero,2,function(x){ sum(x == 0)/length(x) })
-# table(round(sampleZeroFreq, 3))
-mat_prot_zero <- mat_prot_zero[, sampleZeroFreq < 0.3] 
-dim(mat_prot_zero)
-# heatmap.2(cor(log2(mat_prot_zero + 2)), trace = "none")
-
-
-#' Filter data - removes proteins with too many NAs
-# use only genes expressed in 80% of samples
-protZeroFreq <- apply(mat_prot_zero,1,function(x){ sum(x == 0)/length(x) })
-# table(round(protZeroFreq, 3))
-
-# MIN_SAMPLE_NUM_PROT <- 0.52 #0.76
-
-print(paste0('proteins detected in >', round(ncol(mat_prot_zero) * (1- MIN_SAMPLE_NUM_PROT)),' samples (', (1- MIN_SAMPLE_NUM_PROT),'%):') )
-mat_prot_zero <- mat_prot_zero[protZeroFreq < MIN_SAMPLE_NUM_PROT,]#
-dim(mat_prot_zero)
-# heatmap.2(cor(log2(mat_prot_zero + 2)), trace = "none")
-
-
-# Transpose
-protrider_data <- cbind( rownames(mat_prot_zero), as.data.frame(mat_prot_zero))
+# Save the filtered raw intensities as the PROTRIDER input file
+protrider_data <- cbind(rownames(mat_prot), as.data.frame(mat_prot))
 colnames(protrider_data)[1] <- "geneID"
-# protrider_data[1:5, 1:5]
+write_tsv(protrider_data, snakemake@output$protrider_data)
 
 
-# Save data ready for outrider2
-write_tsv(protrider_data,  snakemake@output$protrider_data)
+# ---- Update dataset-specific PROTRIDER configuration ----
 
+# Read the repository config file (e.g. config_protrider.yml)
+config_in <- snakemake@input$config_protrider
+config_list <- yaml::read_yaml(config_in)
 
+# Update the out_dir to point to the processed data directory for PROTRIDER results.
+config_list$out_dir <- snakemake@input$protr_out
+# Create the output directory if it doesn't exist.
+dir.create(snakemake@input$protr_out, recursive = TRUE, showWarnings = FALSE)
 
-# For py_outrider / outrider2
-
-# Set missing values as NA
-mat_prot_zero[mat_prot_zero == 0] <- NaN
-
-# Size factor normalisation
-sf= DESeq2::estimateSizeFactorsForMatrix(mat_prot_zero)
-#barplot(sf, las=2)
-# normalize data
-mat_norm_prot  <- t(as.matrix(mat_prot_zero))/sf
-
-# Log transformation
-norm_prot_log <- as.data.frame( log(mat_norm_prot) )
-
-
-# Transpose
-protrider_data_norm <- cbind( rownames(norm_prot_log), norm_prot_log)
-colnames(protrider_data_norm)[1] <- "SAMPLE_ID"
-# protrider_data_norm[1:5, 1:5]
-
-# Save norm data
-write_tsv(protrider_data_norm,  snakemake@output$protrider_data_norm)
-
+# Write the updated configuration file to output
+yaml::write_yaml(config_list, snakemake@output$protrider_config)

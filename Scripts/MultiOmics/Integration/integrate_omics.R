@@ -1,7 +1,9 @@
 #'---
-#' title: Integrate Omics       
-#' author: smirnovd
+#' title: Integrate OMICs       
+#' author: Dmitrii Smirnov
 #' wb:
+#'  log:
+#'   - snakemake: '`sm config["PROC_DATA"] + "/integration/integration_log.RDS"`'
 #'  input:
 #'  - config: 'src/config.R'
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
@@ -18,7 +20,9 @@
 #'    code_download: TRUE
 #'---
 
+saveRDS(snakemake, snakemake@log$snakemake)
 
+# snakemake <- readRDS("/Users/Mitya/Desktop/working/omicsDagnostics_data/processed_data/integration/integration_log.RDS")
 
 # Load config and functions
 source(snakemake@input$config)
@@ -32,14 +36,19 @@ sa <- sa[USE_FOR_PROTEOMICS_PAPER == T]
 # Load OUTRIDER results
 rna <- readRDS(snakemake@input$outrider_results) %>% as.data.table()
 
+head(rna)
+
 # Load PROTRIDER results
 prot <- readRDS(snakemake@input$protrider_results) %>% as.data.table()
+head(prot)
 
 # Load Phenotype data - only for diagnosed cases
 phenotype <- fread(snakemake@input$phenotype_data)
+head(phenotype)
 
 # Load variant (WES) and phenotype information for all cases
 var_hpo <- fread(snakemake@input$var_hpo)
+head(var_hpo)
 
 # Combine OMICs
 patient_omics <- combine_omics(annotation = sa,
@@ -51,24 +60,37 @@ patient_omics <- combine_omics(annotation = sa,
                                   l2FC_threshold = LOG2FC_THRESHOLD )
 
 
+head(patient_omics)
+patient_omics[ , MDG := ""]
 
 # Save full results
 saveRDS(patient_omics, snakemake@output$patient_omics_full)
 
+# Select and rename columns
+selected_cols <- c("SAMPLE_ID", "geneID", "causal_gene",
+                  "rare", "potential_biallelic", "gene_class",
+                  "HPO_match", "Semantic_sim", "MDG", 
+                  "outlier_class", "validated", "gene_detected",
+                  "RNA_ZSCORE", "PROTEIN_ZSCORE",
+                  "RNA_FC", "PROTEIN_FC", 
+                  "RNA_PVALUE", "PROTEIN_PVALUE",
+                  "rank_rna", "normcounts",
+                  "rank_protein", "PROTEIN_INT",
+                  "WES_avaliable", "HPO_avaliable", 
+                  "RNA_seq_avaliable", "Proteomics_avaliable")
 
+# Ensure all columns exist
+missing_cols <- setdiff(selected_cols, names(patient_omics))
+if (length(missing_cols) > 0) {
+  warning("Missing columns: ", paste(missing_cols, collapse = ", "))
+  # Add missing columns with NA values
+  for (col in missing_cols) {
+    patient_omics[[col]] <- NA
+  }
+}
 
-
-patient_omics <- patient_omics[ , c("SAMPLE_ID", "geneID", "causal_gene",
-                                    "rare", "potential_biallelic", "gene_class",
-                                    "HPO_match", "Semantic_sim", "MDG", 
-                                    "outlier_class", "validated", "gene_detected",
-                                    "RNA_ZSCORE", "PROTEIN_ZSCORE",
-                                    "RNA_FC", "PROTEIN_FC", 
-                                    "RNA_PVALUE","PROTEIN_PVALUE",
-                                    "rank_rna","normcounts",
-                                    "rank_protein", "PROTEIN_INT",
-                                    "WES_avaliable", "HPO_avaliable", 
-                                    "RNA_seq_avaliable", "Proteomics_avaliable")]
+# Select and reorder columns
+patient_omics <- patient_omics[, ..selected_cols]
 
 # Save results
 saveRDS(patient_omics, snakemake@output$patient_omics)
@@ -87,7 +109,7 @@ DT::datatable(os,
 range <- c(patient_omics$RNA_ZSCORE, patient_omics$PROTEIN_ZSCORE)
 ggplot(patient_omics, aes(RNA_ZSCORE, PROTEIN_ZSCORE)) +
   geom_point( aes( color= outlier_class)) +
-  stat_cor( aes(label = paste(..r.label.. , ..rr.label.., ..p.label.., sep = "~`,`~")),  na.rm = T, method = "spearman")+
+  #stat_cor( aes(label = paste(..r.label.. , ..rr.label.., ..p.label.., sep = "~`,`~")),  na.rm = T, method = "spearman")+
   xlab("RNA zScore") + 
   ylab("Protein zScore") +
   geom_vline(xintercept = 0, color = "grey50") +
@@ -107,21 +129,22 @@ patient_omics <- patient_omics[ outlier_class != "non_outlier"]
 os <- patient_omics[ ,  .N, by = SAMPLE_ID]
 paste("Samples with at least 1 outlier = ",  uniqueN(os$SAMPLE_ID))
 
-# add classes
-osx <- data.table( "SAMPLE_ID" = os$SAMPLE_ID, "RNA-only" = NA, "protein-only"= NA, "RNA-and-protein" = NA)
-osx <- melt(osx)
-osx$value <- NULL
-osx <- osx[!duplicated(osx)]
-os <- merge(os, osx, by = "SAMPLE_ID")
-setnames(os, c("SAMPLE_ID", "Outliers_per_sample", "outlier_class" ) )
+# Create reference table with all outlier classes
+osx <- data.table(
+  SAMPLE_ID = rep(os$SAMPLE_ID, each = 3),
+  outlier_class = rep(c("RNA-only", "protein-only", "RNA-and-protein"), times = length(os$SAMPLE_ID))
+)
 
+# Merge with actual counts
+os <- merge(os, osx, by = "SAMPLE_ID", all = TRUE)
+setnames(os, c("SAMPLE_ID", "Outliers_per_sample", "outlier_class"))
 
 # Count by outlier class and sample 
 osx <- patient_omics[,  .N, by = .(outlier_class, SAMPLE_ID)]
-os <- merge(os, osx, by = c("SAMPLE_ID", "outlier_class"), all.x = T)
+os <- merge(os, osx, by = c("SAMPLE_ID", "outlier_class"), all.x = TRUE)
+os[is.na(N), N := 0]
 os <- os[order(Outliers_per_sample),]
-os[ is.na(N), N := 0]
-os[ , Rank := 1 : .N, by = outlier_class]
+os[, Rank := 1:.N, by = outlier_class]
 
 
 

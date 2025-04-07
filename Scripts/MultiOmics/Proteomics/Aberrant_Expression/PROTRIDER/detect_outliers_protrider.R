@@ -1,64 +1,45 @@
 #'---
-#' title: Aberrant protein expression with PROTRIDER (OUTRIDER2 implementation)
-#' author: Stefan Loipfinger, Ines Scheller, Dmitrii Smirnov
+#' title: Aberrant protein expression with PROTRIDER 
+#' author: Dmitrii Smirnov
 #' wb:
-#'  threads: 40
+#'  threads: 8
 #'  input:
-#'  - protrider_object: '`sm config["PROC_DATA"] + "/protrider/protrider_outrider2_obj_unfitted.rds"`'
+#'   - protrider_config: '`sm config["PROC_DATA"] + "/protrider/config_protrider.yaml"`'
+#'   - protrider_annotation: '`sm config["PROC_DATA"] + "/protrider/protrider_annotation.tsv"`'
+#'   - protrider_data: '`sm config["PROC_DATA"] + "/protrider/protrider_data.tsv"`'
 #'  output:
-#'  - protrider_results: '`sm config["PROC_DATA"] + "/protrider/PROTRIDER_results.rds"`'
-#'  - protrider_object: '`sm config["PROC_DATA"] + "/protrider/protrider_outrider2_obj.rds"`'
+#'   - protrider_results: '`sm config["PROC_DATA"] + "/protrider/PROTRIDER_results.rds"`'
 #'  type: script
 #'---
 
-
-# source("src/config.R")
+library(data.table)
 library(reticulate)
-use_condaenv('omicsDiagnostics', required = T)   
 
-# load OUTRIDER2 (currently in outrider2 branch of OUTRIDER package)
-devtools::load_all("OUTRIDER/") 
-register(MulticoreParam(workers=as.integer(snakemake@threads)))
+# Use the conda environment defined in wbuild.yaml (via CONDA_ENV) #'   - env_conda: '`sm config["CONDA_ENV"]`'
+# use_condaenv(snakemake@input$env_conda, required = TRUE)
+use_condaenv('omicsDiagnosticsMinimal', required = T)   
 
-# load Outrider2DataSet
-ods <- readRDS(snakemake@input$protrider_object)
+# Define file paths provided by Snakemake
+config_path <- snakemake@input$protrider_config
+input_intensities <- snakemake@input$protrider_data
+sample_annotation <- snakemake@input$protrider_annotation
 
-## PROTRIDER fit
-# confounders that are explicitly considered
-confounders_used <- c("gender", "PROTEOMICS_BATCH","BATCH_RUN", "INSTRUMENT")
-enc_dim <- getBestQ(ods)
-preproParams <- getDefaultPreproParams(ods)
-preproParams$noise_factor <- 0.5
-ods <- OUTRIDER(ods, q=enc_dim, covariates=confounders_used, seed=111,
-                  usePython=TRUE, useBasilisk=FALSE,
-                  prepro_options=preproParams, BPPARAM = SerialParam())
-ods
+# Build and run the PROTRIDER command-line call
+cmd <- "protrider"
+args <- c("--config", config_path,
+          "--input_intensities", input_intensities,
+          "--sample_annotation", sample_annotation)
 
-############################################
-### output and save all the stuff
-saveRDS(ods, snakemake@output$protrider_object)
+message("Running PROTRIDER with command:\n", paste(cmd, args, collapse=" "))
+system2(cmd, args = args)
 
+message("Protrider run finished.")
 
+# Load the results (assumed to be written as a CSV summary file in the out_dir specified by config)
+config_list <- yaml::read_yaml(config_path)
+result_path <- file.path(config_list$out_dir, "/protrider_summary.csv")
+res <- fread(result_path)
 
-### extract results
-protr_res <- results(ods, padjCutoff=0.1, l2fcCutoff=NULL, all=TRUE)
-protr_res[, log2fc := preprocessed_raw - preprocessed_expected] # preprocessed values are log2(intensity)
-protr_res[, fc := 2^(log2fc)]
+setnames(res, c("sampleID", "proteinID"), c("SAMPLE_ID", "geneID"))
 
-# add extra columns
-setnames(protr_res,
-         c( "featureID", "sampleID", "preprocessed_raw", "preprocessed_expected", "normalized", "zScore", "fc", "log2fc",
-            "pValue", "padjust", "aberrant" ),
-         c( "geneID", "SAMPLE_ID", "PROTEIN_LOG2INT_RAW", "PROTEIN_LOG2INT_PRED", "PROTEIN_LOG2INT","PROTEIN_ZSCORE", "PROTEIN_FC","PROTEIN_LOG2FC",
-            "PROTEIN_PVALUE" , "PROTEIN_PADJ", "PROTEIN_outlier" ))
-
-protr_res <-  protr_res[, c( "geneID", "SAMPLE_ID", "PROTEIN_LOG2INT", # "PROTEIN_LOG2INT_RAW", "PROTEIN_LOG2INT_PRED", 
-                             "PROTEIN_ZSCORE", "PROTEIN_FC","PROTEIN_LOG2FC",
-                             "PROTEIN_PVALUE" , "PROTEIN_PADJ", "PROTEIN_outlier" )]
-
-protr_res <- protr_res[!duplicated(protr_res), ]
-protr_res <- protr_res[!is.na(protr_res$PROTEIN_PVALUE), ]
-
-# WRITE RESULTS
-saveRDS(protr_res, snakemake@output$protrider_results)
-
+saveRDS(res, snakemake@output$protrider_results)

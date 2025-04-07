@@ -6,7 +6,7 @@
 #'  - config: 'src/config.R'
 #'  - protrider: '`sm config["PROC_DATA"] + "/protrider/PROTRIDER_results.rds"`'
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
-#'  - corum: '`sm config["PROC_DATA"] + "/Complexes/CORUM.tsv"`'
+#'  - corum: '`sm config["DATASETS"] + "/CORUM.tsv"`'
 #'  output:
 #'  - complex_results: '`sm config["PROC_DATA"] + "/Complexes/Complex_outliers_PROTRIDER.rds"`'
 #'  - subunits_result: '`sm config["PROC_DATA"] + "/Complexes/aberrant_complex_subunits_PROTRIDER.tsv"`'
@@ -105,18 +105,18 @@ plotAberrantProteinPerSample(complex[ COMPLEX_outlier == T , .N, by = SAMPLE_ID]
 plotAberrantProteinPerSample(complex[ COMPLEX_Z_outlier == T , .N, by = SAMPLE_ID])
 
 
-# Annotate with complex description 
-corum_annotate <- fread("curl http://mips.helmholtz-muenchen.de/corum/download/allComplexes.txt.zip | funzip")
-corum_annotate <- corum_annotate[Organism == 'Human']
-corum_annotate <- corum_annotate[ComplexName %in% unique(complex$COMPLEX), 
-               c("ComplexName", "Complex comment", "Disease comment",
-                   "GO description", "FunCat description",
-                   "Synonyms" ,"subunits(Gene name)" )]
-corum_annotate <- corum_annotate[ !duplicated(corum_annotate) ]
-corum_annotate <- corum_annotate[ !duplicated(corum_annotate$ComplexName) ]
-
-res <- merge(complex, corum_annotate, by.x= "COMPLEX", by.y = "ComplexName", all.x = T)
-res <- res[order(SAMPLE_ID)]
+# # Annotate with complex description 
+# corum_annotate <- fread("curl http://mips.helmholtz-muenchen.de/corum/download/allComplexes.txt.zip | funzip")
+# corum_annotate <- corum_annotate[Organism == 'Human']
+# corum_annotate <- corum_annotate[ComplexName %in% unique(complex$COMPLEX), 
+#                c("ComplexName", "Complex comment", "Disease comment",
+#                    "GO description", "FunCat description",
+#                    "Synonyms" ,"subunits(Gene name)" )]
+# corum_annotate <- corum_annotate[ !duplicated(corum_annotate) ]
+# corum_annotate <- corum_annotate[ !duplicated(corum_annotate$ComplexName) ]
+# 
+# res <- merge(complex, corum_annotate, by.x= "COMPLEX", by.y = "ComplexName", all.x = T)
+res <- complex[order(SAMPLE_ID)]
 
 saveRDS(res, snakemake@output$complex_results)
 

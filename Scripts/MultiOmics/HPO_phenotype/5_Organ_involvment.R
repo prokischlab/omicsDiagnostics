@@ -30,8 +30,8 @@ pat_hpo <- pat_hpo[, c("SAMPLE_ID", "HPO_ID")]
 
 
 # load HPO ontology
-hpo <- get_ontology("http://purl.obolibrary.org/obo/hp.obo", extract_tags="everything")
-
+#hpo <- get_ontology("http://purl.obolibrary.org/obo/hp.obo", extract_tags="everything")
+hpo <- get_ontology("datasets/hp.obo", extract_tags="everything")
 
 # Extract HPO terms level 3 = organ systems
 hpo_ID_to_hpo_term <- pat_hpo[, c("HPO_ID")] 

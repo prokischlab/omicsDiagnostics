@@ -1,6 +1,8 @@
 package bioconductor version
 vctrs FALSE 
 data.table FALSE  
+parallel FALSE  
+foreach FALSE  
 readxl FALSE 
 readr FALSE 
 openxlsx FALSE 

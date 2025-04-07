@@ -32,13 +32,13 @@ SSscores <- fread(snakemake@input$semantic_similariy)
 
 phenotype <- merge(hpo_match, SSscores, by = c("SAMPLE_ID", "geneID"), all = T )
 phenotype[ is.na(HPO_match ) , HPO_match := F]
-phenotype[ is.na(Semantic_sim ) , Semantic_sim := 0]
+phenotype[ is.na(SemSim ) , SemSim := 0]
 
 
 write_tsv(phenotype,  snakemake@output$phenotype_data)
 
 
-ggplot(phenotype, aes(Semantic_sim,  fill = HPO_match))+
+ggplot(phenotype, aes(SemSim,  fill = HPO_match))+
   geom_density(alpha= 0.2)+
   theme_classic()+
   geom_vline(xintercept =2, color = "grey70", linetype = "dashed")+
@@ -54,7 +54,7 @@ ggplot(phenotype, aes(Semantic_sim,  fill = HPO_match))+
         legend.position = c(0.2, 0.8))
 
 
-ggplot(phenotype, aes(HPO_match ,Semantic_sim,  fill = HPO_match))+
+ggplot(phenotype, aes(HPO_match ,SemSim,  fill = HPO_match))+
   geom_boxplot(alpha= 0.7)+ 
   theme_classic()+
   geom_hline(yintercept =2, color = "grey70", linetype = "dashed")+

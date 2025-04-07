@@ -6,6 +6,7 @@ if (!requireNamespace('BiocManager', quietly = TRUE)) {
   BiocManager::install("remotes")
 }
 
+install.packages("data.table")
 
 args <- commandArgs(trailingOnly=TRUE)
 packages <- fread(args[1], fill = TRUE)
@@ -42,4 +43,11 @@ if ("gganatogram" %in% installed$Package){
   devtools::install_github("jespermaag/gganatogram")
 }
   
+
+if (!requireNamespace("OUTRIDER", quietly = TRUE) || packageVersion("OUTRIDER") < "1.20.1") {
+  devtools::install_github("gagneurlab/OUTRIDER@1.20.1", dependencies = TRUE)
+} else {
+  message("OUTRIDER is already at version 1.20.1 or higher.")
+}
+
 options(warn = 0)

@@ -2,6 +2,8 @@
 #' title: Patient analysis 
 #' author: Dmitrii Smirnov
 #' wb:
+#'  log:
+#'   - snakemake: '`sm config["PROC_DATA"] + "/integration/patient_analysis_log.RDS"`'
 #'  input:
 #'  - sample_annotation: '`sm config["ANNOTATION"]`'
 #'  - patient_omics: '`sm config["PROC_DATA"] + "/integration/patient_omics_full.RDS"`'
@@ -14,6 +16,13 @@
 #'    code_folding: hide
 #'    code_download: TRUE
 #'---
+
+
+saveRDS(snakemake, snakemake@log$snakemake)
+
+# snakemake <- readRDS("/Users/Mitya/Desktop/working/omicsDagnostics_data/processed_data/integration/patient_analysis_log.RDS")
+
+
 
 # Load config
 source("src/config.R")
@@ -45,13 +54,22 @@ complexes <- readRDS(snakemake@input$complex_results) %>% as.data.table()
 complexes <- complexes[SAMPLE_ID %in% sa$SAMPLE_ID]
 
 
-
+hpo <- get_ontology("datasets/hp.obo", extract_tags="everything")
+hpo_terms <- data.table(
+  HPO_ID = hpo$id,
+  HPO_term = hpo$name
+)
 # Load patient's HPO 
 pat_hpo <- fread(snakemake@input$patient_hpo)
+
+pat_hpo <- merge(pat_hpo,hpo_terms, by = "HPO_ID" )
+
 
 # Subset diagnosed cases and candidates
 pat_hpo <- pat_hpo[SAMPLE_ID %in% sa$SAMPLE_ID, c("SAMPLE_ID", "HPO_term")]
 pat_hpo <-pat_hpo[!duplicated(pat_hpo ),]
+
+rm(hpo, hpo_terms)
 
 # Load patient's affected organ systems
 patients <- fread(snakemake@input$patient_organ_syst)
