@@ -44,3 +44,57 @@ resources/missing_exomes.txt
 OUTRIDER/
 py_outrider/
 .tmp
+
+# R
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Snakemake
+.snakemake/
+*.snakemake
+
+# Data
+*.tmp
+*.temp
+*.log
+*.cache
+*~
+.DS_Store
+Output/
+raw_data/
+processed_data/
+shiny_data/
+
+# IDE
+.idea/
+.vscode/
+
+# Misc
+*.yml
+*.yaml
+*.md

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "metadata": {
+    "appmode": "shiny",
+    "primaryRdoc": "app.R"
+  },
+  "packages": {
+    "R": {
+      "Version": "4.2.0",
+      "Repositories": [
+        {
+          "Name": "CRAN",
+          "URL": "https://cran.rstudio.com"
+        }
+      ]
+    }
+  },
+  "files": {
+    "app.R": {
+      "checksum": "auto"
+    },
+    "src/config.R": {
+      "checksum": "auto"
+    },
+    "src/functions/plots.R": {
+      "checksum": "auto"
+    },
+    "src/functions/shiny_plots.R": {
+      "checksum": "auto"
+    }
+  }
+} 

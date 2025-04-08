@@ -1,0 +1,20 @@
+# Ignore snakemake files
+.snakemake/
+# Ignore git files
+.git/
+.gitignore
+# Ignore R history
+.Rhistory
+# Ignore R data files
+.RData
+# Ignore temporary files
+*.tmp
+*.temp
+# Ignore log files
+*.log
+# Ignore cache files
+*.cache
+# Ignore backup files
+*~
+# Ignore macOS system files
+.DS_Store 
