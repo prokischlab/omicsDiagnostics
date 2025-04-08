@@ -103,3 +103,64 @@ To run the full pipeline, execute the following commands with 10 cores in parall
 3) `snakemake -c 10`
 
 If dag doesn't work run: `snakemake --snakefile Snakefile.dag --dag | dot -Tpng > dag.png`
+
+# omicsDiagnostics
+
+A comprehensive tool for analyzing and visualizing multi-omics data in the context of rare disease diagnostics.
+
+## Features
+
+- Integration of RNA and protein expression data
+- Visualization of patient-specific omics profiles
+- Interactive exploration of genetic variants
+- Phenotype similarity analysis
+- Protein complex analysis
+
+## Shiny App
+
+The application is available online at: [https://prokischlab.shinyapps.io/omicsDiagnosticsAPP/](https://prokischlab.shinyapps.io/omicsDiagnosticsAPP/)
+
+## Installation
+
+1. Clone this repository
+2. Install required R packages:
+   ```R
+   install.packages(c("shiny", "data.table", "plotly", "DT", "yaml", "gganatogram", 
+                     "shinyjs", "shinybusy", "shinyWidgets", "shinythemes", "tippy", "bslib"))
+   ```
+
+## Usage
+
+1. Run the app locally:
+   ```R
+   shiny::runApp("omicsDiagnosticsAPP")
+   ```
+
+2. Or use the online version at [https://prokischlab.shinyapps.io/omicsDiagnosticsAPP/](https://prokischlab.shinyapps.io/omicsDiagnosticsAPP/)
+
+## Data Preparation
+
+The app uses pre-processed data stored in the `shiny_data` directory. To prepare the data:
+
+1. Run the data preparation script:
+   ```R
+   source("omicsDiagnosticsAPP/prepare_shiny_data.R")
+   ```
+
+## Deployment
+
+To deploy the app to ShinyApps.io:
+
+1. Make sure you have the `rsconnect` package installed
+2. Run the deployment script:
+   ```R
+   source("omicsDiagnosticsAPP/deploy.R")
+   ```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact
+
+For questions or support, please contact the development team.
