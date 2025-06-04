@@ -291,3 +291,43 @@ spec_CI <- MeanCI(batch_stats$Spec)
 
 
 ############################################################################################################################################################################
+
+# Paper-ready visualisations ----------------------------------------------
+library(ggplot2)
+library(patchwork)
+
+dir.create("Scripts/MultiOmics/Proteomics/clinical_validation/figures", showWarnings = FALSE)
+
+# ROC curve with ggplot
+roc_dt <- data.table(FPR = 1 - roc_obj$specificities,
+                     TPR = roc_obj$sensitivities)
+
+p_roc <- ggplot(roc_dt, aes(FPR, TPR)) +
+  geom_line(color = "firebrick", size = 1.2) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", colour = "grey50") +
+  theme_classic() +
+  labs(x = "False positive rate", y = "True positive rate",
+       title = sprintf("Bridge benchmark ROC (AUC = %.3f)", as.numeric(auc_val)))
+
+pdf("Scripts/MultiOmics/Proteomics/clinical_validation/figures/roc_curve.pdf", width = 5, height = 5, useDingbats = FALSE)
+print(p_roc)
+dev.off()
+
+# Sensitivity and specificity per batch
+p_sens <- ggplot(batch_stats, aes(Batch, Sens)) +
+  geom_col(fill = "#00BFC4") +
+  geom_hline(yintercept = mean(batch_stats$Sens), linetype = "dashed") +
+  theme_classic() +
+  labs(x = "Batch", y = "Sensitivity", title = "Sensitivity per batch")
+
+p_spec <- ggplot(batch_stats, aes(Batch, Spec)) +
+  geom_col(fill = "#F8766D") +
+  geom_hline(yintercept = mean(batch_stats$Spec), linetype = "dashed") +
+  theme_classic() +
+  labs(x = "Batch", y = "Specificity", title = "Specificity per batch")
+
+batch_plot <- p_sens / p_spec
+
+pdf("Scripts/MultiOmics/Proteomics/clinical_validation/figures/batch_performance.pdf", width = 7, height = 5, useDingbats = FALSE)
+print(batch_plot)
+dev.off()
