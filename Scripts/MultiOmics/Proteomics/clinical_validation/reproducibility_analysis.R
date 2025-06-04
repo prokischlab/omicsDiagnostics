@@ -249,3 +249,32 @@ ggplot(result_longX, aes(x = Correlation, fill = BATCH)) +
   scale_fill_ptol() +
   labs(title = "Density of Correlations (Within vs Between Batches)",
        x = "Correlation", y = "Density")  
+
+# Paper-ready summary figure
+library(patchwork)
+
+p_batch <- ggplot(result_longX, aes(x = Correlation, fill = BATCH)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_ptol() +
+  theme_classic() +
+  labs(title = "Correlation by Batch", x = "Pearson r", y = "Density")
+
+p_frac <- ggplot(result_longX, aes(x = Correlation, fill = Fractionation_BATCH)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_ptol() +
+  theme_classic() +
+  labs(title = "Correlation by Fractionation", x = "Pearson r", y = "Density")
+
+p_instr <- ggplot(result_longX[INSTRUMENT != "different"], aes(x = Correlation, fill = INSTRUMENT)) +
+  geom_density(alpha = 0.7) +
+  scale_fill_ptol() +
+  theme_classic() +
+  labs(title = "Correlation by Instrument", x = "Pearson r", y = "Density")
+
+paper_plot <- (p_batch | p_frac) / p_instr
+
+dir.create("Scripts/MultiOmics/Proteomics/clinical_validation/figures", showWarnings = FALSE)
+
+pdf("Scripts/MultiOmics/Proteomics/clinical_validation/figures/reproducibility_overview.pdf", width = 8, height = 6, useDingbats = FALSE)
+print(paper_plot)
+dev.off()
