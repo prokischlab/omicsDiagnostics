@@ -1,0 +1,10 @@
+name: omicsDiagnostics
+title: omicsDiagnostics App
+username: prokischlab
+account: prokischlab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 14455375
+bundleId: 10074052
+url: https://prokischlab.shinyapps.io/omicsDiagnostics/
+version: 1

@@ -26,7 +26,8 @@ source("src/functions/LIMMA/limma_functions.R")
 
 # Read sample annotation
 sa <- fread(snakemake@input$sa)
-
+# Create the output directory if it doesn't exist.
+dir.create(snakemake@input$protr_out, recursive = TRUE, showWarnings = FALSE)
 
 # Read raw proteomics data
 raw_prot <- fread(snakemake@input$raw_prot) %>% as.data.frame()
@@ -58,11 +59,11 @@ mat_prot <- as.matrix(prot)
 sampleZeroFreq <- apply(mat_prot, 2, function(x) sum(x == 0) / length(x))
 mat_prot <- mat_prot[, sampleZeroFreq < 0.3]
 
-# Filter out proteins not expressed in enough samples (e.g., proteins missing in > (MIN_SAMPLE_NUM_PROT*100)% samples)
-MIN_SAMPLE_NUM_PROT <- 0.52
-message('Filtering proteins detected in >', round(ncol(mat_prot) * (1 - MIN_SAMPLE_NUM_PROT)), ' samples')
-protZeroFreq <- apply(mat_prot, 1, function(x) sum(x == 0) / length(x))
-mat_prot <- mat_prot[protZeroFreq < MIN_SAMPLE_NUM_PROT, ]
+# # Filter out proteins not expressed in enough samples (e.g., proteins missing in > (MIN_SAMPLE_NUM_PROT*100)% samples)
+# MIN_SAMPLE_NUM_PROT <- 0.52
+# message('Filtering proteins detected in >', round(ncol(mat_prot) * (1 - MIN_SAMPLE_NUM_PROT)), ' samples')
+# protZeroFreq <- apply(mat_prot, 1, function(x) sum(x == 0) / length(x))
+# mat_prot <- mat_prot[protZeroFreq < MIN_SAMPLE_NUM_PROT, ]
 
 # Save the filtered raw intensities as the PROTRIDER input file
 protrider_data <- cbind(rownames(mat_prot), as.data.frame(mat_prot))

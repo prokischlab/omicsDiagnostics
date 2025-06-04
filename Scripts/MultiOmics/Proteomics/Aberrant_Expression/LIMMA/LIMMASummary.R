@@ -20,6 +20,17 @@ source("src/functions/LIMMA/limma_functions.R")
 prot <- readRDS(snakemake@input$results) %>% as.data.table()
 
 
+# Total number of outliers:
+uniqueN(prot[PROTEIN_outlier == TRUE])
+paste("Underexpression:", uniqueN(prot[PROTEIN_outlier == TRUE & PROTEIN_ZSCORE < 0]),
+      ", Overexpression:", uniqueN(prot[PROTEIN_outlier == TRUE & PROTEIN_ZSCORE > 0]))
+
+# Aberrant proteins per sample:
+os <- prot[PROTEIN_outlier == TRUE, .N, by = SAMPLE_ID]
+paste("Median:", median(os$N))
+plotAberrantProteinPerSample(os)
+
+
 #' ### Aberrant proteins per sample
 plotAberrantProteinPerSample(prot[ PROTEIN_outlier == T , .N, by = c('SAMPLE_ID')])
 
